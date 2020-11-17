@@ -2,6 +2,7 @@ package com.bramerlabs.engine.main;
 
 import com.bramerlabs.sphere.Sphere;
 import com.bramerlabs.sphere.Triangle;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -35,7 +36,10 @@ public class Main {
     private static float zoom = 20;
     private static int mouseX, mouseY;
     private static float pitch = 0.3f, yaw = 0.2f;
+    private static float defaultPitch = 0, defaultYaw = 0;
+    private static float translationX = 0, translationY = 0;
     private static float rotationSpeed = 0.005f;
+    private static float translationSpeed = 0.0025f;
 
     // center vector
     private static final Vector3f center = new Vector3f();
@@ -107,15 +111,30 @@ public class Main {
             glMatrixMode(GL_MODELVIEW);
 
             // load arcball camera view matrix into 'mat'
-            glLoadMatrixf(mat.translation(0, 0, -zoom).rotateX(pitch).rotateY(yaw).translate(-center.x, -center.y, -center.z).get(floatBuffer));
-            renderGrid();
+            glLoadMatrixf(mat.translation(translationX, translationY, -zoom).rotateX(pitch).rotateY(yaw).translate(-center.x, -center.y, -center.z).get(floatBuffer));
 
             // apply model transformation to 'mat'
             glLoadMatrixf(mat.translate(center).get(floatBuffer));
 
             // drawing spheres
-            Sphere sphere = new Sphere(new com.bramerlabs.sphere.Vector3f(0, 0, 0), new com.bramerlabs.sphere.Vector3f(0, 0, 1), new com.bramerlabs.sphere.Vector3f(0, 0, 1));
-            drawSphere(sphere);
+            Sphere carbon = new Sphere(new float[]{0, 0, 0}, new float[]{0, 0, 1}, 0f);
+
+            Sphere[] hydrogens = new Sphere[4];
+            float r2 = (float)Math.sqrt(2);
+            hydrogens[0] = new Sphere(new float[]{0, -r2, -2}, new float[]{1, 1, 1}, 0f);
+            hydrogens[1] = new Sphere(new float[]{0, -r2, 2}, new float[]{1, 1, 1}, 0f);
+            hydrogens[2] = new Sphere(new float[]{2, r2, 0}, new float[]{1, 1, 1}, 0f);
+            hydrogens[3] = new Sphere(new float[]{-2, r2, 0}, new float[]{1, 1, 1}, 0f);
+
+            for (Sphere s : hydrogens) {
+                s.setRadius(0.5f);
+                drawSphere(s);
+            }
+
+            carbon.setRadius(0.75f);
+            drawSphere(carbon);
+
+            //renderGrid();
 
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -138,8 +157,8 @@ public class Main {
     }
 
     private static void resetView() {
-        pitch = 0.3f;
-        yaw = 0.2f;
+        pitch = defaultPitch;
+        yaw = defaultYaw;
     }
 
     /**
@@ -167,31 +186,42 @@ public class Main {
 
         // cursor position callback
         glfwSetCursorPosCallback(window, (win, x, y) -> {
-            // this works for rotating the plane for some reason : don't change this @ future bo
+
             if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
-                pitch += ((int) y - mouseY) * rotationSpeed;
-                pitch = Math.abs(pitch) > 2 * Math.PI ? (float) (pitch % Math.PI) : pitch;
+                if (glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+                    // for translating the plane - for some reason this doesn't act like i want it to
+//                    translationX += translationSpeed * ((int) x - mouseX);
+//                    translationY -= translationSpeed * ((int) y - mouseY);
+                    return;
 
-                if ((Math.abs(pitch) < Math.PI/2 || Math.abs(pitch) > 3*Math.PI/2) && !cursorWasDown) {
-                    direction = false;
-                } else if (!cursorWasDown){
-                    direction = true;
+                } else if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
+                    // this works for rotating the plane for some reason : don't change this @ future bo
+                    pitch += ((int) y - mouseY) * rotationSpeed;
+                    pitch = Math.abs(pitch) > 2 * Math.PI ? (float) (pitch % Math.PI) : pitch;
+
+                    if ((Math.abs(pitch) < Math.PI/2 || Math.abs(pitch) > 3*Math.PI/2) && !cursorWasDown) {
+                        direction = false;
+                    } else if (!cursorWasDown){
+                        direction = true;
+                    }
+
+                    if (direction) {
+                        yaw -= ((int) x - mouseX) * rotationSpeed;
+                    } else {
+                        yaw += ((int) x - mouseX) * rotationSpeed;
+                    }
+
+                    yaw = Math.abs(yaw) > 2 * Math.PI ? (float) (yaw % Math.PI) : yaw;
+                    cursorWasDown = true;
                 }
-
-                if (direction) {
-                    yaw -= ((int) x - mouseX) * rotationSpeed;
-                } else {
-                    yaw += ((int) x - mouseX) * rotationSpeed;
-                }
-
-                yaw = Math.abs(yaw) > 2 * Math.PI ? (float) (yaw % Math.PI) : yaw;
-                cursorWasDown = true;
             }
+
             mouseX = (int) x;
             mouseY = (int) y;
             if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_1) == GLFW_RELEASE) {
                 cursorWasDown = false;
             }
+
         });
 
         // scroll wheel callback

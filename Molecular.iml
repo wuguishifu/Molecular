@@ -10,6 +10,6 @@
     <orderEntry type="library" name="lwjgl" level="project" />
     <orderEntry type="library" name="slickutil3" level="project" />
     <orderEntry type="library" name="joml-1.9.25" level="project" />
-    <orderEntry type="library" name="Sphere_jar" level="project" />
+    <orderEntry type="library" name="Sphere" level="project" />
   </component>
 </module>
