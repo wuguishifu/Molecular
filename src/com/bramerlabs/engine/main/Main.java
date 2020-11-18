@@ -186,12 +186,11 @@ public class Main {
 
         // cursor position callback
         glfwSetCursorPosCallback(window, (win, x, y) -> {
-
             if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
                 if (glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
                     // for translating the plane - for some reason this doesn't act like i want it to
-//                    translationX += translationSpeed * ((int) x - mouseX);
-//                    translationY -= translationSpeed * ((int) y - mouseY);
+//                    translationX += 0.0001 * (x - mouseX);
+//                    translationY -= 0.0001 * (y - mouseY);
                     return;
 
                 } else if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
