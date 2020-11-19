@@ -13,7 +13,20 @@ public class Molecule {
     // default position
     private final float[] defaultPosition = {0, 0, 0};
 
+    /**
+     * default constructor
+     */
+    public Molecule() {
+        this.atoms = new ArrayList<>();
+        this.position = defaultPosition;
+    }
+
+    /**
+     * constructor with specified position
+     * @param position - the position of the molecule
+     */
     public Molecule(float[] position) {
+        this.atoms = new ArrayList<>();
         if (position.length == 3) {
             this.position = position;
         } else {
@@ -21,7 +34,39 @@ public class Molecule {
         }
     }
 
+    /**
+     * adds an atom to the molecule
+     * @param atom - the atom to be added
+     */
     public void addAtom(Atom atom) {
         this.atoms.add(atom);
+    }
+
+    /**
+     * adds an atom to the molecule at a specified position
+     * @param atom - the atom to be added
+     * @param position - the position of the atom
+     */
+    public void addAtom(Atom atom, float[] position) {
+        if (position.length == 3) {
+            atom.setPosition(position);
+        }
+        this.atoms.add(atom);
+    }
+
+    /**
+     * getter method
+     * @return - the position of the molecule
+     */
+    public float[] getPosition() {
+        return this.position;
+    }
+
+    /**
+     * getter method
+     * @return - the list of atoms that makes up this molecule
+     */
+    public ArrayList<Atom> getAtoms() {
+        return this.atoms;
     }
 }

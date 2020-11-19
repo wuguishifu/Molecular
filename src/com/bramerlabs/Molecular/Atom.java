@@ -85,4 +85,13 @@ public class Atom {
         this.neutrons = defaultNeutrons;
     }
 
+    /**
+     * sets the position
+     * @param position - the new position
+     */
+    public void setPosition(float[] position) {
+        if (position.length == 3) {
+            this.setPosition(position);
+        }
+    }
 }
