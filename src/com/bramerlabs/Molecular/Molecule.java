@@ -63,6 +63,23 @@ public class Molecule {
     }
 
     /**
+     * gets the index of an atom
+     * @param atom - the atom (or copy of) to find the index of
+     * @return - the index of the atom in the ArrayList
+     */
+    public int indexOf(Atom atom) {
+        return atoms.indexOf(atom);
+    }
+
+    /**
+     * removes an atom from the ArrayList
+     * @param atom - the atom (or copy of) to remove from the ArrayList
+     */
+    public void removeAtom(Atom atom) {
+        atoms.remove(atom);
+    }
+
+    /**
      * getter method
      * @return - the list of atoms that makes up this molecule
      */

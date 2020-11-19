@@ -94,4 +94,27 @@ public class Atom {
             this.setPosition(position);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Position: (" + this.position[0] + ", " + this.position[1] + ", " + this.position[2] + "),\n" +
+                "Atomic Number: " + this.atomicNumber + ", Charge: " + this.charge + "Mass Number: " + this.atomicNumber + this.neutrons;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Atom)) return false;
+        Atom atom = (Atom) o;
+        return this.atomicNumber == atom.atomicNumber &&
+                this.charge == atom.charge &&
+                this.neutrons == atom.neutrons &&
+                this.massNumber == atom.massNumber &&
+                this.position == atom.position;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * (int)this.position[0] + 313 * (int)this.position[1] + 3131 * (int)this.position[2] + atomicNumber + charge + neutrons;
+    }
 }
