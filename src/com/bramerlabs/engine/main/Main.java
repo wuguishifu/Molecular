@@ -121,19 +121,8 @@ public class Main {
             // apply model transformation to 'mat'
             glLoadMatrixf(mat.translate(center).get(floatBuffer));
 
-            float r2 = (float)Math.sqrt(2);
 
-            molecule = new Molecule(new float[]{0f, 0f, 0f});
-            molecule.addAtom(new Atom(new float[]{ 0f, -r2, -2f}, new int[]{1}).setColor(new float[]{1, 1, 1}).setShadeDifference(0).setRadius(0.5f)); // H
-            molecule.addAtom(new Atom(new float[]{ 0f, -r2,  2f}, new int[]{1}).setColor(new float[]{1, 1, 1}).setShadeDifference(0).setRadius(0.5f)); // H
-            molecule.addAtom(new Atom(new float[]{ 2f,  r2,  0f}, new int[]{1}).setColor(new float[]{1, 1, 1}).setShadeDifference(0).setRadius(0.5f)); // H
-            molecule.addAtom(new Atom(new float[]{-2f,  r2,  0f}, new int[]{1}).setColor(new float[]{1, 1, 1}).setShadeDifference(0).setRadius(0.5f)); // H
-            molecule.addAtom(new Atom(new float[]{ 0f,  0f,  0f}, new int[]{1}).setColor(new float[]{0, 0, 1}).setShadeDifference(0)); // C
-
-            for (Atom a : molecule.getAtoms()) {
-                drawSphere(a.getSphere());
-            }
-
+            loadTestMolecule();
 
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -244,6 +233,21 @@ public class Main {
     /**
      * Test methods
      */
+
+    private static void loadTestMolecule() {
+        float r2 = (float)Math.sqrt(2);
+
+        molecule = new Molecule(new float[]{0f, 0f, 0f});
+        molecule.addAtoms(new float[][]{{0f, -r2, -2f}, {0f, -r2, 2f}, {2f, r2, 0f}, {-2f, r2, 0f}}, new int[]{1, 0, 0}); // 4 H
+        for (Atom a : molecule.getAtoms()) {
+            a.setColor(new float[]{1f, 1f, 1f}).setShadedColor(0).setRadius(0.5f);
+        }
+        molecule.addAtom(new Atom(new float[]{ 0f,  0f,  0f}, new int[]{1}).setColor(new float[]{0f, 0f, 1f}).setShadedColor(0).setRadius(0.75f)); // C
+
+        for (Atom a : molecule.getAtoms()) {
+            drawSphere(a.getSphere());
+        }
+    }
 
     private static void renderGrid() {
         glBegin(GL_LINES);

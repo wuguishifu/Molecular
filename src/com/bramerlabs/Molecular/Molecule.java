@@ -55,6 +55,24 @@ public class Molecule {
     }
 
     /**
+     * adds a group of atoms
+     * @param atoms - group of atoms
+     */
+    public void addAtoms(ArrayList<Atom> atoms) {
+        this.atoms.addAll(atoms);
+    }
+
+    /**
+     * adds a group of atoms at specified positions with a single specified identity
+     * @param positions - an array of arrays containing positions in the form [x, y, z]
+     */
+    public void addAtoms(float[][] positions, int[] identity) {
+        for (float[] pos : positions) {
+            this.atoms.add(new Atom(pos).setIdentity(identity));
+        }
+    }
+
+    /**
      * getter method
      * @return - the position of the molecule
      */
