@@ -28,6 +28,11 @@ public class Atom {
     private final float[] defaultColor = {1f, 1f, 1f};
     private final float[] defaultShadedColor = {1f, 1f, 1f};
 
+    // radius of sphere
+    private float radius;
+    //default value
+    private float defaultRadius = 1f;
+
     /**
      * constructor for position and identity
      * @param x - x position
@@ -42,6 +47,7 @@ public class Atom {
         this.atomicNumber = atomicNumber;
         this.charge = charge;
         this.neutrons = neutrons;
+        radius = defaultRadius;
     }
 
     /**
@@ -57,9 +63,16 @@ public class Atom {
             this.position = defaultPosition;
         }
 
-        this.atomicNumber = identity[0];
-        this.charge = identity[1];
-        this.neutrons = identity[2];
+        if (identity.length > 0) {
+            atomicNumber = identity[0];
+        }
+        if (identity.length > 1) {
+            this.charge = identity[1];
+        }
+        if (identity.length > 2) {
+            this.neutrons = identity[2];
+        }
+        radius = defaultRadius;
     }
 
     /**
@@ -73,6 +86,19 @@ public class Atom {
         this.atomicNumber = defaultAtomicNumber;
         this.charge = defaultCharge;
         this.neutrons = defaultNeutrons;
+        radius = defaultRadius;
+    }
+
+    public Atom(float[] position) {
+        if (position.length ==3 ) {
+            this.position = position;
+        } else {
+            this.position = defaultPosition;
+        }
+        this.atomicNumber = defaultAtomicNumber;
+        this.charge = defaultCharge;
+        this.neutrons = defaultNeutrons;
+        radius = defaultRadius;
     }
 
     /**
@@ -83,6 +109,45 @@ public class Atom {
         this.atomicNumber = defaultAtomicNumber;
         this.charge = defaultCharge;
         this.neutrons = defaultNeutrons;
+        radius = defaultRadius;
+    }
+
+    /**
+     * sets the color
+     * @param color - the new color to be set
+     * @return - this atom
+     */
+    public Atom setColor(float[] color) {
+        this.color = color;
+        return this;
+    }
+
+    /**
+     * sets the shaded color
+     * @param shadedColor - the shaded color
+     * @return - this atom
+     */
+    public Atom setShadedColor(float[] shadedColor) {
+        this.shadedColor = shadedColor;
+        return this;
+    }
+
+    /**
+     * creates a shaded color
+     * @param shadeDifference - the difference
+     * @return - this atom
+     */
+    public Atom setShadeDifference(float shadeDifference) {
+        float r = Math.max(this.color[0] - shadeDifference, 0.0F);
+        float g = Math.max(this.color[1] - shadeDifference, 0.0F);
+        float b = Math.max(this.color[2] - shadeDifference, 0.0F);
+        this.shadedColor = new float[]{r, g, b};
+        return this;
+    }
+
+    public Atom setRadius(float radius) {
+        this.radius = radius;
+        return this;
     }
 
     /**
@@ -93,6 +158,14 @@ public class Atom {
         if (position.length == 3) {
             this.setPosition(position);
         }
+    }
+
+    /**
+     * creates a sphere
+     * @return - a sphere
+     */
+    public Sphere getSphere() {
+        return new Sphere(position, color, shadedColor);
     }
 
     @Override

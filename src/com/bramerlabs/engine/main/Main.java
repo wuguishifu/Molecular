@@ -1,5 +1,7 @@
 package com.bramerlabs.engine.main;
 
+import com.bramerlabs.Molecular.Atom;
+import com.bramerlabs.Molecular.Molecule;
 import com.bramerlabs.sphere.Sphere;
 import com.bramerlabs.sphere.Triangle;
 
@@ -47,6 +49,9 @@ public class Main {
     // cursor variables
     private static boolean cursorWasDown = false;
     private static boolean direction = true;
+
+    // molecule variables
+    private static Molecule molecule;
 
     /**
      * main method
@@ -116,25 +121,19 @@ public class Main {
             // apply model transformation to 'mat'
             glLoadMatrixf(mat.translate(center).get(floatBuffer));
 
-            // drawing spheres
-            Sphere carbon = new Sphere(new float[]{0, 0, 0}, new float[]{0, 0, 1}, 0f);
-
-            Sphere[] hydrogens = new Sphere[4];
             float r2 = (float)Math.sqrt(2);
-            hydrogens[0] = new Sphere(new float[]{0, -r2, -2}, new float[]{1, 1, 1}, 0f);
-            hydrogens[1] = new Sphere(new float[]{0, -r2, 2}, new float[]{1, 1, 1}, 0f);
-            hydrogens[2] = new Sphere(new float[]{2, r2, 0}, new float[]{1, 1, 1}, 0f);
-            hydrogens[3] = new Sphere(new float[]{-2, r2, 0}, new float[]{1, 1, 1}, 0f);
 
-            for (Sphere s : hydrogens) {
-                s.setRadius(0.5f);
-                drawSphere(s);
+            molecule = new Molecule(new float[]{0f, 0f, 0f});
+            molecule.addAtom(new Atom(new float[]{ 0f, -r2, -2f}, new int[]{1}).setColor(new float[]{1, 1, 1}).setShadeDifference(0).setRadius(0.5f)); // H
+            molecule.addAtom(new Atom(new float[]{ 0f, -r2,  2f}, new int[]{1}).setColor(new float[]{1, 1, 1}).setShadeDifference(0).setRadius(0.5f)); // H
+            molecule.addAtom(new Atom(new float[]{ 2f,  r2,  0f}, new int[]{1}).setColor(new float[]{1, 1, 1}).setShadeDifference(0).setRadius(0.5f)); // H
+            molecule.addAtom(new Atom(new float[]{-2f,  r2,  0f}, new int[]{1}).setColor(new float[]{1, 1, 1}).setShadeDifference(0).setRadius(0.5f)); // H
+            molecule.addAtom(new Atom(new float[]{ 0f,  0f,  0f}, new int[]{1}).setColor(new float[]{0, 0, 1}).setShadeDifference(0)); // C
+
+            for (Atom a : molecule.getAtoms()) {
+                drawSphere(a.getSphere());
             }
 
-            carbon.setRadius(0.75f);
-            drawSphere(carbon);
-
-            //renderGrid();
 
             glfwSwapBuffers(window);
             glfwPollEvents();
