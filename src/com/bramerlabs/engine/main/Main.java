@@ -1,7 +1,7 @@
 package com.bramerlabs.engine.main;
 
-import com.bramerlabs.Molecular.Atom;
-import com.bramerlabs.Molecular.Molecule;
+import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.sphere.Sphere;
 import com.bramerlabs.sphere.Triangle;
 

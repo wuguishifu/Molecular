@@ -1,4 +1,6 @@
-package com.bramerlabs.Molecular;
+package com.bramerlabs.molecular.molecule;
+
+import com.bramerlabs.molecular.molecule.atom.Atom;
 
 import java.util.ArrayList;
 

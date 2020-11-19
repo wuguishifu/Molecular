@@ -1,4 +1,4 @@
-package com.bramerlabs.Molecular;
+package com.bramerlabs.molecular.molecule.atom;
 
 import com.bramerlabs.sphere.Sphere;
 
