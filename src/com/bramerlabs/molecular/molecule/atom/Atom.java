@@ -50,6 +50,10 @@ public class Atom {
         }
     }
 
+    public float[] getPosition() {
+        return this.position;
+    }
+
     /**
      * constructor for position
      * @param position - float array containing position in form [x, y, z]

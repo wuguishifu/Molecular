@@ -16,4 +16,20 @@ public class Bond {
         this.a2 = a2;
     }
 
+    public Atom getA1() {
+        return this.a1;
+    }
+
+    public Atom getA2() {
+        return this.a2;
+    }
+
+    public float[] getA1Pos() {
+        return this.a1.getPosition();
+    }
+
+    public float[] getA2Pos() {
+        return this.a2.getPosition();
+    }
+
 }
