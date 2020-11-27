@@ -1,6 +1,7 @@
 package com.bramerlabs.molecular.molecule;
 
 import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.Bond;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,9 @@ public class Molecule {
 
     // list of atoms that this molecule is made up of
     private ArrayList<Atom> atoms;
+
+    // list of bonds in between atoms
+    private ArrayList<Bond> bonds;
 
     // position stored in the form [x, y, z] of the center of the molecule
     private float[] position;
