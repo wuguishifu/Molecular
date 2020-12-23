@@ -1,16 +1,21 @@
 package com.bramerlabs.engine.main;
 
-import com.bramerlabs.molecular.molecule.atom.Atom;
-import com.bramerlabs.molecular.molecule.Molecule;
-import com.bramerlabs.sphere.Sphere;
-import com.bramerlabs.sphere.Triangle;
-
+import com.bramerlabs.molecule_structure.molecule.Atom;
+import com.bramerlabs.molecule_structure.molecule.Molecule;
+import com.bramerlabs.molecule_structure.molecule.molecules.Bent;
+import com.bramerlabs.molecule_structure.molecule.molecules.Octahedron;
+import com.bramerlabs.molecule_structure.molecule.molecules.Planar;
+import com.bramerlabs.molecule_structure.molecule.molecules.Tetrahedral;
+import com.bramerlabs.shapes2d.Triangle;
+import com.bramerlabs.shapes3d.Cylinder;
+import com.bramerlabs.shapes3d.Sphere;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
+import java.awt.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -23,8 +28,8 @@ public class Main {
 
     // window variables
     private static long window;
-    private static int width = 1600;
-    private static int height = 1200;
+    private static int width = 1500;
+    private static int height = 1500;
 
     // application variables
     private static final String APP_NAME = "Molecular";
@@ -35,9 +40,9 @@ public class Main {
     private static long time;
 
     // camera variables
-    private static float zoom = 20;
+    private static float zoom = 6;
     private static int mouseX, mouseY;
-    private static float pitch = 0.3f, yaw = 0.2f;
+    private static float pitch = 0.7f, yaw = 0.3f;
     private static float defaultPitch = 0, defaultYaw = 0;
     private static float translationX = 0, translationY = 0;
     private static float rotationSpeed = 0.005f;
@@ -50,8 +55,8 @@ public class Main {
     private static boolean cursorWasDown = false;
     private static boolean direction = true;
 
-    // molecule variables
-    private static Molecule molecule;
+    // the loaded molecule
+    private static Molecule molecule = new Molecule();
 
     /**
      * main method
@@ -132,18 +137,6 @@ public class Main {
         }
     }
 
-    private static void drawSphere(Sphere sphere) {
-        sphere.generateVertices();
-        for (Triangle t : sphere.getFaces()) {
-            glBegin(GL_TRIANGLES);
-            glColor3f(t.getColor().x, t.getColor().y, t.getColor().z);
-            glVertex3f(t.getV1().x, t.getV1().y, t.getV1().z);
-            glVertex3f(t.getV2().x, t.getV2().y, t.getV2().z);
-            glVertex3f(t.getV3().x, t.getV3().y, t.getV3().z);
-            glEnd();
-        }
-    }
-
     private static void resetView() {
         pitch = defaultPitch;
         yaw = defaultYaw;
@@ -160,6 +153,14 @@ public class Main {
                 switch (k) {
                     case GLFW_KEY_ESCAPE : glfwSetWindowShouldClose(window, true); break;
                     case GLFW_KEY_ENTER : resetView(); break;
+                    case GLFW_KEY_T:
+                        molecule = new Tetrahedral(new com.bramerlabs.molecule_structure.math.Vector3f(0, 0, 0), 1.5f); break;
+                    case GLFW_KEY_O:
+                        molecule = new Octahedron(new com.bramerlabs.molecule_structure.math.Vector3f(0, 0, 0), 1.5f); break;
+                    case GLFW_KEY_B:
+                        molecule = new Bent(new com.bramerlabs.molecule_structure.math.Vector3f(0, 0, 0), 1.5f); break;
+                    case GLFW_KEY_P:
+                        molecule = new Planar(new com.bramerlabs.molecule_structure.math.Vector3f(0, 0, 0), 1.5f); break;
                 }
             }
         });
@@ -177,8 +178,8 @@ public class Main {
             if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
                 if (glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
                     // for translating the plane - for some reason this doesn't act like i want it to
-//                    translationX += 0.0001 * (x - mouseX);
-//                    translationY -= 0.0001 * (y - mouseY);
+                    translationX += 0.0001 * (x - mouseX);
+                    translationY -= 0.0001 * (y - mouseY);
                     return;
 
                 } else if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
@@ -235,17 +236,42 @@ public class Main {
      */
 
     private static void loadTestMolecule() {
-        float r2 = (float)Math.sqrt(2);
-
-        molecule = new Molecule(new float[]{0f, 0f, 0f});
-        molecule.addAtoms(new float[][]{{0f, -r2, -2f}, {0f, -r2, 2f}, {2f, r2, 0f}, {-2f, r2, 0f}}, new int[]{1, 0, 0}); // 4 H
         for (Atom a : molecule.getAtoms()) {
-            a.setColor(new float[]{1f, 1f, 1f}).setShadedColor(0).setRadius(0.5f);
+            com.bramerlabs.support.Vector3f p = new com.bramerlabs.support.Vector3f(a.getPosition().x, a.getPosition().y, a.getPosition().z);
+            Color color = p.equals(new com.bramerlabs.support.Vector3f(0, 0, 0)) ? Color.DARK_GRAY : Color.WHITE;
+            drawSphere(new Sphere(p, 0.5f, color, 4));
         }
-        molecule.addAtom(new Atom(new float[]{ 0f,  0f,  0f}, new int[]{1}).setColor(new float[]{0f, 0f, 1f}).setShadedColor(0).setRadius(0.75f)); // C
-
         for (Atom a : molecule.getAtoms()) {
-            drawSphere(a.getSphere());
+            Color color = Color.LIGHT_GRAY;
+            com.bramerlabs.support.Vector3f p = new com.bramerlabs.support.Vector3f(a.getPosition().x, a.getPosition().y, a.getPosition().z);
+            if (!p.equals(new com.bramerlabs.support.Vector3f(0, 0, 0))) {
+//                drawCylinder(new Cylinder(new com.bramerlabs.support.Vector3f(p).subtract(new com.bramerlabs.support.Vector3f(0, 0, 0.2f)), new com.bramerlabs.support.Vector3f(0, 0, -0.2f), 0.1f, color));
+//                drawCylinder(new Cylinder(new com.bramerlabs.support.Vector3f(p).add(new com.bramerlabs.support.Vector3f(0, 0, 0.2f)), new com.bramerlabs.support.Vector3f(0, 0, 0.2f), 0.1f, color));
+                drawCylinder(new Cylinder(p, new com.bramerlabs.support.Vector3f(0, 0, 0), 0.1f, color));
+            }
+        }
+        //GLFW.glfwSetWindowShouldClose(window, true);
+    }
+
+    private static void drawCylinder(Cylinder cylinder) {
+        for (Triangle t : cylinder.getFaces()) {
+            glBegin(GL_TRIANGLES);
+            glColor3f(t.getColor().x, t.getColor().y, t.getColor().z);
+            glVertex3f(t.getV1().x, t.getV1().y, t.getV1().z);
+            glVertex3f(t.getV2().x, t.getV2().y, t.getV2().z);
+            glVertex3f(t.getV3().x, t.getV3().y, t.getV3().z);
+            glEnd();
+        }
+    }
+
+    private static void drawSphere(Sphere sphere) {
+        for (Triangle t : sphere.getFaces()) {
+            glBegin(GL_TRIANGLES);
+            glColor3f(t.getColor().x, t.getColor().y, t.getColor().z);
+            glVertex3f(t.getV1().x, t.getV1().y, t.getV1().z);
+            glVertex3f(t.getV2().x, t.getV2().y, t.getV2().z);
+            glVertex3f(t.getV3().x, t.getV3().y, t.getV3().z);
+            glEnd();
         }
     }
 

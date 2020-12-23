@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="Sphere">
+  <library name="Molecule Structure">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/libs/sphere/Sphere.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/Molecule Structure.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
