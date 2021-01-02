@@ -12,31 +12,29 @@ public class Mesh {
     private Vertex[] vertices;
     private int[] indices;
 
-    // the material this mesh is made of
-    private Material material;
-
     // vertex array object
     private int vao;
 
     // position buffer object
     private int pbo;
 
+    // color buffer object
+    private int cbo;
+
     // index buffer object
     private int ibo;
 
-    // texture buffer object
-    private int tbo;
+    // normal vector buffer object
+    private int nbo;
 
     /**
      * default constructor for specified vertices and indices, and specified material
      * @param vertices - the vertices of this mesh
      * @param indices - the indices of this mesh
-     * @param material - the material of this mesh
      */
-    public Mesh(Vertex[] vertices, int[] indices, Material material) {
+    public Mesh(Vertex[] vertices, int[] indices) {
         this.vertices = vertices;
         this.indices = indices;
-        this.material = material;
     }
 
     /**
@@ -49,10 +47,9 @@ public class Mesh {
 
         // create the buffers
         makePositionBuffer();
-        makeTextureBuffer();
+        makeColorBuffer();
+        makeNormalBuffer();
         makeIndexBuffer();
-
-        material.create();
     }
 
     /**
@@ -80,26 +77,35 @@ public class Mesh {
     }
 
     /**
-     * helper method to create the texture buffer object
+     * helper method to create the color buffer object
      */
-    private void makeTextureBuffer() {
-        // preallocate memory
-        FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
-
-        // create a new temp array to store texture coord data
-        float[] textureData = new float[vertices.length * 2];
-
-        // add all the texture coord data to the temp array
+    public void makeColorBuffer() {
+        FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
+        float[] colorData = new float[vertices.length * 3];
         for (int i = 0; i < vertices.length; i++) {
-            textureData[i * 2    ] = vertices[i].getTextureCoord().getX();
-            textureData[i * 2 + 1] = vertices[i].getTextureCoord().getY();
+            colorData[i * 3] = vertices[i].getColor().getX();
+            colorData[i * 3 + 1] = vertices[i].getColor().getY();
+            colorData[i * 3 + 2] = vertices[i].getColor().getZ();
         }
+        colorBuffer.put(colorData).flip();
 
-        // flip the data to make it handleable by OpenGL
-        textureBuffer.put(textureData).flip();
+        cbo = storeData(colorBuffer, 1, 3);
+    }
 
-        // store the texture coord data in the texture buffer object
-        tbo = storeData(textureBuffer, 1, 2);
+    /**
+     * helper method to create a buffer object for the vector normal to the surface at every vertex
+     */
+    public void makeNormalBuffer() {
+        FloatBuffer normalBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
+        float[] normalData = new float[vertices.length * 3];
+        for (int i = 0; i < vertices.length; i++) {
+            normalData[i * 3] = vertices[i].getNormal().getX();
+            normalData[i * 3 + 1] = vertices[i].getNormal().getY();
+            normalData[i * 3 + 2] = vertices[i].getNormal().getZ();
+        }
+        normalBuffer.put(normalData).flip();
+
+        nbo = storeData(normalBuffer, 2, 3);
     }
 
     /**
@@ -169,6 +175,14 @@ public class Mesh {
 
     /**
      * getter method
+     * @return - the normal vector buffer object
+     */
+    public int getNBO() {
+        return this.nbo;
+    }
+
+    /**
+     * getter method
      * @return - the vertex array object
      */
     public int getVAO() {
@@ -185,26 +199,18 @@ public class Mesh {
 
     /**
      * getter method
+     * @return - the color buffer object
+     */
+    public int getCBO() {
+        return this.cbo;
+    }
+
+    /**
+     * getter method
      * @return - the index buffer object
      */
     public int getIBO() {
         return this.ibo;
-    }
-
-    /**
-     * getter method
-     * @return - the texture buffer object
-     */
-    public int getTBO() {
-        return this.tbo;
-    }
-
-    /**
-     * getter method
-     * @return - the material of this mesh
-     */
-    public Material getMaterial() {
-        return this.material;
     }
 
     /**
@@ -213,14 +219,11 @@ public class Mesh {
     public void destroy() {
         // delete the buffers
         GL15.glDeleteBuffers(pbo);
-        GL15.glDeleteBuffers(tbo);
+        GL15.glDeleteBuffers(cbo);
         GL15.glDeleteBuffers(ibo);
 
         // delete the vertex array
         GL30.glDeleteVertexArrays(vao);
-
-        // release the material
-        material.destroy();
     }
 
 }

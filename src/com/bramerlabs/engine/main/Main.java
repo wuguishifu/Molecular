@@ -6,7 +6,7 @@ import com.bramerlabs.engine.io.window.Input;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.Camera;
-import com.bramerlabs.engine.objects.game_objects.Cube;
+import com.bramerlabs.engine.objects.game_objects.Sphere;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -26,10 +26,14 @@ public class Main implements Runnable {
     private Input input = new Input();
 
     // test game objects
-    private ArrayList<Cube> cubes = new ArrayList<>();
+    private ArrayList<Sphere> spheres = new ArrayList<>();
 
     // the camera
     public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input);
+
+    // the position of the light
+    private Vector3f lightPosition = new Vector3f(1, 0, 0); // start at cos(0), sin(0)
+    private int cycleCount = 0;
 
     /**
      * main method
@@ -62,9 +66,9 @@ public class Main implements Runnable {
 
         // create game objects here
         String dPath = "/textures/3ttest.png";
-        cubes.add(new Cube(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), "/textures/3ttest.png"));
-        for (Cube cube : cubes) {
-            cube.createMesh();
+        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0.5f, 0, 1), 1.0f));
+        for (Sphere sphere : spheres) {
+            sphere.createMesh();
         }
 
         // create the shader
@@ -85,8 +89,8 @@ public class Main implements Runnable {
         window.destroy();
 
         // release the game objects
-        for (Cube cube : cubes) {
-            cube.destroy();
+        for (Sphere sphere : spheres) {
+            sphere.destroy();
         }
 
         // release the shader
@@ -97,7 +101,7 @@ public class Main implements Runnable {
      * begins the thread
      */
     public void start() {
-        Thread main = new Thread(this, "Game Buddies Game Jam!");
+        Thread main = new Thread(this, "Molecular");
         main.start();
     }
 
@@ -110,16 +114,26 @@ public class Main implements Runnable {
         window.update();
 
         // update the camera
-        camera.update(cubes.get(0));
+        camera.update(spheres.get(0));
     }
 
     /**
      * render the game objects
      */
     private void render() {
+
+        // update the light position
+        if (cycleCount > 360) {
+            cycleCount = 0;
+        }
+        float lightX = (float) (Math.cos(Math.toRadians(cycleCount))) * 2;
+        float lightZ = (float) (Math.sin(Math.toRadians(cycleCount))) * 2;
+        lightPosition.set(lightX, 0f, lightZ);
+        cycleCount++;
+
         // render the game objects
-        for (Cube cube : cubes) {
-            renderer.renderMesh(cube, camera);
+        for (Sphere sphere : spheres) {
+            renderer.renderMesh(sphere, camera, lightPosition);
         }
 
         // must be called at the end
