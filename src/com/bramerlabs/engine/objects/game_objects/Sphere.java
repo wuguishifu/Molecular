@@ -58,19 +58,21 @@ public class Sphere extends GameObject {
         for (int i = 0; i < triangles.size(); i++) {
             Triangle t = triangles.get(i);
             vertices[3 * i] = new Vertex(t.getV1(), color, Vector3f.subtract(t.getV1(), position));
-            vertices[3 * i + 1] = new Vertex(t.getV1(), color, Vector3f.subtract(t.getV2(), position));
-            vertices[3 * i + 2] = new Vertex(t.getV1(), color, Vector3f.subtract(t.getV3(), position));
+            vertices[3 * i + 1] = new Vertex(t.getV2(), color, Vector3f.subtract(t.getV2(), position));
+            vertices[3 * i + 2] = new Vertex(t.getV3(), color, Vector3f.subtract(t.getV3(), position));
         }
 
         int[] indices = new int[triangles.size() * 3];
         for (int i = 0; i < triangles.size() * 3; i++) {
             indices[i] = i;
-            System.out.println(i);
+        }
+
+        for (int i = 0; i < triangles.size()*3; i++) {
+            System.out.println(indices[i] + ", " + vertices[i].getPosition());
         }
 
         // make a new mesh
         return new Mesh(vertices, indices);
-
     }
 
     /**
@@ -135,9 +137,9 @@ public class Sphere extends GameObject {
         if (depth == 0) {
 
             // create new vectors to modify
-            Vector3f v1p = Vector3f.add(v1, position);
-            Vector3f v2p = Vector3f.add(v2, position);
-            Vector3f v3p = Vector3f.add(v3, position);
+            Vector3f v1p = Vector3f.add(Vector3f.normalize(v1, radius), position);
+            Vector3f v2p = Vector3f.add(Vector3f.normalize(v2, radius), position);
+            Vector3f v3p = Vector3f.add(Vector3f.normalize(v3, radius), position);
 
             faces.add(new Triangle(v1p, v2p, v3p));
             return faces;
@@ -145,14 +147,9 @@ public class Sphere extends GameObject {
 
 
         // create new vertices for each face
-        Vector3f v12 = new Vector3f(v1.getX() + v2.getX(), v1.getY() + v2.getY(), v1.getZ() + v2.getZ());
-        Vector3f v23 = new Vector3f(v2.getX() + v3.getX(), v2.getY() + v3.getY(), v2.getZ() + v3.getZ());
-        Vector3f v31 = new Vector3f(v3.getX() + v1.getX(), v3.getY() + v1.getY(), v3.getZ() + v1.getZ());
-
-        // normalize each vertex to retain a certain radius
-        v12 = Vector3f.normalize(v12, radius);
-        v23 = Vector3f.normalize(v23, radius);
-        v31 = Vector3f.normalize(v31, radius);
+        Vector3f v12 = Vector3f.normalize(new Vector3f(v1.getX() + v2.getX(), v1.getY() + v2.getY(), v1.getZ() + v2.getZ()), radius);
+        Vector3f v23 = Vector3f.normalize(new Vector3f(v2.getX() + v3.getX(), v2.getY() + v3.getY(), v2.getZ() + v3.getZ()), radius);
+        Vector3f v31 = Vector3f.normalize(new Vector3f(v3.getX() + v1.getX(), v3.getY() + v1.getY(), v3.getZ() + v1.getZ()), radius);
 
         // recursive part
         faces.addAll(subdivide(v1, v12, v31, depth-1, position, radius));

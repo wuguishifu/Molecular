@@ -32,7 +32,7 @@ public class Main implements Runnable {
     public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input);
 
     // the position of the light
-    private Vector3f lightPosition = new Vector3f(1, 0, 0); // start at cos(0), sin(0)
+    private Vector3f lightPosition = new Vector3f(2, 1, 1); // start at cos(0), sin(0)
     private int cycleCount = 0;
 
     /**
@@ -66,7 +66,7 @@ public class Main implements Runnable {
 
         // create game objects here
         String dPath = "/textures/3ttest.png";
-        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0.5f, 0, 1), 1.0f));
+        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0.5f, 0, 0.5f), 0.5f));
         for (Sphere sphere : spheres) {
             sphere.createMesh();
         }
@@ -121,15 +121,6 @@ public class Main implements Runnable {
      * render the game objects
      */
     private void render() {
-
-        // update the light position
-        if (cycleCount > 360) {
-            cycleCount = 0;
-        }
-        float lightX = (float) (Math.cos(Math.toRadians(cycleCount))) * 2;
-        float lightZ = (float) (Math.sin(Math.toRadians(cycleCount))) * 2;
-        lightPosition.set(lightX, 0f, lightZ);
-        cycleCount++;
 
         // render the game objects
         for (Sphere sphere : spheres) {
