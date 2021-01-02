@@ -32,8 +32,7 @@ public class Main implements Runnable {
     public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input);
 
     // the position of the light
-    private Vector3f lightPosition = new Vector3f(2, 1, 1); // start at cos(0), sin(0)
-    private int cycleCount = 0;
+    private Vector3f lightPosition = new Vector3f(0, 100, 0);
 
     /**
      * main method
@@ -66,7 +65,11 @@ public class Main implements Runnable {
 
         // create game objects here
         String dPath = "/textures/3ttest.png";
-        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0.5f, 0, 0.5f), 0.5f));
+        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0.5f, 0, 0.5f), 0.3f));
+        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, 0.5f), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0.5f, 0.5f), 0.2f));
+        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, -0.5f), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0.5f, 0.5f), 0.2f));
+        spheres.add(Sphere.makeSphere(new Vector3f(0.5f, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0.5f, 0.5f), 0.2f));
+        spheres.add(Sphere.makeSphere(new Vector3f(-0.5f, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0.5f, 0.5f), 0.2f));
         for (Sphere sphere : spheres) {
             sphere.createMesh();
         }
