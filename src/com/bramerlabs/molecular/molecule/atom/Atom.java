@@ -1,5 +1,6 @@
 package com.bramerlabs.molecular.molecule.atom;
 
+import com.bramerlabs.engine.collision_detection.SphericalHitbox;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.shapes.Sphere;
 
@@ -17,11 +18,15 @@ public class Atom {
     // the sphere used for rendering the atom
     private Sphere sphere;
 
+    // the hitbox of this atom
+    private SphericalHitbox hitbox;
+
     /**
      * default constructor
      */
     public Atom() {
         makeSphere();
+        makeHitbox();
     }
 
     /**
@@ -31,6 +36,7 @@ public class Atom {
     public Atom(Vector3f position) {
         this.position = position;
         makeSphere();
+        makeHitbox();
     }
 
     /**
@@ -42,6 +48,7 @@ public class Atom {
         this.position = position;
         this.radius = radius;
         makeSphere();
+        makeHitbox();
     }
 
     /**
@@ -55,6 +62,14 @@ public class Atom {
         this.radius = radius;
         this.color = color;
         makeSphere();
+        makeHitbox();
+    }
+
+    /**
+     * makes the hitbox for this atom
+     */
+    private void makeHitbox() {
+        hitbox = new SphericalHitbox(position, radius, this);
     }
 
     /**
@@ -71,6 +86,14 @@ public class Atom {
      */
     public Sphere getSphere() {
         return sphere;
+    }
+
+    /**
+     * getter method
+     * @return - the hitbox
+     */
+    public SphericalHitbox getHitbox() {
+        return this.hitbox;
     }
 
     /**

@@ -1,6 +1,6 @@
-package com.bramerlabs.engine.objects;
+package com.bramerlabs.engine.collision_detection;
 
-public class Hitbox {
+public class RectangularHitbox {
 
     // the positions of opposite maxima corners
     public float xMin, xMax, yMin, yMax, zMin, zMax;
@@ -35,7 +35,7 @@ public class Hitbox {
      * @param zMin - the minimum z value of this hitbox
      * @param zMax - the maximum z value of this hitbox
      */
-    public Hitbox(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax) {
+    public RectangularHitbox(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax) {
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
@@ -67,7 +67,7 @@ public class Hitbox {
      * @param other - the other hitbox
      * @return - true if the two hitboxes intersect
      */
-    public boolean intersects(Hitbox other) {
+    public boolean intersects(RectangularHitbox other) {
         return (other.xMax > xMin && other.xMin < xMax) &&
                 (other.yMax > yMin && other.yMin < yMax) &&
                 (other.zMax > zMin && other.zMin < zMax);
@@ -79,7 +79,7 @@ public class Hitbox {
      * @param flags - flags regarding hitbox detection
      * @return - true if the two hitboxes intersect
      */
-    public boolean intersects(Hitbox other, int flags) {
+    public boolean intersects(RectangularHitbox other, int flags) {
         if (flags == IGNORE_FLAGS) {
             return intersects(other);
         } else {

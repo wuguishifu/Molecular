@@ -31,11 +31,10 @@ public class Benzene extends Molecule {
     public Benzene(Vector3f position, float bondLength) {
         super(position, new ArrayList<>(), new ArrayList<>());
 
-        // create the atoms
+        // add the carbon atoms and bonds
         for (float[] p : positions) {
             this.addAtom(new Atom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength), position), 2*atomicRadius/3, c1));
         }
-
         this.addBond(new Bond(this.getAtoms().get(1), this.getAtoms().get(0), 1));
         this.addBond(new Bond(this.getAtoms().get(2), this.getAtoms().get(1), 2));
         this.addBond(new Bond(this.getAtoms().get(3), this.getAtoms().get(2), 1));
@@ -43,10 +42,10 @@ public class Benzene extends Molecule {
         this.addBond(new Bond(this.getAtoms().get(5), this.getAtoms().get(4), 1));
         this.addBond(new Bond(this.getAtoms().get(0), this.getAtoms().get(5), 2));
 
+        // add the hydrogen atoms and bondsT
         for (float[] p : positions) {
             this.addAtom(new Atom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength * 2), position), atomicRadius/2, c2));
         }
-
         this.addBond(new Bond(this.getAtoms().get(0), this.getAtoms().get(6), 1));
         this.addBond(new Bond(this.getAtoms().get(1), this.getAtoms().get(7), 1));
         this.addBond(new Bond(this.getAtoms().get(2), this.getAtoms().get(8), 1));
@@ -55,5 +54,4 @@ public class Benzene extends Molecule {
         this.addBond(new Bond(this.getAtoms().get(5), this.getAtoms().get(11), 1));
 
     }
-
 }

@@ -1,7 +1,9 @@
 package com.bramerlabs.engine.objects;
 
 import com.bramerlabs.engine.io.window.Input;
+import com.bramerlabs.engine.math.Matrix4f;
 import com.bramerlabs.engine.math.Vector3f;
+import com.bramerlabs.molecular.molecule.Molecule;
 import org.lwjgl.glfw.GLFW;
 
 public class Camera {
@@ -28,6 +30,15 @@ public class Camera {
     // the position of the scroll wheel
     private double oldScrollX = 0, oldScrollY = 0, newScrollX = 0, newScrollY = 0;
 
+    // the window handle
+    private long windowHandle;
+
+    // the projection and inverse projection matrices
+    private Matrix4f invProj, proj;
+
+    // the molecule in the scene
+    private Molecule molecule;
+
     /**
      * default constructor for specified position, rotation, and input object
      * @param position - the position of the camera object
@@ -38,6 +49,38 @@ public class Camera {
         this.position = position;
         this.rotation = rotation;
         this.input = input;
+    }
+
+    /**
+     * sets the window handle
+     * @param windowHandle - the window handle
+     */
+    public void setWindowHandle(long windowHandle) {
+        this.windowHandle = windowHandle;
+    }
+
+    /**
+     * sets the inverse projection matrix
+     * @param m - the matrix
+     */
+    public void setInvProj(Matrix4f m) {
+        this.invProj = m;
+    }
+
+    /**
+     * sets the projection matrix
+     * @param m - the matrix
+     */
+    public void setProj(Matrix4f m) {
+        this.proj = m;
+    }
+
+    /**
+     * sets the molecule
+     * @param m - the molecule
+     */
+    public void setMolecule(Molecule m) {
+        this.molecule = m;
     }
 
     /**
@@ -124,6 +167,85 @@ public class Camera {
 
         // set the new camera rotation based on the object
         this.rotation.set(verticalAngle, -horizontalAngle, 0);
+
+//        // handle ray casting
+//        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
+//            FloatBuffer z = BufferUtils.createFloatBuffer(1);
+//            GL11.glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, z);
+//
+//            FloatBuffer model = BufferUtils.createFloatBuffer(16);
+//            FloatBuffer projection = BufferUtils.createFloatBuffer(16);
+//            IntBuffer viewport = BufferUtils.createIntBuffer(16);
+//
+//            model.put(GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX)).flip();
+//            projection.put(GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX)).flip();
+//            viewport.put(GL11.glGetInteger(GL11.GL_VIEWPORT)).flip();
+//
+//            FloatBuffer objPos = BufferUtils.createFloatBuffer(3);
+//
+//            for (Atom a : molecule.getAtoms()) {
+//                FloatBuffer modelMatrix = Matrix4f.toFloatBuffer(Matrix4f.transform(a.getSphere().getPosition(), a.getSphere().getRotation(), a.getSphere().getScale()));
+//                if (GLU.gluUnProject(Mouse.getX(), Mouse.getY(), z.get(0), modelMatrix, projection, viewport, objPos)) {
+//                    System.out.println(objPos.get(0) + ", " + objPos.get(1) + ", " + objPos.get(2));
+//                }
+//            }
+
+//        }
+
+//        // handle ray casting
+//        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
+
+//            // determine the width and height of the screen
+//            IntBuffer w = BufferUtils.createIntBuffer(1);
+//            IntBuffer h = BufferUtils.createIntBuffer(1);
+//            GLFW.glfwGetWindowSize(windowHandle, w, h);
+//            int windowWidth = w.get(0);
+//            int windowHeight = h.get(0);
+//
+//            // convert from viewport space to normalized space
+//            float aspectRatio = windowWidth/(float)windowHeight;
+//            float screenSpaceX = (float) (2.0 * newMouseX / windowWidth - 1.0);
+//            float screenSpaceY = (float) (1.0 - 2.0 * newMouseY / windowHeight);
+//            float screenSpaceZ = -1; // the furthest possible z position
+//            float screenSpaceW = 1;
+//
+//            // multiply by the inverse projection matrix
+//            float[] invProjVec = Matrix4f.multiplyVector(screenSpaceX, screenSpaceY, screenSpaceZ, screenSpaceW, invProj);
+//
+//            // make inverse view matrix
+//            Matrix4f view = Matrix4f.view(this.position, this.rotation);
+//            Matrix4f invView = Matrix4f.invert(view);
+//
+//            // multiply by the inverse view matrix
+//            float[] invViewVec = Matrix4f.multiplyVector(invProjVec, invView);
+//
+//            // set the w to 0 and z to -1
+//            //invViewVec[2] = -1;
+//            invViewVec[3] = 0;
+//
+//            System.out.println(invViewVec[0] + ", " + invViewVec[1] + ", " + invViewVec[2] + ", " + invViewVec[3]);
+//
+//            float length = 0;
+//            Vector3f ray = new Vector3f(invViewVec[0], invViewVec[1], invViewVec[2]);
+//            ray = Vector3f.normalize(ray, 0.1f);
+//            Vector3f curRay = Vector3f.add(new Vector3f(ray), position);
+//            while (length < 20f) {
+//                curRay = Vector3f.add(curRay, ray);
+//                Atom a = null;
+//                for (Atom atom : molecule.getAtoms()) {
+//                    if (atom.getHitbox().intersects(curRay)) {
+//                        a = atom;
+//                        break;
+//                    }
+//                }
+//                if (a != null) {
+//                    molecule.removeAtom(a);
+//                    break;
+//                }
+//                length = Vector3f.length(Vector3f.subtract(curRay, position));
+//            }
+//        }
+
     }
 
     /**

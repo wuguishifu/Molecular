@@ -1,5 +1,8 @@
 package com.bramerlabs.engine.math;
 
+import org.lwjgl.system.MemoryUtil;
+
+import java.nio.FloatBuffer;
 import java.util.Arrays;
 
 public class Matrix4f {
@@ -140,6 +143,122 @@ public class Matrix4f {
     }
 
     /**
+     * calculates the inverse projection matrix based off of a certain perspective - to use with raycasting
+     * @param fov - the field of view
+     * @param aspect - the aspect ratio
+     * @param near - the nearest viewable distance
+     * @param far - the farthest viewable distance
+     * @return - the inverse projection matrix
+     */
+    public static Matrix4f inverseProjection(float fov, float aspect, float near, float far) {
+        Matrix4f result = Matrix4f.identity();
+        Matrix4f p = projection(fov, aspect, near, far);
+
+        float det = p.get(0, 0) * p.get(1, 1) * (p.get(2, 2) * p.get(3, 3) - p.get(2, 3) * p.get(3, 2));
+        if (det == 0) {
+            return result;
+        }
+
+        float invDet = 1/det;
+
+        float inv00 = invDet * p.get(1, 1) * (p.get(2, 2) * p.get(3, 3) - p.get(2, 3) * p.get(3, 2));
+        float inv11 = invDet * p.get(0, 0) * (p.get(2, 2) * p.get(3, 3) - p.get(2, 3) * p.get(3, 2));
+        float inv22 = invDet * p.get(0, 0) * p.get(1, 1) * p.get(3, 3);
+        float inv23 = invDet * p.get(0, 0) * p.get(1, 1) * p.get(2, 3) * -1;
+        float inv32 = invDet * p.get(0, 0) * p.get(1, 1) * p.get(3, 2) * -1;
+        float inv33 = invDet * p.get(0, 0) * p.get(1, 1) * p.get(2, 2);
+
+        result.set(0, 0, inv00);
+        result.set(1, 1, inv11);
+        result.set(2, 2, inv22);
+        result.set(2, 3, inv23);
+        result.set(3, 2, inv32);
+        result.set(3, 3, inv33);
+
+        return result;
+    }
+
+    /**
+     * inverts a 4x4 matrix
+     * @param m - the matrix to be inverted
+     * @return - the inverse matrix
+     */
+    public static Matrix4f invert(Matrix4f m) {
+        Matrix4f result = Matrix4f.identity();
+        float A2323 = m.get(2, 2) * m.get(3, 3) - m.get(2, 3) * m.get(3, 2);
+        float A1323 = m.get(2, 1) * m.get(3, 3) - m.get(2, 3) * m.get(3, 1);
+        float A1223 = m.get(2, 1) * m.get(3, 2) - m.get(2, 2) * m.get(3, 1);
+        float A0323 = m.get(2, 0) * m.get(3, 3) - m.get(2, 3) * m.get(3, 0);
+        float A0223 = m.get(2, 0) * m.get(3, 2) - m.get(2, 2) * m.get(3, 0);
+        float A0123 = m.get(2, 0) * m.get(3, 1) - m.get(2, 1) * m.get(3, 0);
+        float A2313 = m.get(1, 2) * m.get(3, 3) - m.get(1, 3) * m.get(3, 2);
+        float A1313 = m.get(1, 1) * m.get(3, 3) - m.get(1, 3) * m.get(3, 1);
+        float A1213 = m.get(1, 1) * m.get(3, 2) - m.get(1, 2) * m.get(3, 1);
+        float A2312 = m.get(1, 2) * m.get(2, 3) - m.get(1, 3) * m.get(2, 2);
+        float A1312 = m.get(1, 1) * m.get(2, 3) - m.get(1, 3) * m.get(2, 1);
+        float A1212 = m.get(1, 1) * m.get(2, 2) - m.get(1, 2) * m.get(2, 1);
+        float A0313 = m.get(1, 0) * m.get(3, 3) - m.get(1, 3) * m.get(3, 0);
+        float A0213 = m.get(1, 0) * m.get(3, 2) - m.get(1, 2) * m.get(3, 0);
+        float A0312 = m.get(1, 0) * m.get(2, 3) - m.get(1, 3) * m.get(2, 0);
+        float A0212 = m.get(1, 0) * m.get(2, 2) - m.get(1, 2) * m.get(2, 0);
+        float A0113 = m.get(1, 0) * m.get(3, 1) - m.get(1, 1) * m.get(3, 0);
+        float A0112 = m.get(1, 0) * m.get(2, 1) - m.get(1, 1) * m.get(2, 0);
+
+        float det = m.get(0, 0) * ( m.get(1, 1) * A2323 - m.get(1, 2) * A1323 + m.get(1, 3) * A1223)
+                  - m.get(0, 1) * ( m.get(1, 0) * A2323 - m.get(1, 2) * A0323 + m.get(1, 3) * A0223)
+                  + m.get(0, 2) * ( m.get(1, 0) * A1323 - m.get(1, 1) * A0323 + m.get(1, 3) * A0123)
+                  - m.get(0, 3) * ( m.get(1, 0) * A1223 - m.get(1, 1) * A0223 + m.get(1, 2) * A0123);
+        det = 1 / det;
+
+        result.set(0, 0, det *  (m.get(1, 1) * A2323 - m.get(1, 2) * A1323 + m.get(1, 3) * A1223));
+        result.set(0, 1, det * -(m.get(0, 1) * A2323 - m.get(0, 2) * A1323 + m.get(0, 3) * A1223));
+        result.set(0, 2, det *  (m.get(0, 1) * A2313 - m.get(0, 2) * A1313 + m.get(0, 3) * A1213));
+        result.set(0, 3, det * -(m.get(0, 1) * A2312 - m.get(0, 2) * A1312 + m.get(0, 3) * A1212));
+        result.set(1, 0, det * -(m.get(1, 0) * A2323 - m.get(1, 2) * A0323 + m.get(1, 3) * A0223));
+        result.set(1, 1, det *  (m.get(0, 0) * A2323 - m.get(0, 2) * A0323 + m.get(0, 3) * A0223));
+        result.set(1, 2, det * -(m.get(0, 0) * A2313 - m.get(0, 2) * A0313 + m.get(0, 3) * A0213));
+        result.set(1, 3, det *  (m.get(0, 0) * A2312 - m.get(0, 2) * A0312 + m.get(0, 3) * A0212));
+        result.set(2, 0, det *  (m.get(1, 0) * A1323 - m.get(1, 1) * A0323 + m.get(1, 3) * A0123));
+        result.set(2, 1, det * -(m.get(0, 0) * A1323 - m.get(0, 1) * A0323 + m.get(0, 3) * A0123));
+        result.set(2, 2, det *  (m.get(0, 0) * A1313 - m.get(0, 1) * A0313 + m.get(0, 3) * A0113));
+        result.set(2, 3, det * -(m.get(0, 0) * A1312 - m.get(0, 1) * A0312 + m.get(0, 3) * A0112));
+        result.set(3, 0, det * -(m.get(1, 0) * A1223 - m.get(1, 1) * A0223 + m.get(1, 2) * A0123));
+        result.set(3, 1, det *  (m.get(0, 0) * A1223 - m.get(0, 1) * A0223 + m.get(0, 2) * A0123));
+        result.set(3, 2, det * -(m.get(0, 0) * A1213 - m.get(0, 1) * A0213 + m.get(0, 2) * A0113));
+        result.set(3, 3, det *  (m.get(0, 0) * A1212 - m.get(0, 1) * A0212 + m.get(0, 2) * A0112));
+
+        return result;
+    }
+
+    /**
+     * multiplies a 4-vector by a 4x4 matrix
+     * @param e0 - val 1 in vector
+     * @param e1 - val 2 in vector
+     * @param e2 - val 3 in vector
+     * @param e3 - val 4 in vector
+     * @param m - the matrix
+     * @return - a 4-float array containing the resultant vector
+     */
+    public static float[] multiplyVector(float e0, float e1, float e2, float e3, Matrix4f m) {
+        return new float[]{
+            e0 * m.get(0, 0) + e1 * m.get(0, 1) + e2 * m.get(0, 2) + e3 * m.get(0, 3),
+            e0 * m.get(1, 0) + e1 * m.get(1, 1) + e2 * m.get(1, 2) + e3 * m.get(1, 3),
+            e0 * m.get(2, 0) + e1 * m.get(2, 1) + e2 * m.get(2, 2) + e3 * m.get(2, 3),
+            e0 * m.get(3, 0) + e1 * m.get(3, 1) + e2 * m.get(3, 2) + e3 * m.get(3, 3),
+        };
+    }
+
+    /**
+     * multiplies a 4-vector by a 4x4 matrix
+     * @param v - the 4-vector
+     * @param m - the 4x4 matrix
+     * @return - a 4-float array containing the resultant vector
+     */
+    public static float[] multiplyVector(float[] v, Matrix4f m) {
+        return multiplyVector(v[0], v[1], v[2], v[3], m);
+    }
+
+    /**
      * create a view matrix for a specified position and rotation
      * @param position - the position of the viewer
      * @param rotation - the rotation of the viewer
@@ -210,6 +329,21 @@ public class Matrix4f {
     }
 
     /**
+     * converts the matrix to a float buffer
+     * @param value - the matrix to be converted
+     * @return - a float buffer object
+     */
+    public static FloatBuffer toFloatBuffer(Matrix4f value) {
+        // preallocate memory for the float values
+        FloatBuffer matrix = MemoryUtil.memAllocFloat(Matrix4f.SIZE * Matrix4f.SIZE);
+
+        // put the values flipped of the matrix into the float buffer
+        matrix.put(value.getAll()).flip();
+
+        return matrix;
+    }
+
+    /**
      * determines if two matrices are exactly identical
      * @param o - the other object
      * @return - true if both objects are matrices that are exactly equal
@@ -256,5 +390,17 @@ public class Matrix4f {
     @Override
     public int hashCode() {
         return Arrays.hashCode(elements);
+    }
+
+    /**
+     * generates a string version of this matrix
+     * @return - a string
+     */
+    @Override
+    public String toString() {
+        return "|" + get(0, 0) + "  " + get(0, 1) + "  " + get(0, 2) + "  " + get(0, 3) + "|\n" +
+               "|" + get(1, 0) + "  " + get(1, 1) + "  " + get(1, 2) + "  " + get(1, 3) + "|\n" +
+               "|" + get(2, 0) + "  " + get(2, 1) + "  " + get(2, 2) + "  " + get(2, 3) + "|\n" +
+               "|" + get(3, 0) + "  " + get(3, 1) + "  " + get(3, 2) + "  " + get(3, 3) + "|\n";
     }
 }

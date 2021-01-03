@@ -54,6 +54,9 @@ public class Window {
     // the projection matrix
     private Matrix4f projection;
 
+    // the inverse projection matrix
+    private Matrix4f invProj;
+
     /**
      * constructor for specified input
      * @param input - the input for handling callbacks in this window
@@ -71,7 +74,8 @@ public class Window {
         this.height = defaultHeight;
 
         // create a projection matrix
-        projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 1000f);
+        projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 100f);
+        invProj = Matrix4f.inverseProjection(70.0f, (width/(float)height), 0.1f, 100f);
 
         this.input = input;
     }
@@ -312,5 +316,13 @@ public class Window {
      */
     public Matrix4f getProjectionMatrix() {
         return this.projection;
+    }
+
+    /**
+     * getter method
+     * @return - the inverse projection matrix
+     */
+    public Matrix4f getInvProjectionMatrix() {
+        return this.invProj;
     }
 }
