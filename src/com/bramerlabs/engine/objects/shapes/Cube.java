@@ -1,11 +1,11 @@
-package com.bramerlabs.engine.objects.game_objects;
+package com.bramerlabs.engine.objects.shapes;
 
 import com.bramerlabs.engine.graphics.Mesh;
 import com.bramerlabs.engine.graphics.Vertex;
 import com.bramerlabs.engine.math.Vector3f;
-import com.bramerlabs.engine.objects.GameObject;
+import com.bramerlabs.engine.objects.RenderObject;
 
-public class Cube extends GameObject {
+public class Cube extends RenderObject {
 
     /**
      *
