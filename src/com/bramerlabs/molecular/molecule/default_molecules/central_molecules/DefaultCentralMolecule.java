@@ -1,4 +1,4 @@
-package com.bramerlabs.molecular.molecule.default_molecule.central_molecules;
+package com.bramerlabs.molecular.molecule.default_molecules.central_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.Molecule;
@@ -13,7 +13,7 @@ public class DefaultCentralMolecule extends Molecule {
     private static final float atomicRadius = 1f;
 
     // the color of the atoms in this molecule
-    private static Vector3f c1 = new Vector3f(0.2f); // center atom
+    private static Vector3f c1 = new Vector3f(0.4f); // center atom
     private static Vector3f c2 = new Vector3f(0.8f); // auxiliary atoms
 
     // vectors representing the direction of the bonds

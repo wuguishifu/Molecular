@@ -10,8 +10,7 @@ import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecule.Benzene;
-import org.lwjgl.glfw.GLFW;
+import com.bramerlabs.molecular.molecule.default_molecules.ring_molecules.Benzaldehyde;
 
 public class Main implements Runnable {
 
@@ -52,7 +51,6 @@ public class Main implements Runnable {
         while (!window.shouldClose()) {
             update();
             render();
-            if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) window.mouseState(true);
         }
         close();
     }
@@ -135,6 +133,6 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecule() {
-        molecule = new Benzene(new Vector3f(0, 0, 0), 2f);
+        molecule = new Benzaldehyde(new Vector3f(0, 0, 0), 2f);
     }
 }

@@ -18,7 +18,7 @@ public class Window {
     private static final String TITLE = "Design Buddies Game Jam!";
 
     // the framerate of the game
-    private static int FRAMERATE = 1; // this designates 60 fps
+    private static final int FRAMERATE = 1; // this designates 60 fps
 
     // get the fullscreen size
     private DisplayMode displayMode;

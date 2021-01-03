@@ -1,4 +1,4 @@
-package com.bramerlabs.molecular.molecule.default_molecule;
+package com.bramerlabs.molecular.molecule.default_molecules.ring_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.Molecule;
