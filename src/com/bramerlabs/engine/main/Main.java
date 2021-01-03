@@ -10,7 +10,7 @@ import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecule.Tetrahedral;
+import com.bramerlabs.molecular.molecule.default_molecule.Planar;
 import org.lwjgl.glfw.GLFW;
 
 public class Main implements Runnable {
@@ -135,6 +135,6 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecule() {
-        molecule = new Tetrahedral(new Vector3f(0, 0, 0), 3f);
+        molecule = new Planar(new Vector3f(0, 0, 0), 3f);
     }
 }

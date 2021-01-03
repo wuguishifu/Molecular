@@ -95,6 +95,11 @@ public class Bond {
      */
     private void makeCylinders() {
 
+        // make sure the bond order is less than 3 (for now)
+        if (bondOrder > 3) {
+            bondOrder = 1;
+        }
+
         // if the bond order isn't 1, find a vector normal to the bond to create the parallel cylinders
         Vector3f normal = new Vector3f(0);
         if (bondOrder != 1) {
@@ -106,7 +111,7 @@ public class Bond {
             if (Vector3f.cross(bondDirection, v0).equals(new Vector3f(0), 0.00001f)) {
                 v0 = new Vector3f(0, 0, 1);
             }
-            normal = Vector3f.normalize(Vector3f.cross(bondDirection, v0), 0.2f);
+            normal = Vector3f.normalize(Vector3f.cross(bondDirection, v0), 0.3f);
         }
 
         // create the central bond if its a single or triple bond
