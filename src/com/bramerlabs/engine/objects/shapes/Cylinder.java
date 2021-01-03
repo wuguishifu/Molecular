@@ -61,7 +61,7 @@ public class Cylinder extends RenderObject {
      * generates the triangles making up this cylinder
      */
     private static ArrayList<Triangle> generateTriangles(Vector3f p1, Vector3f p2, float radius, Vector3f color, int smoothness) {
-        Circle[] circles = generateCircles(p1, p2, radius, color, smoothness);
+        Circle[] circles = generateCircles(p1, p2, radius, smoothness);
         ArrayList<Triangle> faces = new ArrayList<>();
 
 
@@ -81,7 +81,7 @@ public class Cylinder extends RenderObject {
     /**
      * generates the circles making up this cylinder
      */
-    private static Circle[] generateCircles(Vector3f p1, Vector3f p2, float radius, Vector3f color, int smoothness) {
+    private static Circle[] generateCircles(Vector3f p1, Vector3f p2, float radius, int smoothness) {
         Vector3f normal = Vector3f.subtract(p1, p2);
         Circle c1 = new Circle(p1, radius, normal, smoothness);
         Circle c2 = new Circle(p2, radius, normal, smoothness);

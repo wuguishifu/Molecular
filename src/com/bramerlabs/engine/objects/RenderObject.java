@@ -3,7 +3,7 @@ package com.bramerlabs.engine.objects;
 import com.bramerlabs.engine.graphics.Mesh;
 import com.bramerlabs.engine.math.Vector3f;
 
-public class GameObject {
+public class RenderObject {
 
     // object location data
     private Vector3f position, rotation, scale;
@@ -21,7 +21,7 @@ public class GameObject {
      * @param rotation - the rotation of this object
      * @param scale - the scale of this object
      */
-    public GameObject(Mesh mesh, Vector3f position, Vector3f rotation, Vector3f scale) {
+    public RenderObject(Mesh mesh, Vector3f position, Vector3f rotation, Vector3f scale) {
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;

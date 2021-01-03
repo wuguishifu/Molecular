@@ -6,10 +6,12 @@ import com.bramerlabs.engine.io.window.Input;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.Camera;
-import com.bramerlabs.engine.objects.game_objects.Sphere;
+import com.bramerlabs.engine.objects.shapes.Cylinder;
+import com.bramerlabs.molecular.molecule.Molecule;
+import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.bond.Bond;
+import com.bramerlabs.molecular.molecule.default_molecule.Tetrahedral;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.ArrayList;
 
 public class Main implements Runnable {
 
@@ -26,7 +28,7 @@ public class Main implements Runnable {
     private Input input = new Input();
 
     // test game objects
-    private ArrayList<Sphere> spheres = new ArrayList<>();
+    private Molecule molecule;
 
     // the camera
     public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input);
@@ -63,16 +65,8 @@ public class Main implements Runnable {
         window = new Window(input);
         window.create();
 
-        // create game objects here
-        String dPath = "/textures/3ttest.png";
-        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0.5f, 0, 0.5f), 0.3f));
-        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, 0.5f), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0.5f, 0.5f), 0.2f));
-        spheres.add(Sphere.makeSphere(new Vector3f(0, 0, -0.5f), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0.5f, 0.5f), 0.2f));
-        spheres.add(Sphere.makeSphere(new Vector3f(0.5f, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0.5f, 0.5f), 0.2f));
-        spheres.add(Sphere.makeSphere(new Vector3f(-0.5f, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0.5f, 0.5f), 0.2f));
-        for (Sphere sphere : spheres) {
-            sphere.createMesh();
-        }
+        // create molecules here
+        generateMolecule();
 
         // create the shader
         shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
@@ -92,9 +86,7 @@ public class Main implements Runnable {
         window.destroy();
 
         // release the game objects
-        for (Sphere sphere : spheres) {
-            sphere.destroy();
-        }
+        molecule.destroy();
 
         // release the shader
         shader.destroy();
@@ -117,7 +109,7 @@ public class Main implements Runnable {
         window.update();
 
         // update the camera
-        camera.update(spheres.get(0));
+        camera.update(molecule.getCentralAtom().getSphere());
     }
 
     /**
@@ -126,11 +118,23 @@ public class Main implements Runnable {
     private void render() {
 
         // render the game objects
-        for (Sphere sphere : spheres) {
-            renderer.renderMesh(sphere, camera, lightPosition);
+        for (Bond bond : molecule.getBonds()) {
+            for (Cylinder cylinder : bond.getCylinders()) {
+                renderer.renderMesh(cylinder, camera, lightPosition);
+            }
+        }
+        for (Atom atom : molecule.getAtoms()) {
+            renderer.renderMesh(atom.getSphere(), camera, lightPosition);
         }
 
         // must be called at the end
         window.swapBuffers();
+    }
+
+    /**
+     * generates a molecule
+     */
+    private void generateMolecule() {
+        molecule = new Tetrahedral(new Vector3f(0, 0, 0), 1.2f);
     }
 }

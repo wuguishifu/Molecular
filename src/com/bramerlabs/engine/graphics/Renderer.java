@@ -4,7 +4,7 @@ import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Matrix4f;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.Camera;
-import com.bramerlabs.engine.objects.GameObject;
+import com.bramerlabs.engine.objects.RenderObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
@@ -31,7 +31,7 @@ public class Renderer {
      * @param object - the object to be rendered
      * @param camera - the camera perspective
      */
-    public void renderMesh(GameObject object, Camera camera, Vector3f lightPosition) {
+    public void renderMesh(RenderObject object, Camera camera, Vector3f lightPosition) {
         GL30.glBindVertexArray(object.getMesh().getVAO());
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);

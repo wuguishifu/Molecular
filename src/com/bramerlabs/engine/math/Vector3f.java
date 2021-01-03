@@ -40,6 +40,18 @@ public class Vector3f {
     }
 
     /**
+     * constructor from a float array
+     * @param position - a float array containing position in form [x, y, z].
+     * method will automatically set the position based off of available variables.
+     * no minimum or maximum supplied variables, if more than 3 position will be first 3.
+     */
+    public Vector3f(float[] position) {
+        x = position.length > 0 ? position[0] : 0;
+        y = position.length > 1 ? position[1] : 0;
+        z = position.length > 2 ? position[2] : 0;
+    }
+
+    /**
      * creates an identity vector in the e1 direction
      * @return - the identity vector
      */
@@ -189,6 +201,19 @@ public class Vector3f {
     }
 
     /**
+     * takes the cross product of two vectors
+     * @param v - vector 1
+     * @param u - vector 2
+     * @return - the cross product of v and u (v x u)
+     */
+    public static Vector3f cross(Vector3f v, Vector3f u) {
+        float x = v.y * u.z - v.z * u.y;
+        float y = v.z * u.x - v.x * u.z;
+        float z = v.x * u.y - v.y * u.x;
+        return new Vector3f(x, y, z);
+    }
+
+    /**
      * determines the length of a vector
      * @param vector - the vector
      * @return - the length
@@ -214,6 +239,16 @@ public class Vector3f {
      */
     public static Vector3f normalize(Vector3f v, float length) {
         return (Vector3f.divide(v, new Vector3f(length(v)))).scale(length);
+    }
+
+    /**
+     * determines the midpoint of the two vectors
+     * @param v - vector 1
+     * @param u - vector 2
+     * @return - a vector representing the midpoint of the two vectors
+     */
+    public static Vector3f midpoint(Vector3f v, Vector3f u) {
+        return new Vector3f((v.x + u.x) / 2, (v.y + u.y) / 2, (v.z + u.z) / 2);
     }
 
     /**

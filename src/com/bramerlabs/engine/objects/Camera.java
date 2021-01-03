@@ -75,7 +75,7 @@ public class Camera {
      * update method for an arcball camera
      * @param object - the object the arcball camera is orbiting
      */
-    public void update(GameObject object) {
+    public void update(RenderObject object) {
         // get the new x and y components of the mouse position
         newMouseX = input.getMouseX();
         newMouseY = input.getMouseY();

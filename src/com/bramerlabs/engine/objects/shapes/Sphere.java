@@ -1,14 +1,14 @@
-package com.bramerlabs.engine.objects.game_objects;
+package com.bramerlabs.engine.objects.shapes;
 
 import com.bramerlabs.engine.graphics.Mesh;
 import com.bramerlabs.engine.graphics.Vertex;
 import com.bramerlabs.engine.math.Triangle;
 import com.bramerlabs.engine.math.Vector3f;
-import com.bramerlabs.engine.objects.GameObject;
+import com.bramerlabs.engine.objects.RenderObject;
 
 import java.util.ArrayList;
 
-public class Sphere extends GameObject {
+public class Sphere extends RenderObject {
 
     // the amount of times to recursively subdivide faces
     private static final int depth = 4;
@@ -67,9 +67,9 @@ public class Sphere extends GameObject {
             indices[i] = i;
         }
 
-        for (int i = 0; i < triangles.size()*3; i++) {
-            System.out.println(indices[i] + ", " + vertices[i].getPosition());
-        }
+//        for (int i = 0; i < triangles.size()*3; i++) {
+//            System.out.println(indices[i] + ", " + vertices[i].getPosition());
+//        }
 
         // make a new mesh
         return new Mesh(vertices, indices);
