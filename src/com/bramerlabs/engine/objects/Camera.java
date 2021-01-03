@@ -73,9 +73,9 @@ public class Camera {
 
     /**
      * update method for an arcball camera
-     * @param object - the object the arcball camera is orbiting
+     * @param centralPosition - the position the arcball camera is orbiting
      */
-    public void update(RenderObject object) {
+    public void update(Vector3f centralPosition) {
         // get the new x and y components of the mouse position
         newMouseX = input.getMouseX();
         newMouseY = input.getMouseY();
@@ -118,9 +118,9 @@ public class Camera {
         float zOffset = (float) (horizontalDistance * Math.cos(Math.toRadians(-horizontalAngle)));
 
         // set the new camera position based on the object
-        this.position.set(object.getPosition().getX() + xOffset,
-                object.getPosition().getY() - verticalDistance,
-                object.getPosition().getZ() + zOffset);
+        this.position.set(centralPosition.getX() + xOffset,
+                centralPosition.getY() - verticalDistance,
+                centralPosition.getZ() + zOffset);
 
         // set the new camera rotation based on the object
         this.rotation.set(verticalAngle, -horizontalAngle, 0);

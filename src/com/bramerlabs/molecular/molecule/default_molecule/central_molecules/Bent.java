@@ -1,17 +1,17 @@
-package com.bramerlabs.molecular.molecule.default_molecule;
+package com.bramerlabs.molecular.molecule.default_molecule.central_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 
-public class Planar extends DefaultMolecule {
+public class Bent extends DefaultCentralMolecule {
 
     // vectors representing the direction of the bonds
-    private final static float[][] positions = new float[][]{{1, 0, 0}, {-1, 0, 0}};
+    private final static float[][] positions = new float[][]{{1, 1, -1}, {-1, 1, 1}};
 
     // the number of atoms in this molecule
     private final static int numAtoms = 3;
 
     // the bond order in this molecule
-    private final static int bondOrder = 2;
+    private final static int bondOrder = 1;
 
     /**
      * constructor for specified values
@@ -19,7 +19,7 @@ public class Planar extends DefaultMolecule {
      * @param position   - the position of the central molecule
      * @param bondLength - the length of the bonds in this molecule
      */
-    public Planar(Vector3f position, float bondLength) {
+    public Bent(Vector3f position, float bondLength) {
         super(position, bondLength, positions, numAtoms, bondOrder);
     }
 }

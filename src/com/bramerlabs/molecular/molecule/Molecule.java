@@ -24,6 +24,7 @@ public class Molecule {
      * @param bonds - the bonds making up this molecule
      */
     public Molecule(Vector3f position, ArrayList<Atom> atoms, ArrayList<Bond> bonds) {
+        this.position = position;
         this.atoms = atoms;
         this.bonds = bonds;
     }

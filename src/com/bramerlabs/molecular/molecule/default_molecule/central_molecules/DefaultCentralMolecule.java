@@ -1,4 +1,4 @@
-package com.bramerlabs.molecular.molecule.default_molecule;
+package com.bramerlabs.molecular.molecule.default_molecule.central_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.Molecule;
@@ -7,7 +7,7 @@ import com.bramerlabs.molecular.molecule.bond.Bond;
 
 import java.util.ArrayList;
 
-public class DefaultMolecule extends Molecule {
+public class DefaultCentralMolecule extends Molecule {
 
     // the radius of the atoms in this molecule
     private static final float atomicRadius = 1f;
@@ -30,7 +30,7 @@ public class DefaultMolecule extends Molecule {
      * @param numAtoms - the number of atoms (including the central atom) in this molecule
      * @param bondOrder - the bond order in this atom
      */
-    public DefaultMolecule(Vector3f position, float bondLength, float[][] positions, int numAtoms, int bondOrder) {
+    public DefaultCentralMolecule(Vector3f position, float bondLength, float[][] positions, int numAtoms, int bondOrder) {
         super(position, new ArrayList<>(), new ArrayList<>());
 
         this.positions = positions;
@@ -39,7 +39,7 @@ public class DefaultMolecule extends Molecule {
         // create the atoms
         this.addAtom(new Atom(position, atomicRadius, c1)); // create the central atom
         for (float[] p : positions) { // create auxiliary atoms
-            this.addAtom(new Atom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength), position)));
+            this.addAtom(new Atom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength), position), atomicRadius, c2));
         }
 
         // create the bonds

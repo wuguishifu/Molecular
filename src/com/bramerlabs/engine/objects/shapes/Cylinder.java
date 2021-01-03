@@ -33,9 +33,10 @@ public class Cylinder extends RenderObject {
 
     /**
      * makes a cylinder
-     * @param p1 - the focus of the first circle
-     * @param p2 - the focus of the second circle
-     * @param color - the color of this cylinder
+     *
+     * @param p1     - the focus of the first circle
+     * @param p2     - the focus of the second circle
+     * @param color  - the color of this cylinder
      * @param radius - the radius of this cylinder
      * @return - the new cylinder
      */
@@ -49,8 +50,9 @@ public class Cylinder extends RenderObject {
 
     /**
      * generates a mesh for this cylinder
+     *
      * @param triangles - the triangles used to make this mesh
-     * @param color - the color of this mesh
+     * @param color     - the color of this mesh
      * @return - the new mesh
      */
     private static Mesh generateMesh(ArrayList<Triangle> triangles, Vector3f color) {
@@ -58,9 +60,9 @@ public class Cylinder extends RenderObject {
         Vertex[] vertices = new Vertex[triangles.size() * 3];
         for (int i = 0; i < triangles.size(); i++) {
             Triangle t = triangles.get(i);
-            vertices[3 * i] = new Vertex(t.getV1(), color, t.getV1());
-            vertices[3 * i + 1] = new Vertex(t.getV2(), color, t.getV2());
-            vertices[3 * i + 2] = new Vertex(t.getV3(), color, t.getV3());
+            vertices[3 * i] = new Vertex(t.getV1(), color, t.getNormal());
+            vertices[3 * i + 1] = new Vertex(t.getV2(), color, t.getNormal());
+            vertices[3 * i + 2] = new Vertex(t.getV3(), color, t.getNormal());
         }
 
         int[] indices = new int[triangles.size() * 3];
@@ -82,12 +84,24 @@ public class Cylinder extends RenderObject {
         ArrayList<Vector3f> v1 = circles[0].getVertices();
         ArrayList<Vector3f> v2 = circles[1].getVertices();
 
-        for (int i = 0; i < v1.size()-1; i++) {
-            faces.add(new Triangle(v2.get(i), v1.get(i+1), v1.get(i)));
-            faces.add(new Triangle(v2.get(i+1), v1.get(i+1), v2.get(i)));
+        for (int i = 0; i < v1.size() - 1; i++) {
+
+            // make normal vectors
+            Vector3f n1 = Vector3f.cross(Vector3f.subtract(v1.get(i), v1.get(i + 1)), Vector3f.subtract(v2.get(i), v1.get(i + 1)));
+            Vector3f n2 = Vector3f.cross(Vector3f.subtract(v1.get(i + 1), v2.get(i + 1)), Vector3f.subtract(v2.get(i), v2.get(i + 1)));
+
+            // make the triangles
+            faces.add(new Triangle(v2.get(i), v1.get(i + 1), v1.get(i), n1));
+            faces.add(new Triangle(v2.get(i + 1), v1.get(i + 1), v2.get(i), n2));
         }
-        faces.add(new Triangle(v2.get(v1.size()-1), v1.get(0), v1.get(v1.size()-1)));
-        faces.add(new Triangle(v2.get(0), v1.get(0), v2.get(v2.size()-1)));
+
+        // make normal vectors
+        Vector3f n1 = Vector3f.cross(Vector3f.subtract(v1.get(v1.size() - 1), v1.get(0)), Vector3f.subtract(v2.get(v2.size() - 1), v1.get(v1.size() - 1)));
+        Vector3f n2 = Vector3f.cross(Vector3f.subtract(v1.get(0), v2.get(v2.size() - 1)), Vector3f.subtract(v2.get(v2.size() - 1), v2.get(0)));
+
+        // make the triangles
+        faces.add(new Triangle(v2.get(v1.size() - 1), v1.get(0), v1.get(v1.size() - 1), n1));
+        faces.add(new Triangle(v2.get(0), v1.get(0), v2.get(v2.size() - 1), n2));
 
         return faces;
     }

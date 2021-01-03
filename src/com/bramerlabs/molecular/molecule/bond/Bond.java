@@ -111,7 +111,7 @@ public class Bond {
             if (Vector3f.cross(bondDirection, v0).equals(new Vector3f(0), 0.00001f)) {
                 v0 = new Vector3f(0, 0, 1);
             }
-            normal = Vector3f.normalize(Vector3f.cross(bondDirection, v0), 0.3f);
+            normal = Vector3f.normalize(Vector3f.cross(bondDirection, v0), 0.4f);
         }
 
         // create the central bond if its a single or triple bond

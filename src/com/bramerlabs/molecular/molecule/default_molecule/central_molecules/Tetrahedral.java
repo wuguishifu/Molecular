@@ -1,14 +1,14 @@
-package com.bramerlabs.molecular.molecule.default_molecule;
+package com.bramerlabs.molecular.molecule.default_molecule.central_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 
-public class Octahedral extends DefaultMolecule {
+public class Tetrahedral extends DefaultCentralMolecule {
 
     // vectors representing the direction of the bonds
-    private final static float[][] positions = new float[][]{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {-1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
+    private final static float[][] positions = new float[][]{{1, 1, -1}, {-1, 1, 1}, {-1, -1, -1}, {1, -1, 1}};
 
     // the number of atoms in this molecule
-    private final static int numAtoms = 7;
+    private final static int numAtoms = 5;
 
     // the bond order in this molecule
     private final static int bondOrder = 1;
@@ -19,8 +19,7 @@ public class Octahedral extends DefaultMolecule {
      * @param position - the position of the central molecule
      * @param bondLength - the length of the bonds in this molecule
      */
-    public Octahedral(Vector3f position, float bondLength) {
+    public Tetrahedral(Vector3f position, float bondLength) {
         super(position, bondLength, positions, numAtoms, bondOrder);
     }
-
 }
