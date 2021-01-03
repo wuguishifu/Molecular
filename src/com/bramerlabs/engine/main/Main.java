@@ -135,6 +135,6 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecule() {
-        molecule = new Tetrahedral(new Vector3f(0, 0, 0), 1.2f);
+        molecule = new Tetrahedral(new Vector3f(0, 0, 0), 3f);
     }
 }

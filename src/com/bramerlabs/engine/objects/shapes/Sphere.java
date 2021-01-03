@@ -44,8 +44,8 @@ public class Sphere extends RenderObject {
      * create a sphere
      * @return - a new sphere
      */
-    public static Sphere makeSphere(Vector3f position, Vector3f rotation, Vector3f scale, Vector3f color, float radius) {
-        return new Sphere(generateMesh(position, color, radius), position, rotation, scale);
+    public static Sphere makeSphere(Vector3f position, Vector3f color, float radius) {
+        return new Sphere(generateMesh(position, color, radius), new Vector3f(0), new Vector3f(0), new Vector3f(1));
     }
 
     public static Mesh generateMesh(Vector3f position, Vector3f color, float radius) {

@@ -23,9 +23,6 @@ public class Bond {
     // the color of this bond - default gray
     private Vector3f color = new Vector3f(0.5f);
 
-    // the length of the bonds - default 1.0f;
-    private float bondLength = 1.0f;
-
     /**
      * constructor for bond between two atoms
      * @param a1 - atom 1
@@ -46,6 +43,7 @@ public class Bond {
     public Bond(Atom a1, Atom a2, int bondOrder) {
         this.a1 = a1;
         this.a2 = a2;
+        this.bondOrder = bondOrder;
         makeCylinders();
     }
 
@@ -82,25 +80,6 @@ public class Bond {
     }
 
     /**
-     * constructor for bond between two atoms
-     * @param a1 - atom 1
-     * @param a2 - atom 2
-     * @param bondOrder - the bond order of this bond
-     * @param radius - the radius of this bond
-     * @param color - the color of this bond
-     * @param bondLength - the length of the bond
-     */
-    public Bond(Atom a1, Atom a2, int bondOrder, float radius, Vector3f color, float bondLength) {
-        this.a1 = a1;
-        this.a2 = a2;
-        this.bondOrder = bondOrder;
-        this.radius = radius;
-        this.color = color;
-        this.bondLength = bondLength;
-        makeCylinders();
-    }
-
-    /**
      * getter method
      * @return - the atoms that this bond connects
      */
@@ -127,7 +106,7 @@ public class Bond {
             if (Vector3f.cross(bondDirection, v0).equals(new Vector3f(0), 0.00001f)) {
                 v0 = new Vector3f(0, 0, 1);
             }
-            normal = Vector3f.normalize(Vector3f.cross(bondDirection, v0), bondLength);
+            normal = Vector3f.normalize(Vector3f.cross(bondDirection, v0), 0.2f);
         }
 
         // create the central bond if its a single or triple bond
@@ -137,14 +116,14 @@ public class Bond {
 
         // create the outside 2 bonds if its a triple bond
         if (bondOrder == 3) {
-            cylinders.add(Cylinder.makeCylinder(Vector3f.subtract(a1.getPosition(), normal), Vector3f.subtract(a2.getPosition(), normal), color, radius));
+            cylinders.add(Cylinder.makeCylinder(Vector3f.add(a1.getPosition(), normal), Vector3f.add(a2.getPosition(), normal), color, radius));
             cylinders.add(Cylinder.makeCylinder(Vector3f.subtract(a1.getPosition(), normal), Vector3f.subtract(a2.getPosition(), normal), color, radius));
         }
 
         // create the double bonds
         if (bondOrder == 2) {
             normal.scale(0.5f);
-            cylinders.add(Cylinder.makeCylinder(Vector3f.subtract(a1.getPosition(), normal), Vector3f.subtract(a2.getPosition(), normal), color, radius));
+            cylinders.add(Cylinder.makeCylinder(Vector3f.add(a1.getPosition(), normal), Vector3f.add(a2.getPosition(), normal), color, radius));
             cylinders.add(Cylinder.makeCylinder(Vector3f.subtract(a1.getPosition(), normal), Vector3f.subtract(a2.getPosition(), normal), color, radius));
         }
 

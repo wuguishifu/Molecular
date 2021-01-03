@@ -28,17 +28,31 @@ public class Cylinder extends RenderObject {
      * @param scale    - the scale of this object
      */
     public Cylinder(Mesh mesh, Vector3f position, Vector3f rotation, Vector3f scale) {
-        super(mesh, position, rotation, scale);
+        super(mesh, new Vector3f(0), rotation, scale);
     }
 
+    /**
+     * makes a cylinder
+     * @param p1 - the focus of the first circle
+     * @param p2 - the focus of the second circle
+     * @param color - the color of this cylinder
+     * @param radius - the radius of this cylinder
+     * @return - the new cylinder
+     */
     public static Cylinder makeCylinder(Vector3f p1, Vector3f p2, Vector3f color, float radius) {
         Vector3f position = Vector3f.midpoint(p1, p2);
-        ArrayList<Triangle> triangles = generateTriangles(p1, p2, radius, color, 120);
+        ArrayList<Triangle> triangles = generateTriangles(p1, p2, radius, 120);
 
         Mesh mesh = generateMesh(triangles, color);
         return new Cylinder(mesh, position, rotation, scale);
     }
 
+    /**
+     * generates a mesh for this cylinder
+     * @param triangles - the triangles used to make this mesh
+     * @param color - the color of this mesh
+     * @return - the new mesh
+     */
     private static Mesh generateMesh(ArrayList<Triangle> triangles, Vector3f color) {
         // create the vertex array
         Vertex[] vertices = new Vertex[triangles.size() * 3];
@@ -60,7 +74,7 @@ public class Cylinder extends RenderObject {
     /**
      * generates the triangles making up this cylinder
      */
-    private static ArrayList<Triangle> generateTriangles(Vector3f p1, Vector3f p2, float radius, Vector3f color, int smoothness) {
+    private static ArrayList<Triangle> generateTriangles(Vector3f p1, Vector3f p2, float radius, int smoothness) {
         Circle[] circles = generateCircles(p1, p2, radius, smoothness);
         ArrayList<Triangle> faces = new ArrayList<>();
 

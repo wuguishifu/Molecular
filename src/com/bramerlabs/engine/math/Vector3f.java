@@ -214,6 +214,16 @@ public class Vector3f {
     }
 
     /**
+     * determines the length between two vectors
+     * @param v - vector 1
+     * @param u - vector 2
+     * @return - the length between vector 1 and vector 2
+     */
+    public static float distance(Vector3f v, Vector3f u) {
+        return length(multiply(subtract(u, v), subtract(u, v)));
+    }
+
+    /**
      * determines the length of a vector
      * @param vector - the vector
      * @return - the length

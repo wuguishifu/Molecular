@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Tetrahedral extends Molecule {
 
     // the radius of the atoms in this molecule
-    private static final float atomicRadius = 0.8f;
+    private static final float atomicRadius = 1f;
 
     // the color of the atoms in this molecule
     private static Vector3f c1 = new Vector3f(0.2f); // center atom
@@ -35,7 +35,7 @@ public class Tetrahedral extends Molecule {
 
         // create the bonds
         for (int i = 1; i < numAtoms; i++) {
-            this.addBond(new Bond(this.getAtoms().get(i), this.getAtoms().get(0)));
+            this.addBond(new Bond(this.getAtoms().get(i), this.getAtoms().get(0), 1));
         }
     }
 }

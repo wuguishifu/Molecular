@@ -61,7 +61,7 @@ public class Atom {
      * makes the sphere used for rendering this atom
      */
     private void makeSphere() {
-        sphere = Sphere.makeSphere(position, new Vector3f(0), new Vector3f(1), color, radius);
+        sphere = Sphere.makeSphere(position, color, radius);
         sphere.createMesh();
     }
 
