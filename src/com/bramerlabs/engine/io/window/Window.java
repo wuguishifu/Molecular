@@ -75,7 +75,7 @@ public class Window {
 
         // create a projection matrix
         projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 100f);
-        invProj = Matrix4f.inverseProjection(70.0f, (width/(float)height), 0.1f, 100f);
+        invProj = Matrix4f.invert(projection);
 
         this.input = input;
     }

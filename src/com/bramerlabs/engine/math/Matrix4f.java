@@ -301,6 +301,21 @@ public class Matrix4f {
     }
 
     /**
+     * multiplies a 4x4 matrix by a 4-vector
+     * @param m - the matrix
+     * @param v - the vector
+     * @return - the product of m x v
+     */
+    public static Vector4f multiply(Matrix4f m, Vector4f v) {
+        return new Vector4f(
+                m.get(0, 0) * v.getX() + m.get(0, 1) * v.getY() + m.get(0, 2) * v.getZ() + m.get(0, 3) * v.getW(),
+                m.get(1, 0) * v.getX() + m.get(1, 1) * v.getY() + m.get(1, 2) * v.getZ() + m.get(1, 3) * v.getW(),
+                m.get(2, 0) * v.getX() + m.get(2, 1) * v.getY() + m.get(2, 2) * v.getZ() + m.get(2, 3) * v.getW(),
+                m.get(3, 0) * v.getX() + m.get(3, 1) * v.getY() + m.get(3, 2) * v.getZ() + m.get(3, 3) * v.getW()
+        );
+    }
+
+    /**
      * sets a value of the matrix
      * @param x - the column (x, y) Cartesian coordinates
      * @param y - the row

@@ -3,6 +3,7 @@ package com.bramerlabs.engine.main;
 import com.bramerlabs.engine.graphics.Renderer;
 import com.bramerlabs.engine.graphics.Shader;
 import com.bramerlabs.engine.io.window.Input;
+import com.bramerlabs.engine.io.window.MousePicker;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.Camera;
@@ -10,7 +11,7 @@ import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.central_molecules.TrigonalPlanar;
+import com.bramerlabs.molecular.molecule.default_molecules.ring_molecules.Benzaldehyde;
 
 public class Main implements Runnable {
 
@@ -34,6 +35,9 @@ public class Main implements Runnable {
 
     // the position of the light
     private Vector3f lightPosition = new Vector3f(0, 100, 0);
+
+    // the mouse picker object
+    private MousePicker mousePicker;
 
     /**
      * main method
@@ -62,15 +66,9 @@ public class Main implements Runnable {
         //create the openJL window
         window = new Window(input);
         window.create();
-        camera.setWindowHandle(window.getWindowHandle());
-        camera.setInvProj(window.getInvProjectionMatrix());
-        camera.setProj(window.getProjectionMatrix());
 
         // create molecules here
         generateMolecule();
-
-        // give the camera a pointer to the molecule
-        camera.setMolecule(molecule);
 
         // create the shader
         shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
@@ -80,6 +78,9 @@ public class Main implements Runnable {
 
         // initialize the shader
         shader.create();
+
+        // create the mouse picker
+        mousePicker = new MousePicker(camera, molecule, window);
     }
 
     /**
@@ -112,6 +113,9 @@ public class Main implements Runnable {
         // update the window
         window.update();
 
+        // update the mouse picker
+        mousePicker.update();
+
         // update the camera
         camera.update(molecule.getPosition());
     }
@@ -139,6 +143,6 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecule() {
-        molecule = new TrigonalPlanar(new Vector3f(0, 0, 0), 2.5f);
+        molecule = new Benzaldehyde(new Vector3f(0, 0, 0), 2.5f);
     }
 }
