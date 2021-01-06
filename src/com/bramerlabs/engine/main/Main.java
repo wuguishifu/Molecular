@@ -12,6 +12,7 @@ import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 import com.bramerlabs.molecular.molecule.default_molecules.ring_molecules.Benzaldehyde;
+import org.lwjgl.glfw.GLFW;
 
 public class Main implements Runnable {
 
@@ -80,7 +81,7 @@ public class Main implements Runnable {
         shader.create();
 
         // create the mouse picker
-        mousePicker = new MousePicker(camera, molecule, window);
+        mousePicker = new MousePicker(camera, molecule, window, input);
     }
 
     /**
@@ -115,9 +116,53 @@ public class Main implements Runnable {
 
         // update the mouse picker
         mousePicker.update();
+        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
+            System.out.println(mousePicker.getCurrentRay());
+            getSelectedAtom();
+        }
 
         // update the camera
         camera.update(molecule.getPosition());
+    }
+
+    /**
+     * retrieves a selected atom on the molecule via raycasting
+     */
+    private void getSelectedAtom() {
+
+        // find the origin of the raycast
+        Vector3f origin = camera.getPosition();
+
+        // create the ray
+        Vector3f ray = Vector3f.normalize(mousePicker.getCurrentRay(), 0.1f);
+
+        // scale the ray (error adjustment)
+        ray = Vector3f.multiply(ray, new Vector3f(1, -1, 1));
+
+        // add the ray to the origin repeatedly, testing each hitbox for each itiration
+        Vector3f sumRay = Vector3f.add(origin, ray);
+
+        // iterate between the nearest and farthest point
+        while (Vector3f.length(sumRay) < 50f) {
+            Atom del = null;
+
+            // check each atom
+            for (Atom a : molecule.getAtoms()) {
+                if (a.getHitbox().intersects(sumRay)) {
+                    del = a;
+                    break;
+                }
+            }
+
+            // if an atom intersects, set it for deletion and remove it
+            if (del != null) {
+                molecule.removeAtom(del);
+                break;
+            }
+
+            // add the ray to the sumRay
+            sumRay = Vector3f.add(sumRay, ray);
+        }
     }
 
     /**

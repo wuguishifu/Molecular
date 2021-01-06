@@ -8,7 +8,6 @@ import com.bramerlabs.engine.objects.Camera;
 import com.bramerlabs.molecular.molecule.Molecule;
 import org.lwjgl.glfw.GLFW;
 import org.lwjglx.BufferUtils;
-import org.lwjglx.input.Mouse;
 
 import java.nio.IntBuffer;
 
@@ -26,6 +25,9 @@ public class MousePicker {
     // the molecule in the scene
     private Molecule molecule;
 
+    // the input device
+    private Input input;
+
     // the projection and view matrices
     private Matrix4f projection, view;
 
@@ -34,11 +36,12 @@ public class MousePicker {
      * @param camera - the camera in the window
      * @param molecule - the molecule in the window
      */
-    public MousePicker(Camera camera, Molecule molecule, Window window) {
+    public MousePicker(Camera camera, Molecule molecule, Window window, Input input) {
         this.camera = camera;
         this.molecule = molecule;
         this.window = window;
         this.projection = window.getProjectionMatrix();
+        this.input = input;
     }
 
     /**
@@ -53,8 +56,8 @@ public class MousePicker {
      * calculates the ray
      */
     public Vector3f calculateRay() {
-        float mouseX = Mouse.getX();
-        float mouseY = Mouse.getY();
+        float mouseX = (float) input.getMouseX();
+        float mouseY = (float) input.getMouseY();
         Vector2f normalizedCoords = getNormalizedDeviceCoords(mouseX, mouseY);
         Vector4f clipCoords = new Vector4f(normalizedCoords, -1, 1);
         Vector4f eyeCoords = toEyeCoords(clipCoords);
