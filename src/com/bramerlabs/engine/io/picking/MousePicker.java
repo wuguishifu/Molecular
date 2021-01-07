@@ -1,15 +1,22 @@
-package com.bramerlabs.engine.io.window;
+package com.bramerlabs.engine.io.picking;
 
+import com.bramerlabs.engine.io.window.Input;
+import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Matrix4f;
 import com.bramerlabs.engine.math.Vector2f;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.math.Vector4f;
 import com.bramerlabs.engine.objects.Camera;
-import com.bramerlabs.molecular.molecule.Molecule;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 import org.lwjglx.BufferUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+
+import static org.lwjglx.util.glu.Project.gluUnProject;
 
 public class MousePicker {
 
@@ -22,9 +29,6 @@ public class MousePicker {
     // the window
     private Window window;
 
-    // the molecule in the scene
-    private Molecule molecule;
-
     // the input device
     private Input input;
 
@@ -34,14 +38,50 @@ public class MousePicker {
     /**
      * default constructor
      * @param camera - the camera in the window
-     * @param molecule - the molecule in the window
+     * @param window - the display window
+     * @param input - the object for handling input
      */
-    public MousePicker(Camera camera, Molecule molecule, Window window, Input input) {
+    public MousePicker(Camera camera, Window window, Input input) {
         this.camera = camera;
-        this.molecule = molecule;
         this.window = window;
         this.projection = window.getProjectionMatrix();
         this.input = input;
+    }
+
+    /**
+     * gets a picking ray - obsolete
+     * @param cursorX - the cursor x position
+     * @param cursorY - the cursor y position
+     * @return - the picking ray
+     */
+    public static Vector3f getPickingRay(float cursorX, float cursorY) {
+        IntBuffer viewport = ByteBuffer.allocateDirect((Integer.SIZE/8)*16).order(ByteOrder.nativeOrder()).asIntBuffer();
+        FloatBuffer modelview = ByteBuffer.allocateDirect((Float.SIZE/8)*16).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        FloatBuffer projection = ByteBuffer.allocateDirect((Float.SIZE/8)*16).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        FloatBuffer pickingRayBuffer = ByteBuffer.allocateDirect((Float.SIZE/8)*3).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        FloatBuffer zBuffer = ByteBuffer.allocateDirect((Float.SIZE/8)).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, modelview);
+        GL11.glGetFloatv(GL11.GL_PROJECTION_MATRIX, projection);
+        GL11.glGetIntegerv(GL11.GL_VIEWPORT, viewport);
+        // convert window coordinates to opengl coordinates (top left to bottom left for (0,0)
+        float winY = (float) viewport.get(3) - cursorY;
+
+        // now unproject this to get the  vector in to the screen
+        // take the frustum and unproject in to the screen
+        // frustum has a near plane and a far plane
+
+        // first the near vector
+        gluUnProject(cursorX, winY,  0, modelview, projection, viewport, pickingRayBuffer);
+        Vector3f nearVector = new Vector3f(pickingRayBuffer.get(0),pickingRayBuffer.get(1),pickingRayBuffer.get(2));
+
+        pickingRayBuffer.rewind();
+
+        // now the far vector
+        gluUnProject(cursorX, winY,  1, modelview, projection, viewport, pickingRayBuffer);
+        Vector3f farVector = new Vector3f(pickingRayBuffer.get(0),pickingRayBuffer.get(1),pickingRayBuffer.get(2));
+
+        //save the results in a vector, far-near
+        return Vector3f.normalize(Vector3f.subtract(farVector, nearVector));
     }
 
     /**

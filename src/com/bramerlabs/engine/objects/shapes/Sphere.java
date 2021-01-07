@@ -45,7 +45,7 @@ public class Sphere extends RenderObject {
      * @return - a new sphere
      */
     public static Sphere makeSphere(Vector3f position, Vector3f color, float radius) {
-        return new Sphere(generateMesh(position, color, radius), new Vector3f(0), new Vector3f(0), new Vector3f(1));
+        return new Sphere(generateMesh(position, color, radius), position, new Vector3f(0), new Vector3f(1));
     }
 
     public static Mesh generateMesh(Vector3f position, Vector3f color, float radius) {
@@ -57,19 +57,15 @@ public class Sphere extends RenderObject {
         Vertex[] vertices = new Vertex[triangles.size() * 3];
         for (int i = 0; i < triangles.size(); i++) {
             Triangle t = triangles.get(i);
-            vertices[3 * i] = new Vertex(t.getV1(), color, Vector3f.subtract(t.getV1(), position));
-            vertices[3 * i + 1] = new Vertex(t.getV2(), color, Vector3f.subtract(t.getV2(), position));
-            vertices[3 * i + 2] = new Vertex(t.getV3(), color, Vector3f.subtract(t.getV3(), position));
+            vertices[3 * i] = new Vertex(t.getV1(), color, Vector3f.subtract(t.getV1(), new Vector3f(0)));
+            vertices[3 * i + 1] = new Vertex(t.getV2(), color, Vector3f.subtract(t.getV2(), new Vector3f(0)));
+            vertices[3 * i + 2] = new Vertex(t.getV3(), color, Vector3f.subtract(t.getV3(), new Vector3f(0)));
         }
 
         int[] indices = new int[triangles.size() * 3];
         for (int i = 0; i < triangles.size() * 3; i++) {
             indices[i] = i;
         }
-
-//        for (int i = 0; i < triangles.size()*3; i++) {
-//            System.out.println(indices[i] + ", " + vertices[i].getPosition());
-//        }
 
         // make a new mesh
         return new Mesh(vertices, indices);
@@ -137,9 +133,9 @@ public class Sphere extends RenderObject {
         if (depth == 0) {
 
             // create new vectors to modify
-            Vector3f v1p = Vector3f.add(Vector3f.normalize(v1, radius), position);
-            Vector3f v2p = Vector3f.add(Vector3f.normalize(v2, radius), position);
-            Vector3f v3p = Vector3f.add(Vector3f.normalize(v3, radius), position);
+            Vector3f v1p = Vector3f.normalize(v1, radius);
+            Vector3f v2p = Vector3f.normalize(v2, radius);
+            Vector3f v3p = Vector3f.normalize(v3, radius);
 
             faces.add(new Triangle(v1p, v2p, v3p));
             return faces;

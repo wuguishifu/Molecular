@@ -6,6 +6,12 @@ import com.bramerlabs.engine.math.Vector3f;
 
 public class RenderObject {
 
+    // the current global ID - used to make sure every ID is unique
+    public static int curID = 0;
+
+    // the ID of this object
+    public int ID;
+
     // object location data
     private Vector3f position, rotation, scale;
 
@@ -32,6 +38,8 @@ public class RenderObject {
         Vector3f min = Vector3f.subtract(position, Vector3f.scale(scale, 0.5f));
         Vector3f max = Vector3f.add(position, Vector3f.scale(scale, 0.5f));
         rectangularHitbox = new RectangularHitbox(min.getX(), max.getX(), min.getY(), max.getY(), min.getZ(), max.getZ());
+
+        generateID();
     }
 
     /**
@@ -67,6 +75,14 @@ public class RenderObject {
         Vector3f min = Vector3f.subtract(position, Vector3f.scale(scale, 0.5f));
         Vector3f max = Vector3f.add(position, Vector3f.scale(scale, 0.5f));
         rectangularHitbox.setValues(min.getX(), max.getX(), min.getY(), max.getY(), min.getZ(), max.getZ());
+    }
+
+    /**
+     * sets the current ID
+     */
+    public void generateID() {
+        this.ID = curID;
+        curID += 5;
     }
 
     /**
@@ -115,5 +131,13 @@ public class RenderObject {
      */
     public RectangularHitbox getRectangularHitbox() {
         return this.rectangularHitbox;
+    }
+
+    /**
+     * getter method
+     * @return - the ID of this object
+     */
+    public int getID() {
+        return this.ID;
     }
 }

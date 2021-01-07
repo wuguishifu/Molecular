@@ -28,8 +28,9 @@ public class Window {
     private int windowX, windowY;
 
     // background color
-    private static final Color backgroundColorAsColor = new Color(204, 232, 220);
-    private static final Vector3f bgc = Vector3f.divide(new Vector3f(
+//    private static final Color backgroundColorAsColor = new Color(204, 232, 220);
+    private static final Color backgroundColorAsColor = new Color(255, 255, 255);
+    public static final Vector3f bgc = Vector3f.divide(new Vector3f(
             backgroundColorAsColor.getRed(),
             backgroundColorAsColor.getGreen(),
             backgroundColorAsColor.getBlue()
@@ -71,7 +72,7 @@ public class Window {
         this.height = defaultHeight;
 
         // create a projection matrix
-        projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 100f);
+        projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 50f);
 
         this.input = input;
     }
@@ -205,10 +206,6 @@ public class Window {
             }
             GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
-
-        // clear the screen
-        GL46.glClearColor(bgc.getX(), bgc.getY(), bgc.getZ(), 1);
-        GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // poll GLFW for callbacks
         GLFW.glfwPollEvents();

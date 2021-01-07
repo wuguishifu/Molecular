@@ -2,8 +2,8 @@ package com.bramerlabs.engine.main;
 
 import com.bramerlabs.engine.graphics.Renderer;
 import com.bramerlabs.engine.graphics.Shader;
+import com.bramerlabs.engine.io.picking.CPRenderer;
 import com.bramerlabs.engine.io.window.Input;
-import com.bramerlabs.engine.io.window.MousePicker;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.Camera;
@@ -13,17 +13,27 @@ import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 import com.bramerlabs.molecular.molecule.default_molecules.ring_molecules.Benzaldehyde;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL46;
+import org.lwjglx.BufferUtils;
+
+import java.nio.ByteBuffer;
+
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 
 public class Main implements Runnable {
 
     // the main window of the game
     private Window window;
 
-    // the shader used to paint textures
-    private Shader shader;
+    // the shaders used to paint textures and for color picking
+    private Shader shader, cpShader;
 
     // used to render objects
     private Renderer renderer;
+
+    // used for color picking
+    private CPRenderer cpRenderer;
 
     // used to handle inputs
     private Input input = new Input();
@@ -37,8 +47,9 @@ public class Main implements Runnable {
     // the position of the light
     private Vector3f lightPosition = new Vector3f(0, 100, 0);
 
-    // the mouse picker object
-    private MousePicker mousePicker;
+    // if the last frame had the right mouse button down
+    private boolean lastFrameRightButtonDown = false;
+    private boolean currentFrameRightButtonDown = false;
 
     /**
      * main method
@@ -71,17 +82,17 @@ public class Main implements Runnable {
         // create molecules here
         generateMolecule();
 
-        // create the shader
+        // create the renderer
         shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
-
-        // create the renderer based on the main window and the shader
         renderer = new Renderer(window, shader);
+
+        // create the color picker renderer
+        cpShader = new Shader("/shaders/colorPickerVertex.glsl", "/shaders/colorPickerFragment.glsl");
+        cpRenderer = new CPRenderer(window, cpShader);
 
         // initialize the shader
         shader.create();
-
-        // create the mouse picker
-        mousePicker = new MousePicker(camera, molecule, window, input);
+        cpShader.create();
     }
 
     /**
@@ -94,8 +105,9 @@ public class Main implements Runnable {
         // release the game objects
         molecule.destroy();
 
-        // release the shader
+        // release the shaders
         shader.destroy();
+        cpShader.destroy();
     }
 
     /**
@@ -115,11 +127,18 @@ public class Main implements Runnable {
         window.update();
 
         // update the mouse picker
-        mousePicker.update();
-        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
-            System.out.println(mousePicker.getCurrentRay());
+        currentFrameRightButtonDown = input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+        if (lastFrameRightButtonDown && !currentFrameRightButtonDown) {
             getSelectedAtom();
         }
+        lastFrameRightButtonDown = currentFrameRightButtonDown;
+
+        // clear the screen
+        GL46.glClearColor(Window.bgc.getX(), Window.bgc.getY(), Window.bgc.getZ(), 1);
+        GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // poll GLFW for callbacks
+        GLFW.glfwPollEvents();
 
         // update the camera
         camera.update(molecule.getPosition());
@@ -130,39 +149,26 @@ public class Main implements Runnable {
      */
     private void getSelectedAtom() {
 
-        // find the origin of the raycast
-        Vector3f origin = camera.getPosition();
-
-        // create the ray
-        Vector3f ray = Vector3f.normalize(mousePicker.getCurrentRay(), 0.1f);
-
-        // scale the ray (error adjustment)
-        ray = Vector3f.multiply(ray, new Vector3f(1, -1, 1));
-
-        // add the ray to the origin repeatedly, testing each hitbox for each itiration
-        Vector3f sumRay = Vector3f.add(origin, ray);
-
-        // iterate between the nearest and farthest point
-        while (Vector3f.length(sumRay) < 50f) {
-            Atom del = null;
-
-            // check each atom
-            for (Atom a : molecule.getAtoms()) {
-                if (a.getHitbox().intersects(sumRay)) {
-                    del = a;
-                    break;
-                }
+        // render the game objects
+        for (Bond bond : molecule.getBonds()) {
+            for (Cylinder cylinder : bond.getCylinders()) {
+                cpRenderer.renderMesh(cylinder, camera);
             }
-
-            // if an atom intersects, set it for deletion and remove it
-            if (del != null) {
-                molecule.removeAtom(del);
-                break;
-            }
-
-            // add the ray to the sumRay
-            sumRay = Vector3f.add(sumRay, ray);
         }
+        for (Atom atom : molecule.getAtoms()) {
+            cpRenderer.renderMesh(atom.getSphere(), camera);
+        }
+
+        GL11.glFlush();
+        GL11.glFinish();
+        GL11.glRasterPos2d(input.getMouseX(), input.getMouseY());
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        float x = (float) input.getMouseX();
+        float y = (float) input.getMouseY();
+        ByteBuffer data = BufferUtils.createByteBuffer(3);
+        GL11.glReadPixels((int)x, (int)y, 1, 1, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, data);
+        System.out.println(data.get(0) + ", " + data.get(1) + ", " + data.get(2));
+
     }
 
     /**
