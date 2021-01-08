@@ -19,8 +19,6 @@ import org.lwjglx.BufferUtils;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-
 public class Main implements Runnable {
 
     // the main window of the game
@@ -49,7 +47,6 @@ public class Main implements Runnable {
 
     // if the last frame had the right mouse button down
     private boolean lastFrameRightButtonDown = false;
-    private boolean currentFrameRightButtonDown = false;
 
     /**
      * main method
@@ -65,8 +62,8 @@ public class Main implements Runnable {
     public void run() {
         init();
         while (!window.shouldClose()) {
-            update();
-            render();
+            boolean shouldSwapBuffers = update();
+            render(shouldSwapBuffers);
         }
         close();
     }
@@ -121,34 +118,33 @@ public class Main implements Runnable {
     /**
      * update the window and game objects
      */
-    private void update() {
+    private boolean update() {
 
         // update the window
         window.update();
 
+        // clear the screen
+        GL46.glClearColor(Window.bgc.getX(), Window.bgc.getY(), Window.bgc.getZ(), 1);
+        GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL46.GL_DEPTH_BUFFER_BIT);
+
         // update the mouse picker
-        currentFrameRightButtonDown = input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+        boolean shouldSwapBuffers = true;
+        boolean currentFrameRightButtonDown = input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
         if (lastFrameRightButtonDown && !currentFrameRightButtonDown) {
             getSelectedAtom();
+            shouldSwapBuffers = false;
         }
         lastFrameRightButtonDown = currentFrameRightButtonDown;
 
-        // clear the screen
-        GL46.glClearColor(Window.bgc.getX(), Window.bgc.getY(), Window.bgc.getZ(), 1);
-        GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // poll GLFW for callbacks
-        GLFW.glfwPollEvents();
-
         // update the camera
         camera.update(molecule.getPosition());
+        return shouldSwapBuffers;
     }
 
     /**
      * retrieves a selected atom on the molecule via raycasting
      */
     private void getSelectedAtom() {
-
         // render the game objects
         for (Bond bond : molecule.getBonds()) {
             for (Cylinder cylinder : bond.getCylinders()) {
@@ -161,33 +157,51 @@ public class Main implements Runnable {
 
         GL11.glFlush();
         GL11.glFinish();
-        GL11.glRasterPos2d(input.getMouseX(), input.getMouseY());
         GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
         float x = (float) input.getMouseX();
+
+        float height = window.getHeight();
         float y = (float) input.getMouseY();
+        y = height - y;
         ByteBuffer data = BufferUtils.createByteBuffer(3);
         GL11.glReadPixels((int)x, (int)y, 1, 1, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, data);
-        System.out.println(data.get(0) + ", " + data.get(1) + ", " + data.get(2));
+
+        Atom a = molecule.getAtom(data.get(0));
+        for (Atom atom : molecule.getAtoms()) {
+            if (atom != a) {
+                atom.setSelected(false);
+            }
+        }
+        if (a != null) {
+            a.toggleSelected();
+        }
 
     }
 
     /**
      * render the game objects
      */
-    private void render() {
+    private void render(boolean shouldSwapBuffers) {
 
         // render the game objects
         for (Bond bond : molecule.getBonds()) {
             for (Cylinder cylinder : bond.getCylinders()) {
-                renderer.renderMesh(cylinder, camera, lightPosition);
+                renderer.renderMesh(cylinder, camera, lightPosition, false);
             }
         }
         for (Atom atom : molecule.getAtoms()) {
-            renderer.renderMesh(atom.getSphere(), camera, lightPosition);
+            renderer.renderMesh(atom.getSphere(), camera, lightPosition, false);
+        }
+        for (Atom atom : molecule.getAtoms()) {
+            if (atom.isSelected()) {
+                renderer.renderMesh(atom.getSelectionSphere(), camera, lightPosition, true);
+            }
         }
 
         // must be called at the end
-        window.swapBuffers();
+        if (shouldSwapBuffers) {
+            window.swapBuffers();
+        }
     }
 
     /**

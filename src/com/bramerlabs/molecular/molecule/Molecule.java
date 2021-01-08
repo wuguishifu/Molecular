@@ -1,6 +1,7 @@
 package com.bramerlabs.molecular.molecule;
 
 import com.bramerlabs.engine.math.Vector3f;
+import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 
@@ -104,6 +105,36 @@ public class Molecule {
         for (Bond b : bonds) {
             b.destroy();
         }
+    }
+
+    /**
+     * gets an atom
+     * @param ID - the ID of the atom
+     * @return - the atom corresponding to this ID
+     */
+    public Atom getAtom(int ID) {
+        for (Atom a : this.atoms) {
+            if (a.getSphere().getID() == ID) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * gets a bond
+     * @param ID - the ID of the bond
+     * @return - the bond corresponding to this ID
+     */
+    public Bond getBond(int ID) {
+        for (Bond b : this.bonds) {
+            for (Cylinder c : b.getCylinders()) {
+                if (c.getID() == ID) {
+                    return b;
+                }
+            }
+        }
+        return null;
     }
 
     /**

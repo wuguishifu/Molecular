@@ -31,7 +31,7 @@ public class Renderer {
      * @param object - the object to be rendered
      * @param camera - the camera perspective
      */
-    public void renderMesh(RenderObject object, Camera camera, Vector3f lightPosition) {
+    public void renderMesh(RenderObject object, Camera camera, Vector3f lightPosition, boolean isSelected) {
         GL30.glBindVertexArray(object.getMesh().getVAO());
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);
@@ -44,6 +44,7 @@ public class Renderer {
         shader.setUniform("lightPos", lightPosition);
         shader.setUniform("lightLevel", 0.3f);
         shader.setUniform("viewPos", camera.getPosition());
+        shader.setUniform("alpha", isSelected ? 0.5f : 1.0f);
         GL11.glDrawElements(GL11.GL_TRIANGLES, object.getMesh().getIndices().length, GL11.GL_UNSIGNED_INT, 0);
         shader.unbind();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);

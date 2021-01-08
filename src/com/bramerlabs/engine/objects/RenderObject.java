@@ -82,7 +82,7 @@ public class RenderObject {
      */
     public void generateID() {
         this.ID = curID;
-        curID += 5;
+        curID += 1;
     }
 
     /**

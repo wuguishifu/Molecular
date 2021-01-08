@@ -4,6 +4,7 @@ import com.bramerlabs.engine.io.file_util.FileUtils;
 import com.bramerlabs.engine.math.Matrix4f;
 import com.bramerlabs.engine.math.Vector2f;
 import com.bramerlabs.engine.math.Vector3f;
+import com.bramerlabs.engine.math.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
@@ -154,7 +155,7 @@ public class Shader {
      * @param value - the value of the uniform
      */
     public void setUniform(String name, boolean value) {
-        GL20.glUniform1i(getUniformLocation(name), value ? 1 : 0);
+        GL20.glUniform1f(getUniformLocation(name), value ? 1.0f : 0.0f);
     }
 
     /**
@@ -173,6 +174,15 @@ public class Shader {
      */
     public void setUniform(String name, Vector3f value) {
         GL20.glUniform3f(getUniformLocation(name), value.getX(), value.getY(), value.getZ());
+    }
+
+    /**
+     * sets the uniform to a vec4 value
+     * @param name - the name of the uniform
+     * @param value - the value of the uniform
+     */
+    public void setUniform(String name, Vector4f value) {
+        GL20.glUniform4f(getUniformLocation(name), value.getX(), value.getY(), value.getZ(), value.getW());
     }
 
     /**

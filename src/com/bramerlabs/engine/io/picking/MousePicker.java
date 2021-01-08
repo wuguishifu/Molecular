@@ -56,14 +56,14 @@ public class MousePicker {
      */
     public static Vector3f getPickingRay(float cursorX, float cursorY) {
         IntBuffer viewport = ByteBuffer.allocateDirect((Integer.SIZE/8)*16).order(ByteOrder.nativeOrder()).asIntBuffer();
-        FloatBuffer modelview = ByteBuffer.allocateDirect((Float.SIZE/8)*16).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        FloatBuffer modelView = ByteBuffer.allocateDirect((Float.SIZE/8)*16).order(ByteOrder.nativeOrder()).asFloatBuffer();
         FloatBuffer projection = ByteBuffer.allocateDirect((Float.SIZE/8)*16).order(ByteOrder.nativeOrder()).asFloatBuffer();
         FloatBuffer pickingRayBuffer = ByteBuffer.allocateDirect((Float.SIZE/8)*3).order(ByteOrder.nativeOrder()).asFloatBuffer();
         FloatBuffer zBuffer = ByteBuffer.allocateDirect((Float.SIZE/8)).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, modelview);
+        GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, modelView);
         GL11.glGetFloatv(GL11.GL_PROJECTION_MATRIX, projection);
         GL11.glGetIntegerv(GL11.GL_VIEWPORT, viewport);
-        // convert window coordinates to opengl coordinates (top left to bottom left for (0,0)
+        // convert window coordinates to OpenGL coordinates (top left to bottom left for (0,0)
         float winY = (float) viewport.get(3) - cursorY;
 
         // now unproject this to get the  vector in to the screen
@@ -71,13 +71,13 @@ public class MousePicker {
         // frustum has a near plane and a far plane
 
         // first the near vector
-        gluUnProject(cursorX, winY,  0, modelview, projection, viewport, pickingRayBuffer);
+        gluUnProject(cursorX, winY,  0, modelView, projection, viewport, pickingRayBuffer);
         Vector3f nearVector = new Vector3f(pickingRayBuffer.get(0),pickingRayBuffer.get(1),pickingRayBuffer.get(2));
 
         pickingRayBuffer.rewind();
 
         // now the far vector
-        gluUnProject(cursorX, winY,  1, modelview, projection, viewport, pickingRayBuffer);
+        gluUnProject(cursorX, winY,  1, modelView, projection, viewport, pickingRayBuffer);
         Vector3f farVector = new Vector3f(pickingRayBuffer.get(0),pickingRayBuffer.get(1),pickingRayBuffer.get(2));
 
         //save the results in a vector, far-near

@@ -15,17 +15,27 @@ public class Atom {
     // the color of this atom - default gray
     private Vector3f color = new Vector3f(0.5f);
 
+    // the selection color of this atom - default yellow
+    private Vector3f selectionColor = new Vector3f(0.5f, 0.5f, 0.f);
+
     // the sphere used for rendering the atom
     private Sphere sphere;
 
+    // the sphere used for rendering the selection box if this atom is selected
+    private Sphere selectionSphere;
+
     // the hitbox of this atom
     private SphericalHitbox hitbox;
+
+    // if this atom is selected or not
+    private boolean isSelected = false;
 
     /**
      * default constructor
      */
     public Atom() {
         makeSphere();
+        makeSelectionSphere();
         makeHitbox();
     }
 
@@ -36,6 +46,7 @@ public class Atom {
     public Atom(Vector3f position) {
         this.position = position;
         makeSphere();
+        makeSelectionSphere();
         makeHitbox();
     }
 
@@ -48,6 +59,7 @@ public class Atom {
         this.position = position;
         this.radius = radius;
         makeSphere();
+        makeSelectionSphere();
         makeHitbox();
     }
 
@@ -62,7 +74,31 @@ public class Atom {
         this.radius = radius;
         this.color = color;
         makeSphere();
+        makeSelectionSphere();
         makeHitbox();
+    }
+
+    /**
+     * toggles the selection
+     */
+    public void toggleSelected() {
+        this.isSelected = !isSelected;
+    }
+
+    /**
+     * sets if this atom is selected or not
+     * @param b - true or false
+     */
+    public void setSelected(boolean b) {
+        this.isSelected = b;
+    }
+
+    /**
+     * getter method
+     * @return - a boolean representing if this atom is selected or not
+     */
+    public boolean isSelected() {
+        return this.isSelected;
     }
 
     /**
@@ -81,11 +117,27 @@ public class Atom {
     }
 
     /**
+     * makes the sphere used for rendering the selection box of this atom
+     */
+    private void makeSelectionSphere() {
+        selectionSphere = Sphere.makeSphere(position, selectionColor, radius + 0.1f);
+        selectionSphere.createMesh();
+    }
+
+    /**
      * getter method
      * @return - the sphere used to render this atom
      */
     public Sphere getSphere() {
         return sphere;
+    }
+
+    /**
+     * getter method
+     * @return - the sphere used to render the selection box of this atom
+     */
+    public Sphere getSelectionSphere() {
+        return this.selectionSphere;
     }
 
     /**

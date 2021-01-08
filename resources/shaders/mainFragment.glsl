@@ -12,6 +12,9 @@ uniform float lightLevel;
 // the position of the camera
 uniform vec3 viewPos;
 
+// if the objet is selected
+uniform float alpha;
+
 // the out color
 out vec4 outColor;
 
@@ -39,5 +42,5 @@ void main() {
     // combine the ambient and diffusion light into the final fragment color
     vec3 colorResult = (ambientLight + diffuseLight + specular) * passColor; // combine the light components
 
-    outColor = vec4(colorResult, 1.0); // pass the color
+    outColor = vec4(colorResult, alpha);
 }

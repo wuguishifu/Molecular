@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL46;
 
 import java.awt.*;
@@ -136,6 +137,10 @@ public class Window {
         GL11.glEnable(GL_DEPTH_TEST);
         GL11.glClear(GL_DEPTH_BUFFER_BIT);
         GL11.glDepthFunc(GL_LESS);
+
+        // enable blending
+        GL12.glEnable(GL_BLEND);
+        GL12.glBlendFunc(GL12.GL_SRC_ALPHA, GL12.GL_ONE_MINUS_SRC_ALPHA);
 
         // set the clear color
         GL46.glClearColor(bgc.getX(), bgc.getY(), bgc.getZ(), 1);
