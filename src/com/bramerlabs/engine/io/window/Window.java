@@ -29,8 +29,8 @@ public class Window {
     private int windowX, windowY;
 
     // background color
-//    private static final Color backgroundColorAsColor = new Color(204, 232, 220);
-    private static final Color backgroundColorAsColor = new Color(255, 255, 255);
+    private static final Color backgroundColorAsColor = new Color(204, 232, 220);
+//    private static final Color backgroundColorAsColor = new Color(255, 255, 255);
     public static final Vector3f bgc = Vector3f.divide(new Vector3f(
             backgroundColorAsColor.getRed(),
             backgroundColorAsColor.getGreen(),
@@ -118,6 +118,8 @@ public class Window {
             assert vidMode != null;
             GLFW.glfwSetWindowSize(windowHandle, vidMode.width() / 2, vidMode.height() / 2);
             GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 4, vidMode.height() / 4);
+//            GLFW.glfwSetWindowSize(windowHandle, vidMode.width(), vidMode.height());
+//            GLFW.glfwSetWindowPos(windowHandle, 0, 0);
 
             // store the centered position of the window
             this.windowX = vidMode.width() / 4;
