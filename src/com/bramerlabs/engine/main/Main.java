@@ -208,6 +208,6 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecule() {
-        molecule = new Benzaldehyde(new Vector3f(0, 0, 0), 5f);
+        molecule = new Benzaldehyde(new Vector3f(0, 0, 0), 2.3f);
     }
 }
