@@ -6,62 +6,29 @@ import com.bramerlabs.engine.objects.shapes.Sphere;
 
 public class Atom {
 
-    // the position of the atom - default (0, 0, 0)
-    private Vector3f position = new Vector3f(0, 0, 0);
+    // identity data
+    private int atomicNumber = 1; // the atomic number of this atom - default Hydrogen
+    private String atomicAbbrName = "H"; // the abbreviated name - default Hydrogen
+    private int charge = 0; // the charge of the atom - default neutral
+    private int numNeutrons = 0; // the amount of neutrons this atom has - default 0
 
-    // the radius of the atom - default radius 1
-    private float radius = 1;
+    // locational data
+    private Vector3f position = new Vector3f(0, 0, 0); // the position of the atom - default (0, 0, 0)
+    private float radius = 1.0f; // the radius of the atom - default 1.0f
 
-    // the color of this atom - default gray
-    private Vector3f color = new Vector3f(0.5f);
+    // rendering
+    private Vector3f color = new Vector3f(0.5f); // the color of this atom - default grey
+    private Sphere sphere; // the sphere used for rendering the atom
+    private SphericalHitbox hitbox; // the hitbox of this atom
 
-    // the selection color of this atom - default yellow
-    private Vector3f selectionColor = new Vector3f(0.5f, 0.5f, 0.f);
+    // selection variables
+    private boolean isSelected = false; // if this atom is selected or not
+    private Sphere selectionSphere; // the sphere used for rendering the selection box
+    private Vector3f selectionColor = new Vector3f(0.5f, 0.5f, 0.f); // the color of the selection sphere - default yellow
 
-    // the sphere used for rendering the atom
-    private Sphere sphere;
-
-    // the sphere used for rendering the selection box if this atom is selected
-    private Sphere selectionSphere;
-
-    // the hitbox of this atom
-    private SphericalHitbox hitbox;
-
-    // if this atom is selected or not
-    private boolean isSelected = false;
-
-    /**
-     * default constructor
-     */
-    public Atom() {
-        makeSphere();
-        makeSelectionSphere();
-        makeHitbox();
-    }
-
-    /**
-     * constructor for specified position
-     * @param position - the position of the atom
-     */
-    public Atom(Vector3f position) {
-        this.position = position;
-        makeSphere();
-        makeSelectionSphere();
-        makeHitbox();
-    }
-
-    /**
-     * constructor for position and size of the atom
-     * @param position - the position of the atom
-     * @param radius - the radius of the atom
-     */
-    public Atom(Vector3f position, float radius) {
-        this.position = position;
-        this.radius = radius;
-        makeSphere();
-        makeSelectionSphere();
-        makeHitbox();
-    }
+//    public Atom(Vector3f position, int atomicNumber) {
+//http://crystalmaker.com/support/tutorials/atomic-radii/index.html
+//    }
 
     /**
      * constructor for position, size, and color of the atom
@@ -76,6 +43,63 @@ public class Atom {
         makeSphere();
         makeSelectionSphere();
         makeHitbox();
+    }
+
+    /**
+     * getter method
+     * @return - the atomic number of this atom
+     */
+    public int getAtomicNumber() {
+        return this.atomicNumber;
+    }
+
+    /**
+     * getter method
+     * @return - the charge of this atom
+     */
+    public int getCharge() {
+        return this.charge;
+    }
+
+    /**
+     * getter method
+     * @return - the number of neutrons in this atom
+     */
+    public int getNumNeutrons() {
+        return this.numNeutrons;
+    }
+
+    /**
+     * getter method
+     * @return - the abbreviated name of this atom
+     */
+    public String getAtomicAbbrName() {
+        return this.atomicAbbrName;
+    }
+
+    /**
+     * sets the atomic number of this atom
+     * @param atomicNumber - the atomic number
+     */
+    public void setAtomicNumber(int atomicNumber) {
+        this.atomicNumber = atomicNumber;
+        this.atomicAbbrName = AtomicDataCompiler.getAtomAbbrName(atomicNumber);
+    }
+
+    /**
+     * sets the charge of this atom
+     * @param charge - the charge
+     */
+    public void setCharge(int charge) {
+        this.charge = charge;
+    }
+
+    /**
+     * sets the number of neutrons in this atom
+     * @param neutrons - the number of neutrons
+     */
+    public void setNumNeutrons(int neutrons) {
+        this.numNeutrons = neutrons;
     }
 
     /**
