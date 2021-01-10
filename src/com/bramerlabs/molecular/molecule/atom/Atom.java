@@ -46,6 +46,20 @@ public class Atom {
     }
 
     /**
+     * constructor for specified position, radius, and identity
+     * @param position - the position of the atom
+     * @param radius - the radius of the atom
+     * @param atomicNumber - the atomic number of the atom
+     */
+    public Atom(Vector3f position, float radius, int atomicNumber) {
+        this.position = position;
+        this.radius = radius;
+        this.color = AtomicDataCompiler.getCPKColor(atomicNumber);
+
+        this.atomicNumber = atomicNumber;
+    }
+
+    /**
      * getter method
      * @return - the atomic number of this atom
      */
