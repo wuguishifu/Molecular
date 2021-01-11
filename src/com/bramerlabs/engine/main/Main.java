@@ -12,10 +12,7 @@ import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.Benzaldehyde;
-import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.CarbonDioxide;
-import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.Methane;
-import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.Water;
+import com.bramerlabs.molecular.molecule.default_molecules.AceticAcid;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -230,37 +227,6 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        molecules.add(new Benzaldehyde(new Vector3f(0, 0, 0)));
-        molecules.add(Water.getInstance(new Vector3f(15, 0, 0)));
-        molecules.add(CarbonDioxide.getInstance(new Vector3f(-15, 0, 0)));
-        molecules.add(Methane.getInstance(new Vector3f(0, 0, 15)));
-    }
-
-    /**
-     * generates a ring of carbon dioxide molecules
-     */
-    private void generateCarbonDioxideRing() {
-        float rt3o2 = (float) (Math.sqrt(3)/2);
-        Vector3f[] vectors = new Vector3f[]{
-                new Vector3f(1, 0, 0),
-                new Vector3f(rt3o2, 0, 0.5f),
-                new Vector3f(0.5f, 0, rt3o2),
-
-                new Vector3f(0, 0, 1),
-                new Vector3f(-0.5f, 0, rt3o2),
-                new Vector3f(-rt3o2, 0, 0.5f),
-
-                new Vector3f(-1, 0, 0),
-                new Vector3f(-rt3o2, 0, -0.5f),
-                new Vector3f(-0.5f, 0, -rt3o2),
-
-                new Vector3f(0, 0, -1),
-                new Vector3f(0.5f, 0, -rt3o2),
-                new Vector3f(rt3o2, 0, -0.5f),
-        };
-        for (Vector3f v : vectors) {
-            v.scale(15);
-            molecules.add(CarbonDioxide.getInstance(v, v));
-        }
+        molecules.add(new AceticAcid(new Vector3f(0, 0, 0)));
     }
 }

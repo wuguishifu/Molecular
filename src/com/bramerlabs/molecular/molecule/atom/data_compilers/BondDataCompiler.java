@@ -15,15 +15,15 @@ public class BondDataCompiler {
         }
 
         // get the covalent bond radii
-        int a1r = AtomicDataCompiler.getCovalentRadius(a1, bondOrder);
-        int a2r = AtomicDataCompiler.getCovalentRadius(a2, bondOrder);
+        float a1r = AtomicDataCompiler.getCovalentRadius(a1, bondOrder);
+        float a2r = AtomicDataCompiler.getCovalentRadius(a2, bondOrder);
 
         if (a1r == 0 || a2r == 0) {
             return 0;
         }
 
         // add them together
-        return (a1r + a2r)/100f;
+        return (a1r + a2r);
     }
 
 }

@@ -2,11 +2,13 @@ package com.bramerlabs.molecular.molecule.atom.organics_atoms;
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 
 public class Hydrogen extends Atom {
 
     // the Van der Waals atomic radius of oxygen
-    public static float ATOMIC_RADIUS = 1.09f;
+//    public static float ATOMIC_RADIUS = 1.09f;
+    public static float ATOMIC_RADIUS = AtomicDataCompiler.getVDWRadius(Atom.HYDROGEN);
 
     // the atomic number of oxygen
     final static int ATOMIC_NUMBER = 1;
@@ -20,12 +22,6 @@ public class Hydrogen extends Atom {
      * @param position - the position of the oxygen atom
      */
     public Hydrogen(Vector3f position) {
-        super(position, ATOMIC_RADIUS, ATOMIC_NUMBER);
+        super(position, ATOMIC_NUMBER);
     }
-
-    @Override
-    public float getAtomicRadius() {
-        return ATOMIC_RADIUS;
-    }
-
 }

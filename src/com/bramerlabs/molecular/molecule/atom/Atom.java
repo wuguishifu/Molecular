@@ -5,7 +5,7 @@ import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.shapes.Sphere;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 
-public abstract class Atom {
+public class Atom {
 
     // identity data
     private int atomicNumber = 1; // the atomic number of this atom - default Hydrogen
@@ -43,17 +43,16 @@ public abstract class Atom {
     }
 
     /**
-     * constructor for specified position, radius, and identity
-     * @param position - the position of the atom
-     * @param radius - the radius of the atom
-     * @param atomicNumber - the atomic number of the atom
+     * default constructor
+     * @param position - the position of this atom
+     * @param atomicNumber - the atomic number of this atom
      */
-    public Atom(Vector3f position, float radius, int atomicNumber) {
+    public Atom(Vector3f position, int atomicNumber) {
         this.position = position;
-        this.radius = radius;
-        this.color = AtomicDataCompiler.getCPKColor(atomicNumber);
-
         this.atomicNumber = atomicNumber;
+
+        this.radius = AtomicDataCompiler.getVDWRadius(atomicNumber);
+        this.color = AtomicDataCompiler.getCPKColor(atomicNumber);
 
         makeSphere();
         makeSelectionSphere();
@@ -61,10 +60,12 @@ public abstract class Atom {
     }
 
     /**
-     * gets the atomic radius
-     * @return - the atomic radius
+     * getter method
+     * @return - the atomic radius of this atom
      */
-    public abstract float getAtomicRadius();
+    public float getAtomicRadius() {
+        return this.radius;
+    }
 
     /**
      * getter method
@@ -165,7 +166,7 @@ public abstract class Atom {
      * makes the sphere used for rendering the selection box of this atom
      */
     private void makeSelectionSphere() {
-        selectionSphere = Sphere.makeSphere(position, selectionColor, radius + 0.1f);
+        selectionSphere = Sphere.makeSphere(position, selectionColor, radius + 0.5f);
         selectionSphere.createMesh();
     }
 

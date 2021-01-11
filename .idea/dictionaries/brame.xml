@@ -6,14 +6,19 @@
       <w>coord</w>
       <w>coords</w>
       <w>framerate</w>
+      <w>hexafluoride</w>
       <w>hitbox</w>
+      <w>hydrogens</w>
+      <w>hydroxyl</w>
       <w>icosahydrogen</w>
       <w>ketone</w>
       <w>raycast</w>
       <w>raycasting</w>
       <w>shaders</w>
+      <w>trifluoride</w>
       <w>trigonal</w>
       <w>unproject</w>
+      <w>waals</w>
     </words>
   </dictionary>
 </component>

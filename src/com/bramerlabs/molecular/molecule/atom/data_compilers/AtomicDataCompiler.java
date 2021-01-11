@@ -4,7 +4,7 @@ import com.bramerlabs.engine.math.Vector3f;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -43,11 +43,42 @@ public class AtomicDataCompiler {
     // the covalent radii of each atom
     public static ArrayList<int[]> covalentRadii = new ArrayList<>();
 
+    // the Van der Waals radii of each atom
+    public static ArrayList<Float> VDWRadii = new ArrayList<>();
+
     /**
      * initialize the compiler
      */
     public static void init() {
         compileCovalentRadii();
+        compileVDWRadii();
+    }
+
+    /**
+     * compile the Van der Waals radii
+     */
+    private static void compileVDWRadii() {
+        try {
+            Scanner input = new Scanner(new File("resources/atomic_data/Atom Van der Waals Radii"));
+            for (int i = 0; i < 118; i++) {
+                VDWRadii.add(input.nextFloat());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * gets the Van der Waals radius
+     * @param atomicNumber - the atomic number
+     * @return - the VDW radius
+     */
+    public static float getVDWRadius(int atomicNumber) {
+        if (atomicNumber < 1 || atomicNumber > 118) {
+            return 0;
+        } else {
+            return VDWRadii.get(atomicNumber - 1);
+        }
     }
 
     /**
@@ -59,7 +90,7 @@ public class AtomicDataCompiler {
             for (int i = 0; i < 118; i++) {
                 covalentRadii.add(new int[]{input.nextInt(), input.nextInt(), input.nextInt(), input.nextInt()});
             }
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -70,17 +101,17 @@ public class AtomicDataCompiler {
      * @param bondOrder - the order of the bond
      * @return - the covalent radius
      */
-    public static int getCovalentRadius(int atomicNumber, int bondOrder) {
+    public static float getCovalentRadius(int atomicNumber, int bondOrder) {
         if (bondOrder == 1) {
             if (covalentRadii.get(atomicNumber - 1)[0] == 0) {
-                return covalentRadii.get(atomicNumber - 1)[1];
+                return covalentRadii.get(atomicNumber - 1)[1] / 100.0f;
             } else {
-                return covalentRadii.get(atomicNumber - 1)[0];
+                return covalentRadii.get(atomicNumber - 1)[0] / 100.0f;
             }
         } else if (bondOrder == 2) {
-            return covalentRadii.get(atomicNumber - 1)[2];
+            return covalentRadii.get(atomicNumber - 1)[2] / 100.0f;
         } else if (bondOrder == 3) {
-            return covalentRadii.get(atomicNumber - 1)[3];
+            return covalentRadii.get(atomicNumber - 1)[3] / 100.0f;
         }
         return 0;
     }

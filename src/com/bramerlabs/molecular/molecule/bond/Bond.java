@@ -3,6 +3,7 @@ package com.bramerlabs.molecular.molecule.bond;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.data_compilers.BondDataCompiler;
 
 import java.util.ArrayList;
 
@@ -154,4 +155,20 @@ public class Bond {
             c.destroy();
         }
     }
+
+    /**
+     * common bond lengths
+     */
+    // C-H bonds
+    public final static float CH_BOND = BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.HYDROGEN, 1);
+    // C-C bonds
+    public final static float CC_SINGLE_BOND = BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.CARBON, 1);
+    public final static float CC_DOUBLE_BOND = BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.CARBON, 2);
+    public final static float CC_TRIPLE_BOND = BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.CARBON, 3);
+    // C-O bonds
+    public final static float CO_SINGLE_BOND = BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.OXYGEN, 1);
+    public final static float CO_DOUBLE_BOND = BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.OXYGEN, 2);
+    // O-H bonds
+    public final static float OH_BOND = BondDataCompiler.getCovalentBondLength(Atom.OXYGEN, Atom.HYDROGEN, 1);
+
 }

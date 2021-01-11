@@ -1,10 +1,8 @@
-package com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules;
+package com.bramerlabs.molecular.molecule.default_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.Molecule;
-import com.bramerlabs.molecular.molecule.atom.Atom;
-import com.bramerlabs.molecular.molecule.atom.data_compilers.BondDataCompiler;
-import com.bramerlabs.molecular.molecule.atom.organics_atoms.Carbon;
+import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Hydrogen;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 
@@ -23,8 +21,8 @@ public class Benzene extends Molecule {
     public Benzene(Vector3f position) {
         super(position, new ArrayList<>(), new ArrayList<>());
 
-        float CHBond = Carbon.ATOMIC_RADIUS + Hydrogen.ATOMIC_RADIUS + BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.HYDROGEN, 1);
-        float CCBond = Carbon.ATOMIC_RADIUS + Carbon.ATOMIC_RADIUS + BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.CARBON, 1);
+        float CHBond = Carbon.ATOMIC_RADIUS + Hydrogen.ATOMIC_RADIUS + Bond.CH_BOND;
+        float CCBond = Carbon.ATOMIC_RADIUS + Carbon.ATOMIC_RADIUS + Bond.CC_SINGLE_BOND;
 
         // add the carbon atoms and bonds
         for (float[] p : positions) {
