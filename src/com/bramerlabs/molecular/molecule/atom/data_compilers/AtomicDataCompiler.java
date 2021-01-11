@@ -1,8 +1,12 @@
-package com.bramerlabs.molecular.molecule.atom;
+package com.bramerlabs.molecular.molecule.atom.data_compilers;
 
 import com.bramerlabs.engine.math.Vector3f;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class AtomicDataCompiler {
 
@@ -35,6 +39,51 @@ public class AtomicDataCompiler {
             "B30DA6", "BD0D87", "C70066", "CC0059", "D1004F", "D90045", "E00038", "E6002E", "EB0026", "BFC2C7",
             "BFC2C7", "BFC2C7", "BFC2C7", "BFC2C7", "BFC2C7", "BFC2C7", "BFC2C7", "BFC2C7"
     };
+
+    // the covalent radii of each atom
+    public static ArrayList<int[]> covalentRadii = new ArrayList<>();
+
+    /**
+     * initialize the compiler
+     */
+    public static void init() {
+        compileCovalentRadii();
+    }
+
+    /**
+     * compile the covalent radii
+     */
+    private static void compileCovalentRadii() {
+        try {
+            Scanner input = new Scanner(new File("resources/atomic_data/Atom Covalent Radii"));
+            for (int i = 0; i < 118; i++) {
+                covalentRadii.add(new int[]{input.nextInt(), input.nextInt(), input.nextInt(), input.nextInt()});
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * gets the covalent radius of an atom
+     * @param atomicNumber - the atomic number of the atom
+     * @param bondOrder - the order of the bond
+     * @return - the covalent radius
+     */
+    public static int getCovalentRadius(int atomicNumber, int bondOrder) {
+        if (bondOrder == 1) {
+            if (covalentRadii.get(atomicNumber - 1)[0] == 0) {
+                return covalentRadii.get(atomicNumber - 1)[1];
+            } else {
+                return covalentRadii.get(atomicNumber - 1)[0];
+            }
+        } else if (bondOrder == 2) {
+            return covalentRadii.get(atomicNumber - 1)[2];
+        } else if (bondOrder == 3) {
+            return covalentRadii.get(atomicNumber - 1)[3];
+        }
+        return 0;
+    }
 
     /**
      * retrieves the atom name abbreviation of an atom with a specified atomic number

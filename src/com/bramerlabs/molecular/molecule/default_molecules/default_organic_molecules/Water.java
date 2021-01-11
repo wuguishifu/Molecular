@@ -5,6 +5,7 @@ import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.math.Vector4f;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.data_compilers.BondDataCompiler;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Hydrogen;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Oxygen;
 import com.bramerlabs.molecular.molecule.bond.Bond;
@@ -15,7 +16,7 @@ import java.util.Arrays;
 public class Water extends Molecule {
 
     // the H-O bond length
-    public static float BOND_LENGTH = 0.96f;
+    public static float BOND_LENGTH = BondDataCompiler.getCovalentBondLength(Atom.HYDROGEN, Atom.OXYGEN, 1);
 
     /**
      * constructor for specified atoms and bonds

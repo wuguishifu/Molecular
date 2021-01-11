@@ -2,6 +2,7 @@ package com.bramerlabs.molecular.molecule.default_molecules.default_organic_mole
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.data_compilers.BondDataCompiler;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Carbon;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Hydrogen;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Oxygen;
@@ -20,9 +21,9 @@ public class Benzaldehyde extends Benzene {
         Vector3f sub = this.getAtoms().get(3).getPosition();
         this.getAtoms().remove(this.getAtoms().get(9));
 
-        float COBond = Carbon.ATOMIC_RADIUS + Oxygen.ATOMIC_RADIUS + 1.24f;
-        float CHBond = Carbon.ATOMIC_RADIUS + Hydrogen.ATOMIC_RADIUS + 1.09f;
-        float CCBond = Carbon.ATOMIC_RADIUS + Carbon.ATOMIC_RADIUS + 1.54f;
+        float COBond = Carbon.ATOMIC_RADIUS + Oxygen.ATOMIC_RADIUS + BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.OXYGEN, 2);
+        float CHBond = Carbon.ATOMIC_RADIUS + Hydrogen.ATOMIC_RADIUS + BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.HYDROGEN, 1);
+        float CCBond = Carbon.ATOMIC_RADIUS + Carbon.ATOMIC_RADIUS + BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.CARBON, 1);
 
         Atom c1 = new Carbon(Vector3f.add(Vector3f.normalize(new Vector3f(0, 0, -1), CCBond), sub));
         Atom o1 = new Oxygen(Vector3f.add(Vector3f.normalize(new Vector3f(-0.866025f, 0, -0.5f), COBond), c1.getPosition()));

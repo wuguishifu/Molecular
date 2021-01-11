@@ -3,6 +3,7 @@ package com.bramerlabs.molecular.molecule.default_molecules.default_organic_mole
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.data_compilers.BondDataCompiler;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Carbon;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Oxygen;
 import com.bramerlabs.molecular.molecule.bond.Bond;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 public class CarbonDioxide extends Molecule {
 
     // the O-C bond length
-    public static float BOND_LENGTH = 1.16f;
+    public static float BOND_LENGTH = BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.OXYGEN, 2);
 
     /**
      * constructor for specified atoms and bonds

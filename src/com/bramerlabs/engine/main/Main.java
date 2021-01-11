@@ -10,9 +10,12 @@ import com.bramerlabs.engine.objects.Camera;
 import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.CarbonDioxide;
 import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.Benzaldehyde;
+import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.CarbonDioxide;
+import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.Methane;
+import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.Water;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -74,6 +77,10 @@ public class Main implements Runnable {
      * initialize the program
      */
     private void init() {
+
+        // initialize the data compilers
+        AtomicDataCompiler.init();
+
         //create the openJL window
         window = new Window(input);
         window.create();
@@ -224,6 +231,9 @@ public class Main implements Runnable {
      */
     private void generateMolecules() {
         molecules.add(new Benzaldehyde(new Vector3f(0, 0, 0)));
+        molecules.add(Water.getInstance(new Vector3f(15, 0, 0)));
+        molecules.add(CarbonDioxide.getInstance(new Vector3f(-15, 0, 0)));
+        molecules.add(Methane.getInstance(new Vector3f(0, 0, 15)));
     }
 
     /**

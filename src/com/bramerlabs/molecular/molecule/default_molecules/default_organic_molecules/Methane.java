@@ -5,6 +5,7 @@ import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.math.Vector4f;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.data_compilers.BondDataCompiler;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Carbon;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Hydrogen;
 import com.bramerlabs.molecular.molecule.bond.Bond;
@@ -15,7 +16,7 @@ import java.util.Arrays;
 public class Methane extends Molecule {
 
     // the C-H bond length
-    public static float BOND_LENGTH = 1.09f;
+    public static float BOND_LENGTH = BondDataCompiler.getCovalentBondLength(Atom.CARBON, Atom.HYDROGEN, 1);
 
     /**
      * constructor for specified atoms and bonds
