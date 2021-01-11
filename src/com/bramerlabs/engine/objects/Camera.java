@@ -17,7 +17,7 @@ public class Camera {
     private final static float rotateSpeed = 0.02f * 360;
 
     // arcball camera variables
-    private float distance = 10.0f;
+    private float distance = 20.0f;
     private float angle = 0.0f;
     private float horizontalDistance = 0, verticalDistance = 0;
 //    private float verticalAngle = -45, horizontalAngle = 30; // used for looking at an angle

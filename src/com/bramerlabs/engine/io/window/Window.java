@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Window {
 
     // the window title
-    private static final String TITLE = "Design Buddies Game Jam!";
+    private static final String TITLE = "Molecular";
 
     // the framerate of the game
     private static final int FRAMERATE = 1; // this designates 60 fps
@@ -73,7 +73,7 @@ public class Window {
         this.height = defaultHeight;
 
         // create a projection matrix
-        projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 50f);
+        projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 100f);
 
         this.input = input;
     }

@@ -54,7 +54,7 @@ public class CarbonDioxide extends Molecule {
 
         // array list of bonds
         ArrayList<Bond> bonds = new ArrayList<>();
-        bonds.add(new Bond(c1, o1, 3));
+        bonds.add(new Bond(c1, o1, 2));
         bonds.add(new Bond(c1, o2, 2));
 
         // returns a newly constructed carbon dioxide molecule
