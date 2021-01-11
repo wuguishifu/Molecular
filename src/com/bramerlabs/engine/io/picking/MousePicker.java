@@ -140,10 +140,13 @@ public class MousePicker {
         int width = w.get(0);
         int height = h.get(0);
 
+        // adjust the y position
+        float y = height - mouseY;
+
         // return the new vector
         return new Vector2f(
                 2 * mouseX / width - 1,
-                2 * mouseY / height - 1
+                2 * y / height - 1
         );
     }
 
