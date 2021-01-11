@@ -238,11 +238,27 @@ public class Vector4f {
     }
 
     /**
+     * converts the x, y, z components of this vector into a 3-vector
+     * @return - the 3-vector
+     */
+    public Vector3f toVector3f() {
+        return getXYZ();
+    }
+
+    /**
      * converts the x, y components of this vector into a 2-vector
      * @return - the 2-vector
      */
     public Vector2f getXY() {
         return new Vector2f(x, y);
+    }
+
+    /**
+     * converts this vector4f into a float array
+     * @return - a 4d array
+     */
+    public float[] toFloatArray() {
+        return new float[]{x, y, z, w};
     }
 
     /**

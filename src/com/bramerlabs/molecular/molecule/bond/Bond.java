@@ -18,7 +18,7 @@ public class Bond {
     private int bondOrder = 1; // 2: double bond, 3: triple bond, etc
 
     // the radius of this bond - default 0.1f
-    private float radius = 0.1f;
+    private float radius = 0.2f;
 
     // the color of this bond - default gray
     private Vector3f color = new Vector3f(0.5f);
@@ -111,7 +111,7 @@ public class Bond {
             if (Vector3f.cross(bondDirection, v0).equals(new Vector3f(0), 0.00001f)) {
                 v0 = new Vector3f(0, 0, 1);
             }
-            normal = Vector3f.normalize(Vector3f.cross(bondDirection, v0), 0.4f);
+            normal = Vector3f.normalize(Vector3f.cross(bondDirection, v0), 0.8f);
         }
 
         // create the central bond if its a single or triple bond
@@ -127,7 +127,7 @@ public class Bond {
 
         // create the double bonds
         if (bondOrder == 2) {
-            normal.scale(0.5f);
+            normal.scale(0.5f); // divide the normal vector in half
             cylinders.add(Cylinder.makeCylinder(Vector3f.add(a1.getPosition(), normal), Vector3f.add(a2.getPosition(), normal), color, radius));
             cylinders.add(Cylinder.makeCylinder(Vector3f.subtract(a1.getPosition(), normal), Vector3f.subtract(a2.getPosition(), normal), color, radius));
         }

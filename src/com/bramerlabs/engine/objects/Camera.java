@@ -20,8 +20,9 @@ public class Camera {
     private float distance = 10.0f;
     private float angle = 0.0f;
     private float horizontalDistance = 0, verticalDistance = 0;
-//    private float verticalAngle = -45, horizontalAngle = 30;
-    private float verticalAngle = -90, horizontalAngle = 0;
+//    private float verticalAngle = -45, horizontalAngle = 30; // used for looking at an angle
+//    private float verticalAngle = -90, horizontalAngle = 0; // used for looking down
+    private float verticalAngle = 0, horizontalAngle = 0; // used for looking straight forward
 
     // the position of the mouse
     private double oldMouseX = 0, oldMouseY = 0, newMouseX, newMouseY;

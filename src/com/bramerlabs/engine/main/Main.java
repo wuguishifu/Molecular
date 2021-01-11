@@ -11,13 +11,14 @@ import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.ring_molecules.Benzaldehyde;
+import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.Methane;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
 import org.lwjglx.BufferUtils;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 public class Main implements Runnable {
 
@@ -36,8 +37,8 @@ public class Main implements Runnable {
     // used to handle inputs
     private Input input = new Input();
 
-    // test game objects
-    private Molecule molecule;
+    // the molecules
+    private ArrayList<Molecule> molecules;
 
     // the camera
     public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input);
@@ -77,7 +78,8 @@ public class Main implements Runnable {
         window.create();
 
         // create molecules here
-        generateMolecule();
+        molecules = new ArrayList<>();
+        generateMolecules();
 
         // create the renderer
         shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
@@ -100,7 +102,9 @@ public class Main implements Runnable {
         window.destroy();
 
         // release the game objects
-        molecule.destroy();
+        for (Molecule molecule : molecules) {
+            molecule.destroy();
+        }
 
         // release the shaders
         shader.destroy();
@@ -137,7 +141,7 @@ public class Main implements Runnable {
         lastFrameRightButtonDown = currentFrameRightButtonDown;
 
         // update the camera
-        camera.update(molecule.getPosition());
+        camera.update(new Vector3f(0));
         return shouldSwapBuffers;
     }
 
@@ -146,13 +150,15 @@ public class Main implements Runnable {
      */
     private void getSelectedAtom() {
         // render the game objects
-        for (Bond bond : molecule.getBonds()) {
-            for (Cylinder cylinder : bond.getCylinders()) {
-                cpRenderer.renderMesh(cylinder, camera);
+        for (Molecule molecule : molecules) {
+            for (Bond bond : molecule.getBonds()) {
+                for (Cylinder cylinder : bond.getCylinders()) {
+                    cpRenderer.renderMesh(cylinder, camera);
+                }
             }
-        }
-        for (Atom atom : molecule.getAtoms()) {
-            cpRenderer.renderMesh(atom.getSphere(), camera);
+            for (Atom atom : molecule.getAtoms()) {
+                cpRenderer.renderMesh(atom.getSphere(), camera);
+            }
         }
 
         GL11.glFlush();
@@ -166,14 +172,16 @@ public class Main implements Runnable {
         ByteBuffer data = BufferUtils.createByteBuffer(3);
         GL11.glReadPixels((int)x, (int)y, 1, 1, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, data);
 
-        Atom a = molecule.getAtom(data.get(0));
-        for (Atom atom : molecule.getAtoms()) {
-            if (atom != a) {
-                atom.setSelected(false);
+        for (Molecule molecule : molecules) {
+            Atom a = molecule.getAtom(data.get(0));
+            for (Atom atom : molecule.getAtoms()) {
+                if (atom != a) {
+                    atom.setSelected(false);
+                }
             }
-        }
-        if (a != null) {
-            a.toggleSelected();
+            if (a != null) {
+                a.toggleSelected();
+            }
         }
 
     }
@@ -183,18 +191,20 @@ public class Main implements Runnable {
      */
     private void render(boolean shouldSwapBuffers) {
 
-        // render the game objects
-        for (Bond bond : molecule.getBonds()) {
-            for (Cylinder cylinder : bond.getCylinders()) {
-                renderer.renderMesh(cylinder, camera, lightPosition, false);
+        // render the molecules
+        for (Molecule molecule : molecules) {
+            for (Bond bond : molecule.getBonds()) {
+                for (Cylinder cylinder : bond.getCylinders()) {
+                    renderer.renderMesh(cylinder, camera, lightPosition, false);
+                }
             }
-        }
-        for (Atom atom : molecule.getAtoms()) {
-            renderer.renderMesh(atom.getSphere(), camera, lightPosition, false);
-        }
-        for (Atom atom : molecule.getAtoms()) {
-            if (atom.isSelected()) {
-                renderer.renderMesh(atom.getSelectionSphere(), camera, lightPosition, true);
+            for (Atom atom : molecule.getAtoms()) {
+                renderer.renderMesh(atom.getSphere(), camera, lightPosition, false);
+            }
+            for (Atom atom : molecule.getAtoms()) {
+                if (atom.isSelected()) {
+                    renderer.renderMesh(atom.getSelectionSphere(), camera, lightPosition, true);
+                }
             }
         }
 
@@ -207,7 +217,7 @@ public class Main implements Runnable {
     /**
      * generates a molecule
      */
-    private void generateMolecule() {
-        molecule = new Benzaldehyde(new Vector3f(0, 0, 0), 2.3f);
+    private void generateMolecules() {
+        molecules.add(Methane.getInstance(new Vector3f(6, 0, 0), new Vector3f(1, 0, 0)));
     }
 }

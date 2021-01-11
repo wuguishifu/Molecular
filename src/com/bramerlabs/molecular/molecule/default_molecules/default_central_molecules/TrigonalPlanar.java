@@ -1,4 +1,4 @@
-package com.bramerlabs.molecular.molecule.default_molecules.central_molecules;
+package com.bramerlabs.molecular.molecule.default_molecules.default_central_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 

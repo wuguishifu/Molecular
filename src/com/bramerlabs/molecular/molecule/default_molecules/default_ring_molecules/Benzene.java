@@ -1,8 +1,8 @@
-package com.bramerlabs.molecular.molecule.default_molecules.ring_molecules;
+package com.bramerlabs.molecular.molecule.default_molecules.default_ring_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.Molecule;
-import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.DefaultAtom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class Benzene extends Molecule {
 
         // add the carbon atoms and bonds
         for (float[] p : positions) {
-            this.addAtom(new Atom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength), position), 2*atomicRadius/3, c1));
+            this.addAtom(new DefaultAtom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength), position), 2*atomicRadius/3, c1));
         }
         this.addBond(new Bond(this.getAtoms().get(1), this.getAtoms().get(0), 1));
         this.addBond(new Bond(this.getAtoms().get(2), this.getAtoms().get(1), 2));
@@ -44,7 +44,7 @@ public class Benzene extends Molecule {
 
         // add the hydrogen atoms and bondsT
         for (float[] p : positions) {
-            this.addAtom(new Atom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength * 2), position), atomicRadius/2, c2));
+            this.addAtom(new DefaultAtom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength * 2), position), atomicRadius/2, c2));
         }
         this.addBond(new Bond(this.getAtoms().get(0), this.getAtoms().get(6), 1));
         this.addBond(new Bond(this.getAtoms().get(1), this.getAtoms().get(7), 1));

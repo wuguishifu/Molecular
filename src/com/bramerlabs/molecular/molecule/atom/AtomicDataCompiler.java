@@ -57,7 +57,7 @@ public class AtomicDataCompiler {
     public static Vector3f getCPKColor(int atomicNumber) {
         try {
             Color CPKColor = Color.decode("#" + atomicCPKHexColors[atomicNumber - 1]);
-            return new Vector3f(CPKColor.getRed(), CPKColor.getGreen(), CPKColor.getBlue());
+            return Vector3f.divide(new Vector3f(CPKColor.getRed(), CPKColor.getGreen(), CPKColor.getBlue()), new Vector3f(255));
         } catch (IndexOutOfBoundsException e) {
             return new Vector3f(0);
         }

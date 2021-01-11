@@ -1,8 +1,8 @@
-package com.bramerlabs.molecular.molecule.default_molecules.central_molecules;
+package com.bramerlabs.molecular.molecule.default_molecules.default_central_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.Molecule;
-import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.atom.DefaultAtom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 
 import java.util.ArrayList;
@@ -37,9 +37,9 @@ public class DefaultCentralMolecule extends Molecule {
         this.numAtoms = numAtoms;
 
         // create the atoms
-        this.addAtom(new Atom(position, atomicRadius, c1)); // create the central atom
+        this.addAtom(new DefaultAtom(position, atomicRadius, c1)); // create the central atom
         for (float[] p : positions) { // create auxiliary atoms
-            this.addAtom(new Atom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength), position), atomicRadius, c2));
+            this.addAtom(new DefaultAtom(Vector3f.add(Vector3f.normalize(new Vector3f(p), bondLength), position), atomicRadius, c2));
         }
 
         // create the bonds

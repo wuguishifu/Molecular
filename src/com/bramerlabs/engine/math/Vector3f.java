@@ -262,6 +262,31 @@ public class Vector3f {
     }
 
     /**
+     * determines the angle between two vectors
+     * @param v - vector 1
+     * @param u - vector 2
+     * @return - the angle between
+     */
+    public static float angleBetween(Vector3f v, Vector3f u) {
+        return Vector3f.dot(v, u) * quickInverseSqrt(v) * quickInverseSqrt(u);
+    }
+
+    /**
+     * quickly determines the inverse magnitude of a vector using the Fast Inverse Square Root formula
+     * @param v - the vector
+     * @return - the magnitude
+     */
+    public static float quickInverseSqrt(Vector3f v) {
+        float val = v.x * v.x + v.y * v.y + v.z * v.z;
+        float xHalf = 0.5f * val;
+        int i = Float.floatToIntBits(val);
+        i = 0x5f3759df - (i >> 1);
+        val = Float.intBitsToFloat(i);
+        val *= (1.5f - xHalf * val * val);
+        return val;
+    }
+
+    /**
      * getter method
      * @return - the x component of this vector
      */

@@ -4,7 +4,7 @@ import com.bramerlabs.engine.collision_detection.SphericalHitbox;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.shapes.Sphere;
 
-public class Atom {
+public abstract class Atom {
 
     // identity data
     private int atomicNumber = 1; // the atomic number of this atom - default Hydrogen
@@ -13,11 +13,11 @@ public class Atom {
     private int numNeutrons = 0; // the amount of neutrons this atom has - default 0
 
     // locational data
-    private Vector3f position = new Vector3f(0, 0, 0); // the position of the atom - default (0, 0, 0)
-    private float radius = 1.0f; // the radius of the atom - default 1.0f
+    private Vector3f position; // the position of the atom
+    private float radius; // the radius of the atom
 
     // rendering
-    private Vector3f color = new Vector3f(0.5f); // the color of this atom - default grey
+    private Vector3f color; // the color of this atom
     private Sphere sphere; // the sphere used for rendering the atom
     private SphericalHitbox hitbox; // the hitbox of this atom
 
@@ -25,10 +25,6 @@ public class Atom {
     private boolean isSelected = false; // if this atom is selected or not
     private Sphere selectionSphere; // the sphere used for rendering the selection box
     private Vector3f selectionColor = new Vector3f(0.5f, 0.5f, 0.f); // the color of the selection sphere - default yellow
-
-//    public Atom(Vector3f position, int atomicNumber) {
-//http://crystalmaker.com/support/tutorials/atomic-radii/index.html
-//    }
 
     /**
      * constructor for position, size, and color of the atom
@@ -57,7 +53,17 @@ public class Atom {
         this.color = AtomicDataCompiler.getCPKColor(atomicNumber);
 
         this.atomicNumber = atomicNumber;
+
+        makeSphere();
+        makeSelectionSphere();
+        makeHitbox();
     }
+
+    /**
+     * gets the atomic radius
+     * @return - the atomic radius
+     */
+    public abstract float getAtomicRadius();
 
     /**
      * getter method
