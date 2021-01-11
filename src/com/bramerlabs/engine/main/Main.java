@@ -11,7 +11,7 @@ import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.Methane;
+import com.bramerlabs.molecular.molecule.default_molecules.default_organic_molecules.Water;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -218,6 +218,10 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        molecules.add(Methane.getInstance(new Vector3f(6, 0, 0), new Vector3f(1, 0, 0)));
+        molecules.add(Water.getInstance(new Vector3f(-4, 0, 0), new Vector3f(-1, 0, 0)));
+        molecules.add(Water.getInstance(new Vector3f(4, 0, 0), new Vector3f(1, 0, 0)));
+        molecules.add(Water.getInstance(new Vector3f(0, 0, 4), new Vector3f(0, 0, 1)));
+        molecules.add(Water.getInstance(new Vector3f(0, 0, -4), new Vector3f(0, 0, -1)));
+        molecules.add(Water.getInstance(new Vector3f(0, 0, 0), new Vector3f(0, 1, 0)));
     }
 }

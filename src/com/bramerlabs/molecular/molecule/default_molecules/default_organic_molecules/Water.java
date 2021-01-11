@@ -5,17 +5,17 @@ import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.math.Vector4f;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
-import com.bramerlabs.molecular.molecule.atom.organics_atoms.Carbon;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Hydrogen;
+import com.bramerlabs.molecular.molecule.atom.organics_atoms.Oxygen;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Methane extends Molecule {
+public class Water extends Molecule {
 
-    // the C-H bond length
-    public static float BOND_LENGTH = 1.09f;
+    // the H-O bond length
+    public static float BOND_LENGTH = 0.96f;
 
     /**
      * constructor for specified atoms and bonds
@@ -24,29 +24,29 @@ public class Methane extends Molecule {
      * @param atoms    - the atoms making up this molecule
      * @param bonds    - the bonds making up this molecule
      */
-    public Methane(Vector3f position, ArrayList<Atom> atoms, ArrayList<Bond> bonds) {
+    public Water(Vector3f position, ArrayList<Atom> atoms, ArrayList<Bond> bonds) {
         super(position, atoms, bonds);
     }
 
     /**
-     * creates an instance of a carbon dioxide molecule
+     * creates an instance of a water molecule
      * @param position - the position of the central atom
      * @param axis - the axis that the molecule is on
-     * @return - a new instance of a carbon dioxide molecule
+     * @return - a new instance of a water molecule
      */
-    public static Methane getInstance(Vector3f position, Vector3f axis) {
+    public static Water getInstance(Vector3f position, Vector3f axis) {
 
         // the distance from atom to atom
-        float atomDistance = BOND_LENGTH + Carbon.ATOMIC_RADIUS + Hydrogen.ATOMIC_RADIUS;
+        float atomDistance = BOND_LENGTH + Oxygen.ATOMIC_RADIUS + Hydrogen.ATOMIC_RADIUS;
 
-        // the central carbon atom
-        Carbon c1 = new Carbon(position);
+        // the central oxygen atom
+        Oxygen o1 = new Oxygen(position);
 
-        // the 4 hydrogen atoms
+        // the 2 hydrogen atoms
         // create a normal vector between the axis and the x-z plane
         Vector3f v1 = new Vector3f(1, 0, 0);
         if (Vector3f.cross(v1, axis).equals(new Vector3f(0), 0.00001f)) {
-            v1 = new Vector3f(1, 0, 1);
+            v1 = new Vector3f(0, 0, 1);
         }
         Vector3f b2 = Vector3f.cross(v1, axis);
 
@@ -67,52 +67,42 @@ public class Methane extends Molecule {
         // create a transform matrix
         Matrix4f transform = Matrix4f.transform(position, new Vector3f(alpha, beta, gamma), new Vector3f(1));
 
-        // the bond vectors of the methane atom
-        b1 = new Vector3f(1, 1, -1);
-        b2 = new Vector3f(-1, 1, 1);
-        Vector3f b3 = new Vector3f(-1, -1, -1);
-        Vector3f b4 = new Vector3f(1, -1, 1);
+        // the bond vectors of the water atom
+        b1 = new Vector3f((float) (-Math.sqrt(3)/2), -0.5f, 0);
+        b2 = new Vector3f((float) (Math.sqrt(3)/2), -0.5f, 0);
 
         // transform the hydrogen directional bond vectors
         b1 = Matrix4f.multiply(transform, new Vector4f(b1, 1)).toVector3f();
         b2 = Matrix4f.multiply(transform, new Vector4f(b2, 1)).toVector3f();
-        b3 = Matrix4f.multiply(transform, new Vector4f(b3, 1)).toVector3f();
-        b4 = Matrix4f.multiply(transform, new Vector4f(b4, 1)).toVector3f();
 
         // normalize the bond lengths
         b1 = Vector3f.normalize(b1, atomDistance);
         b2 = Vector3f.normalize(b2, atomDistance);
-        b3 = Vector3f.normalize(b3, atomDistance);
-        b4 = Vector3f.normalize(b4, atomDistance);
 
-        // creating the 4 hydrogen atoms
+        // creating the 2 hydrogen atoms
         Hydrogen h1 = new Hydrogen(Vector3f.add(position, b1));
         Hydrogen h2 = new Hydrogen(Vector3f.add(position, b2));
-        Hydrogen h3 = new Hydrogen(Vector3f.add(position, b3));
-        Hydrogen h4 = new Hydrogen(Vector3f.add(position, b4));
 
         // add the atoms to an array list
-        ArrayList<Atom> atoms = new ArrayList<>(Arrays.asList(c1, h1, h2, h3, h4));
+        ArrayList<Atom> atoms = new ArrayList<>(Arrays.asList(o1, h1, h2));
 
-        // create the 4 bonds
-        Bond bond1 = new Bond(c1, h1, 1);
-        Bond bond2 = new Bond(c1, h2, 1);
-        Bond bond3 = new Bond(c1, h3, 1);
-        Bond bond4 = new Bond(c1, h4, 1);
+        // create the 2 bonds
+        Bond bond1 = new Bond(o1, h1);
+        Bond bond2 = new Bond(o1, h2);
 
         // add the bonds to an array list
-        ArrayList<Bond> bonds = new ArrayList<>(Arrays.asList(bond1, bond2, bond3, bond4));
+        ArrayList<Bond> bonds = new ArrayList<>(Arrays.asList(bond1, bond2));
 
-        return new Methane(position, atoms, bonds);
+        return new Water(position, atoms, bonds);
 
     }
 
     /**
-     * creates an instance of a methane molecule using a default z axis
+     * creates an instance of a water using a default z axis
      * @param position - the position of the central atom
-     * @return - a new instance of a methane molecule
+     * @return - a new instance of a water
      */
-    public static Methane getInstance(Vector3f position) {
+    public static Water getInstance(Vector3f position) {
         return getInstance(position, new Vector3f(0, 0, 1));
     }
 }
