@@ -17,17 +17,19 @@ public class Camera {
     private final static float rotateSpeed = 0.02f * 360;
 
     // arcball camera variables
-    private Vector3f lookingAt;
-    private float distance = 20.0f;
-    private float angle = 0.0f;
-    private float horizontalDistance = 0, verticalDistance = 0;
-//    private float verticalAngle = -45, horizontalAngle = 30; // used for looking at an angle
-//    private float verticalAngle = -90, horizontalAngle = 0; // used for looking down
-    private float verticalAngle = 0, horizontalAngle = 0; // used for looking straight forward
-    private boolean rotatingVertical = false;
-    private boolean rotatingHorizontal = false;
-    private boolean translatingNorthSouth = false;
-    private boolean translatingEastWest = false;
+    private Vector3f lookingAt; // the position the camera is looking at
+
+    private static final float DEFAULT_DISTANCE = 10.0f;
+    private float distance = DEFAULT_DISTANCE; // the magnitude distance to the looking position
+
+    private static final float DEFAULT_HORIZONTAL_DISTANCE = 0, DEFAULT_VERTICAL_DISTANCE = 0; // default distance from looking position
+    private float horizontalDistance = 0, verticalDistance = 0; // distance from the looking position
+
+    private static final float DEFAULT_VERTICAL_ANGLE = 0, DEFAULT_HORIZONTAL_ANGLE = 0; // default angles
+    private float verticalAngle = -30, horizontalAngle = 45; // used for looking straight forward
+
+    private boolean rotatingVertical = false, rotatingHorizontal = false; // used for constraint rotation
+    private boolean translatingNorthSouth = false, translatingEastWest = false; // used for constraint translation
 
     // the position of the mouse
     private double oldMouseX = 0, oldMouseY = 0, newMouseX, newMouseY;
@@ -237,6 +239,23 @@ public class Camera {
     }
 
     /**
+     * resets the vertical and horizontal angles to their default values
+     */
+    public void resetPosition(Vector3f lookingAt) {
+        // reset the looking vector
+        this.lookingAt = lookingAt;
+
+        // reset the angles
+        this.verticalAngle = DEFAULT_VERTICAL_ANGLE;
+        this.horizontalAngle = DEFAULT_HORIZONTAL_ANGLE;
+
+        // reset the distances
+        this.verticalDistance = DEFAULT_VERTICAL_DISTANCE;
+        this.horizontalDistance = DEFAULT_HORIZONTAL_ANGLE;
+        this.distance = DEFAULT_DISTANCE;
+    }
+
+    /**
      * getter method
      * @return - the position of this camera
      */
@@ -274,5 +293,21 @@ public class Camera {
      */
     public Vector3f getLookingAt() {
         return this.lookingAt;
+    }
+
+    /**
+     * getter method
+     * @return - the horizontal distance to the looking position
+     */
+    public float getHorizontalDistance() {
+        return this.horizontalDistance;
+    }
+
+    /**
+     * getter method
+     * @return - the vertical distance to the looking position
+     */
+    public float getVerticalDistance() {
+        return this.verticalDistance;
     }
 }

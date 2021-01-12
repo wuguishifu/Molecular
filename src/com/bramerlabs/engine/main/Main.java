@@ -46,7 +46,7 @@ public class Main implements Runnable {
     public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input);
 
     // the point the camera is looking at
-    public Vector3f lookingAt = new Vector3f(0);
+    public static final Vector3f LOOKING_AT = new Vector3f(0);
 
     // the position of the light
     private Vector3f lightPosition = new Vector3f(0, 100, 0);
@@ -87,7 +87,7 @@ public class Main implements Runnable {
         window.create();
 
         // update the camera
-        camera.setLookingAt(lookingAt);
+        camera.setLookingAt(LOOKING_AT);
 
         // create molecules here
         molecules = new ArrayList<>();
@@ -155,6 +155,10 @@ public class Main implements Runnable {
         // translates the camera
         if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && input.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT)) {
             camera.translate();
+        }
+        // re centers the camera at (0, 0, 0)
+        if (input.isKeyDown(GLFW.GLFW_KEY_ENTER)) {
+            camera.resetPosition(LOOKING_AT);
         }
 
         camera.updateArcball();
