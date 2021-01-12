@@ -60,9 +60,9 @@ public class Methane extends Molecule {
     @Override
     public void update(int time) {
         updateA1(time);
-//        updateA2(time);
+//        updateT2(time);
+//        updateDemo(time);
     }
-
     private void updateA1(int time) {
         float distance = (float) (CHBond + cRadius + hRadius + 0.5 * Math.sin(time/5f));
         Atom centralAtom = getAtoms().get(0);
@@ -74,7 +74,15 @@ public class Methane extends Molecule {
         }
     }
 
-    private void updateA2(int time) {
+    private void updateDemo(int time) {
+        float dx = (float) (0.2f * Math.cos(time/5f));
+        float dy = (float) (0.2f * Math.sin(time/5f));
+        Atom a = getAtoms().get(0);
+        Vector3f pos = a.getPosition();
+        a.moveTo(Vector3f.add(pos, new Vector3f(dx, 0, dy)));
+    }
+
+    private void updateT2(int time) {
         float distance1 = (float) (CHBond + cRadius + hRadius + 0.5 * Math.sin(time/5f));
         float distance2 = (float) (CHBond + cRadius + hRadius - 0.5 * Math.sin(time/5f));
         Atom centralAtom = getAtoms().get(0);
