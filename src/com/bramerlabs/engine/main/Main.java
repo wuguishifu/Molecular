@@ -255,7 +255,7 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-//        Molecule m = new Benzaldehyde(new Vector3f(0, 0, 0));
+//        Molecule m = new SulfurHexafluoride(new Vector3f(0, 0, 0));
         Molecule m = new Molecule(new Vector3f(0, 0, 0), new ArrayList<>(), new ArrayList<>());
         m.addAtom(new Carbon(new Vector3f(0, 0, 0)));
         m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(0, 3.5f), Atom.TITANIUM), 1));

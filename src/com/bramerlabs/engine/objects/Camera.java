@@ -26,6 +26,8 @@ public class Camera {
     private float verticalAngle = 0, horizontalAngle = 0; // used for looking straight forward
     private boolean rotatingVertical = false;
     private boolean rotatingHorizontal = false;
+    private boolean translatingNorthSouth = false;
+    private boolean translatingEastWest = false;
 
     // the position of the mouse
     private double oldMouseX = 0, oldMouseY = 0, newMouseX, newMouseY;
@@ -95,7 +97,11 @@ public class Camera {
             rotatingHorizontal = false;
             rotatingVertical = false;
         }
-        System.out.println(rotatingHorizontal + ", " + rotatingVertical);
+        // reset constraint translation if the alt button is released
+        if (!input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) || !input.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT)) {
+            translatingNorthSouth = false;
+            translatingEastWest = false;
+        }
 
         // get the new x and y components of the mouse position
         newMouseX = input.getMouseX();
@@ -178,6 +184,23 @@ public class Camera {
         float dmx = (float) (newMouseX - oldMouseX);
         float dmy = (float) (newMouseY - oldMouseY);
 
+        // handle constraint motion
+        if (!translatingNorthSouth && !translatingEastWest) {
+            if (Math.abs(dmx) > Math.abs(dmy)) {
+                dmy = 0;
+                translatingEastWest = true;
+            } else {
+                dmx = 0;
+                translatingNorthSouth = true;
+            }
+        }
+        if (translatingEastWest) {
+            dmy = 0;
+        }
+        if (translatingNorthSouth) {
+            dmx = 0;
+        }
+
         // store the previous mouse position
         oldMouseX = newMouseX;
         oldMouseY = newMouseY;
@@ -185,33 +208,32 @@ public class Camera {
         // find the vector pointing from the camera to the looking point
         Vector3f lookingDirection = Vector3f.normalize(Vector3f.subtract(lookingAt, position));
         // create a non-parallel vector in the plane of the horizontal angle
-        Vector3f tempV1 = Vector3f.add(lookingDirection, new Vector3f(0, 0, 1.f)); // will never be parallel
+        Vector3f tempV1 = Vector3f.add(lookingDirection, new Vector3f(0, 1.f, 0)); // will never be parallel
         if (tempV1.equals(new Vector3f(0), 0.0001f)) {
-            tempV1 = Vector3f.add(lookingDirection, new Vector3f(1.f, 0, 1.f));
+            tempV1 = Vector3f.add(lookingDirection, new Vector3f(0, 2.f, 0));
         }
-        System.out.println("Looking Direction: " + lookingDirection);
-        System.out.println("Looking At: " + lookingAt);
-        System.out.println("TempV1: " + tempV1);
+
         // create normal vector to these two vectors
         Vector3f zxNormal = Vector3f.normalize(Vector3f.cross(tempV1, lookingDirection));
         // create normal vector to the zx normal and the looking direction
         Vector3f yNormal = Vector3f.normalize(Vector3f.cross(lookingDirection, zxNormal));
 
-        System.out.println(lookingAt + ", " + zxNormal + ", " + yNormal);
-
-        // handle the mouse motion
-        if (Math.abs(dmx) > Math.abs(dmy)) {
-            dmy = 0;
-        } else {
-            dmx = 0;
+        if (dmx < 0) {
+            this.lookingAt = Vector3f.add(this.lookingAt, Vector3f.normalize(zxNormal, moveSpeed * mouseSensitivity * Math.abs(dmx)));
+            this.position = Vector3f.add(this.position, Vector3f.normalize(zxNormal, moveSpeed * mouseSensitivity * Math.abs(dmx)));
         }
-        if (dmx < 0) this.lookingAt = Vector3f.subtract(this.lookingAt, Vector3f.normalize(yNormal, moveSpeed * mouseSensitivity * Math.abs(dmx)));
-        if (dmx > 0) this.lookingAt = Vector3f.add(this.lookingAt, Vector3f.normalize(yNormal, moveSpeed * mouseSensitivity * Math.abs(dmx)));
-        if (dmy > 0) this.lookingAt = Vector3f.subtract(this.lookingAt, Vector3f.normalize(zxNormal, moveSpeed * mouseSensitivity * Math.abs(dmy)));
-        if (dmy < 0) this.lookingAt = Vector3f.add(this.lookingAt, Vector3f.normalize(zxNormal, moveSpeed * mouseSensitivity * Math.abs(dmy)));
-
-        System.out.println(lookingAt);
-
+        if (dmx > 0) {
+            this.lookingAt = Vector3f.subtract(this.lookingAt, Vector3f.normalize(zxNormal, moveSpeed * mouseSensitivity * Math.abs(dmx)));
+            this.position = Vector3f.subtract(this.position, Vector3f.normalize(zxNormal, moveSpeed * mouseSensitivity * Math.abs(dmx)));
+        }
+        if (dmy > 0) {
+            this.lookingAt = Vector3f.subtract(this.lookingAt, Vector3f.normalize(yNormal, moveSpeed * mouseSensitivity * Math.abs(dmy)));
+            this.position = Vector3f.subtract(this.position, Vector3f.normalize(yNormal, moveSpeed * mouseSensitivity * Math.abs(dmy)));
+        }
+        if (dmy < 0) {
+            this.lookingAt = Vector3f.add(this.lookingAt, Vector3f.normalize(yNormal, moveSpeed * mouseSensitivity * Math.abs(dmy)));
+            this.position = Vector3f.add(this.position, Vector3f.normalize(yNormal, moveSpeed * mouseSensitivity * Math.abs(dmy)));
+        }
     }
 
     /**
