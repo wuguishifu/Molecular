@@ -56,8 +56,8 @@ public class Cylinder extends RenderObject {
         ArrayList<Triangle> triangles = generateTriangles(p1, p2, radius, SMOOTHNESS);
 
         // the triangles in the spheres at the ends of the cylinder
-        ArrayList<Triangle> sphere1 = Sphere.generateTriangles(p1, radius);
-        ArrayList<Triangle> sphere2 = Sphere.generateTriangles(p2, radius);
+        ArrayList<Triangle> sphere1 = Sphere.generateTriangles(radius);
+        ArrayList<Triangle> sphere2 = Sphere.generateTriangles(radius);
 
         Mesh mesh = generateMesh(triangles, color, sphere1, sphere2, p1, p2); // rounded edges
 //        Mesh mesh = generateMesh(triangles, color); // flat, unrendered edges

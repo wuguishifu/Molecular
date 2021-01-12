@@ -65,6 +65,17 @@ public class Atom {
     }
 
     /**
+     * moves the atom to a certain position
+     * @param position - the new position to move to
+     */
+    public void moveTo(Vector3f position) {
+        this.position = position;
+
+        sphere.moveTo(position);
+        selectionSphere.moveTo(position);
+    }
+
+    /**
      * sets the direction of this atom
      * @param dir - the direction
      */

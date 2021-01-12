@@ -11,9 +11,8 @@ import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
-import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.vsepr.Tetrahedral;
+import com.bramerlabs.molecular.molecule.default_molecules.Methane;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -54,6 +53,8 @@ public class Main implements Runnable {
     // if the last frame had the right mouse button down
     private boolean lastFrameRightButtonDown = false;
 
+    private static int time = 0;
+
     /**
      * main method
      * @param args - args
@@ -86,7 +87,7 @@ public class Main implements Runnable {
         window = new Window(input);
         window.create();
 
-        // update the camera
+        // set the camera's arcball orbit focus
         camera.setLookingAt(LOOKING_AT);
 
         // create molecules here
@@ -136,8 +137,19 @@ public class Main implements Runnable {
      */
     private boolean update() {
 
+        // update the global timer
+        time++;
+        if (time > 1800) { // reset timer every second
+            time %= 1800;
+        }
+
         // update the window
         window.update();
+
+        // update the molecule occasionally
+        for (Molecule m : molecules) {
+            m.update(time);
+        }
 
         // clear the screen
         GL46.glClearColor(Window.bgc.getX(), Window.bgc.getY(), Window.bgc.getZ(), 1);
@@ -153,13 +165,9 @@ public class Main implements Runnable {
         lastFrameRightButtonDown = currentFrameRightButtonDown;
 
         // translates the camera
-        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && input.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT)) {
-            camera.translate();
-        }
-        // re centers the camera at (0, 0, 0)
-        if (input.isKeyDown(GLFW.GLFW_KEY_ENTER)) {
-            camera.resetPosition(LOOKING_AT);
-        }
+        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && input.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT)) camera.translate();
+        // resets the camera position, rotation, and distance
+        if (input.isKeyDown(GLFW.GLFW_KEY_ENTER)) camera.resetPosition(LOOKING_AT);
 
         camera.updateArcball();
         return shouldSwapBuffers;
@@ -259,13 +267,13 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-//        Molecule m = new SulfurHexafluoride(new Vector3f(0, 0, 0));
-        Molecule m = new Molecule(new Vector3f(0, 0, 0), new ArrayList<>(), new ArrayList<>());
-        m.addAtom(new Carbon(new Vector3f(0, 0, 0)));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(0, 3.5f), Atom.TITANIUM), 1));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(1, 3.5f), Atom.TITANIUM), 1));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(2, 3.5f), Atom.TITANIUM), 1));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(3, 3.5f), Atom.TITANIUM), 1));
+        Molecule m = new Methane(new Vector3f(0, 0, 0));
+//        Molecule m = new Molecule(new Vector3f(0, 0, 0), new ArrayList<>(), new ArrayList<>());
+//        m.addAtom(new Carbon(new Vector3f(0, 0, 0)));
+//        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(0, 3.5f), Atom.TITANIUM), 1));
+//        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(1, 3.5f), Atom.TITANIUM), 1));
+//        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(2, 3.5f), Atom.TITANIUM), 1));
+//        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(3, 3.5f), Atom.TITANIUM), 1));
         molecules.add(m);
     }
 }

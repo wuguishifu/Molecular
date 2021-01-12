@@ -31,6 +31,11 @@ public class Molecule {
     }
 
     /**
+     * default update method - override in child class
+     */
+    public void update(int time) {}
+
+    /**
      * getter method
      * @return - the list of atoms in this molecule
      */

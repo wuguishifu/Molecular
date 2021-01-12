@@ -16,18 +16,6 @@ public class Sphere extends RenderObject {
     // the golden ratio
     private static final float phi = 1.16180339f;
 
-    // the position of the sphere
-    private Vector3f position;
-
-    // the rotation of the sphere
-    private Vector3f rotation;
-
-    // the scale of the sphere
-    private Vector3f scale;
-
-    // the color of the sphere;
-    private Vector3f color;
-
     /**
      * default constructor for specified values
      *
@@ -45,20 +33,19 @@ public class Sphere extends RenderObject {
      * @return - a new sphere
      */
     public static Sphere makeSphere(Vector3f position, Vector3f color, float radius) {
-        return new Sphere(generateMesh(position, color, radius), position, new Vector3f(0), new Vector3f(1));
+        return new Sphere(generateMesh(color, radius), position, new Vector3f(0), new Vector3f(1));
     }
 
     /**
      * generates a mesh
-     * @param position - the position of the sphere
      * @param color - the color of the sphere
      * @param radius - the radius of the sphere
      * @return - the mesh of the sphere
      */
-    public static Mesh generateMesh(Vector3f position, Vector3f color, float radius) {
+    public static Mesh generateMesh(Vector3f color, float radius) {
 
         // generate the triangles
-        ArrayList<Triangle> triangles = generateTriangles(position, radius);
+        ArrayList<Triangle> triangles = generateTriangles(radius);
 
         // create the vertex array
         Vertex[] vertices = new Vertex[triangles.size() * 3];
@@ -87,7 +74,7 @@ public class Sphere extends RenderObject {
      */
     public static Vertex[] generateVertices(Vector3f position, Vector3f color, float radius) {
         // generate the triangles
-        ArrayList<Triangle> triangles = generateTriangles(position, radius);
+        ArrayList<Triangle> triangles = generateTriangles(radius);
 
         // create the vertex array
         Vertex[] vertices = new Vertex[triangles.size() * 3];
@@ -103,8 +90,9 @@ public class Sphere extends RenderObject {
 
     /**
      * generates vertices of this sphere
+     * @param radius - the radius of the sphere
      */
-    public static ArrayList<Triangle> generateTriangles(Vector3f position, float radius) {
+    public static ArrayList<Triangle> generateTriangles(float radius) {
 
         ArrayList<Triangle> faces = new ArrayList<>();
 
@@ -124,26 +112,26 @@ public class Sphere extends RenderObject {
         vertices[11] = new Vector3f(0, -phi/2 * radius,-0.5f * radius);
 
         // subdivide each triangular face (20 total) recursively
-        faces.addAll(subdivide(vertices[0],  vertices[2],  vertices[10], depth, position, radius));
-        faces.addAll(subdivide(vertices[0],  vertices[10], vertices[5],  depth, position, radius));
-        faces.addAll(subdivide(vertices[0],  vertices[5],  vertices[4],  depth, position, radius));
-        faces.addAll(subdivide(vertices[0],  vertices[4],  vertices[8],  depth, position, radius));
-        faces.addAll(subdivide(vertices[0],  vertices[8],  vertices[2],  depth, position, radius));
-        faces.addAll(subdivide(vertices[3],  vertices[1],  vertices[11], depth, position, radius));
-        faces.addAll(subdivide(vertices[3],  vertices[11], vertices[7],  depth, position, radius));
-        faces.addAll(subdivide(vertices[3],  vertices[7],  vertices[6],  depth, position, radius));
-        faces.addAll(subdivide(vertices[3],  vertices[6],  vertices[9],  depth, position, radius));
-        faces.addAll(subdivide(vertices[3],  vertices[9],  vertices[1],  depth, position, radius));
-        faces.addAll(subdivide(vertices[2],  vertices[6],  vertices[7],  depth, position, radius));
-        faces.addAll(subdivide(vertices[2],  vertices[7],  vertices[10], depth, position, radius));
-        faces.addAll(subdivide(vertices[10], vertices[7],  vertices[11], depth, position, radius));
-        faces.addAll(subdivide(vertices[10], vertices[11], vertices[5],  depth, position, radius));
-        faces.addAll(subdivide(vertices[5],  vertices[11], vertices[1],  depth, position, radius));
-        faces.addAll(subdivide(vertices[5],  vertices[1],  vertices[4],  depth, position, radius));
-        faces.addAll(subdivide(vertices[4],  vertices[1],  vertices[9],  depth, position, radius));
-        faces.addAll(subdivide(vertices[4],  vertices[9],  vertices[8],  depth, position, radius));
-        faces.addAll(subdivide(vertices[8],  vertices[9],  vertices[6],  depth, position, radius));
-        faces.addAll(subdivide(vertices[8],  vertices[6],  vertices[2],  depth, position, radius));
+        faces.addAll(subdivide(vertices[0],  vertices[2],  vertices[10], depth, radius));
+        faces.addAll(subdivide(vertices[0],  vertices[10], vertices[5],  depth, radius));
+        faces.addAll(subdivide(vertices[0],  vertices[5],  vertices[4],  depth, radius));
+        faces.addAll(subdivide(vertices[0],  vertices[4],  vertices[8],  depth, radius));
+        faces.addAll(subdivide(vertices[0],  vertices[8],  vertices[2],  depth, radius));
+        faces.addAll(subdivide(vertices[3],  vertices[1],  vertices[11], depth, radius));
+        faces.addAll(subdivide(vertices[3],  vertices[11], vertices[7],  depth, radius));
+        faces.addAll(subdivide(vertices[3],  vertices[7],  vertices[6],  depth, radius));
+        faces.addAll(subdivide(vertices[3],  vertices[6],  vertices[9],  depth, radius));
+        faces.addAll(subdivide(vertices[3],  vertices[9],  vertices[1],  depth, radius));
+        faces.addAll(subdivide(vertices[2],  vertices[6],  vertices[7],  depth, radius));
+        faces.addAll(subdivide(vertices[2],  vertices[7],  vertices[10], depth, radius));
+        faces.addAll(subdivide(vertices[10], vertices[7],  vertices[11], depth, radius));
+        faces.addAll(subdivide(vertices[10], vertices[11], vertices[5],  depth, radius));
+        faces.addAll(subdivide(vertices[5],  vertices[11], vertices[1],  depth, radius));
+        faces.addAll(subdivide(vertices[5],  vertices[1],  vertices[4],  depth, radius));
+        faces.addAll(subdivide(vertices[4],  vertices[1],  vertices[9],  depth, radius));
+        faces.addAll(subdivide(vertices[4],  vertices[9],  vertices[8],  depth, radius));
+        faces.addAll(subdivide(vertices[8],  vertices[9],  vertices[6],  depth, radius));
+        faces.addAll(subdivide(vertices[8],  vertices[6],  vertices[2],  depth, radius));
 
         return faces;
     }
@@ -155,7 +143,7 @@ public class Sphere extends RenderObject {
      * @param v3 - the third vertex of the triangle
      * @param depth - the current depth of recursion
      */
-    private static ArrayList<Triangle> subdivide(Vector3f v1, Vector3f v2, Vector3f v3, long depth, Vector3f position, float radius) {
+    private static ArrayList<Triangle> subdivide(Vector3f v1, Vector3f v2, Vector3f v3, long depth, float radius) {
 
         ArrayList<Triangle> faces = new ArrayList<>();
 
@@ -178,11 +166,19 @@ public class Sphere extends RenderObject {
         Vector3f v31 = Vector3f.normalize(new Vector3f(v3.getX() + v1.getX(), v3.getY() + v1.getY(), v3.getZ() + v1.getZ()), radius);
 
         // recursive part
-        faces.addAll(subdivide(v1, v12, v31, depth-1, position, radius));
-        faces.addAll(subdivide(v2, v23, v12, depth-1, position, radius));
-        faces.addAll(subdivide(v3, v31, v23, depth-1, position, radius));
-        faces.addAll(subdivide(v12, v23, v31,depth-1, position, radius));
+        faces.addAll(subdivide(v1, v12, v31, depth-1, radius));
+        faces.addAll(subdivide(v2, v23, v12, depth-1, radius));
+        faces.addAll(subdivide(v3, v31, v23, depth-1, radius));
+        faces.addAll(subdivide(v12, v23, v31,depth-1, radius));
 
         return faces;
+    }
+
+    /**
+     * moves a sphere to a new position
+     * @param position - the new position
+     */
+    public void moveTo(Vector3f position) {
+        this.setPosition(position);
     }
 }

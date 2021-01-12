@@ -73,7 +73,7 @@ public class Window {
         this.height = defaultHeight;
 
         // create a projection matrix
-        projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 100f);
+        projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 1000f);
 
         this.input = input;
     }
@@ -176,42 +176,6 @@ public class Window {
         // decide if the window should close
         if (input.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
             GLFW.glfwSetWindowShouldClose(windowHandle, true);
-        }
-
-        // change the window size, fullscreen option if necessary
-        // set window fullscreen
-        if (input.isKeyDown(GLFW.GLFW_KEY_F)) {
-            isFullscreen = !isFullscreen;
-            input.setResized(!isFullscreen);
-            if (isFullscreen) {
-                windowX = input.getWindowX();
-                windowY = input.getWindowY();
-                GLFW.glfwSetWindowMonitor( // set the window to fullscreen
-                        windowHandle,
-                        GLFW.glfwGetPrimaryMonitor(),
-                        0,
-                        0,
-                        defaultWidth,
-                        defaultHeight,
-                        GLFW.GLFW_REFRESH_RATE
-                );
-                GLFW.glfwSetWindowSize( // set the size of the window to the monitor size
-                        windowHandle,
-                        displayMode.getWidth(),
-                        displayMode.getHeight()
-                );
-            } else {
-                GLFW.glfwSetWindowMonitor( // set the window to not fullscreen
-                        windowHandle,
-                        0,
-                        this.windowX,
-                        this.windowY,
-                        defaultWidth,
-                        defaultHeight,
-                        GLFW.GLFW_REFRESH_RATE
-                );
-            }
-            GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
         // poll GLFW for callbacks

@@ -54,4 +54,19 @@ public class Methane extends Molecule {
 
     }
 
+    /**
+     * updates the molecule - vibrational mode a1 of methane
+     */
+    @Override
+    public void update(int time) {
+
+        float distance = (float) (CHBond + cRadius + hRadius + 0.5 * Math.sin((time/5f)));
+        Atom centralAtom = getAtoms().get(0);
+        for (int i = 1; i <= 4; i++) {
+            Atom a = getAtoms().get(i);
+            Vector3f dir = Vector3f.subtract(a.getPosition(), centralAtom.getPosition());
+            dir = Vector3f.normalize(dir, distance);
+            a.moveTo(Vector3f.add(centralAtom.getPosition(), dir));
+        }
+    }
 }
