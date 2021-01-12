@@ -105,6 +105,25 @@ public class Camera {
         float dmx = (float) (newMouseX - oldMouseX);
         float dmy = (float) (newMouseY - oldMouseY);
 
+        // handle constraint rotation
+        if (input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) && input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
+            if (!rotatingHorizontal && !rotatingVertical) {
+                if (Math.abs(dmx) > Math.abs(dmy)) {
+                    dmy = 0;
+                    rotatingHorizontal = true;
+                } else {
+                    dmx = 0;
+                    rotatingVertical = true;
+                }
+            }
+            if (rotatingHorizontal) {
+                dmy = 0;
+            }
+            if (rotatingVertical) {
+                dmx = 0;
+            }
+        }
+
         // get the new x and y components of the scroll wheel
         //newScrollX = input.getScrollX();
         newScrollY = input.getScrollY();
@@ -119,7 +138,7 @@ public class Camera {
         oldScrollY = newScrollY;
 
         // change the rotation using the mouse
-        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && !input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
             verticalAngle -= dmy * mouseSensitivity;
             horizontalAngle += dmx * mouseSensitivity;
         }
@@ -129,59 +148,6 @@ public class Camera {
             distance -= dsy;
         } else {
             distance = 0.1f;
-        }
-
-        // get the vertical and horizontal distances
-        this.horizontalDistance = (float) (distance * Math.cos(Math.toRadians(verticalAngle))); // using formula h = r*cos(theta_x)
-        this.verticalDistance = (float) (distance * Math.sin(Math.toRadians(verticalAngle))); // using formula v = r*sin(theta_x)
-
-        float xOffset = (float) (horizontalDistance * Math.sin(Math.toRadians(-horizontalAngle)));
-        float zOffset = (float) (horizontalDistance * Math.cos(Math.toRadians(-horizontalAngle)));
-
-        // set the new camera position based on the object
-        this.position.set(lookingAt.getX() + xOffset,
-                lookingAt.getY() - verticalDistance,
-                lookingAt.getZ() + zOffset);
-
-        // set the new camera rotation based on the object
-        this.rotation.set(verticalAngle, -horizontalAngle, 0);
-    }
-
-    /**
-     * updates the arcball camera in only one axis
-     */
-    public void updateArcballDirectional() {
-        // get the new x and y components of the mouse position
-        newMouseX = input.getMouseX();
-        newMouseY = input.getMouseY();
-
-        // handle mouse motion
-        float dmx = (float) (newMouseX - oldMouseX);
-        float dmy = (float) (newMouseY - oldMouseY);
-
-        if (!rotatingHorizontal && !rotatingVertical) {
-            if (Math.abs(dmx) > Math.abs(dmy)) {
-                dmy = 0;
-                rotatingHorizontal = true;
-            } else {
-                dmx = 0;
-                rotatingVertical = true;
-            }
-        }
-        if (rotatingHorizontal) {
-            dmy = 0;
-        }
-        if (rotatingVertical) {
-            dmx = 0;
-        }
-
-        oldMouseX = newMouseX;
-        oldMouseY = newMouseY;
-
-        // change the rotation using the mouse
-        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
-            verticalAngle -= dmy * mouseSensitivity;
-            horizontalAngle += dmx * mouseSensitivity;
         }
 
         // get the vertical and horizontal distances

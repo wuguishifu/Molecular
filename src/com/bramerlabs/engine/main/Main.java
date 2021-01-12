@@ -157,11 +157,6 @@ public class Main implements Runnable {
             camera.translate();
         }
 
-        // rotates the camera in one axis
-        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
-            camera.updateArcballDirectional();
-        }
-
         camera.updateArcball();
         return shouldSwapBuffers;
     }
