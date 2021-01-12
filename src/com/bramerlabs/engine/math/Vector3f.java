@@ -115,6 +115,15 @@ public class Vector3f {
     }
 
     /**
+     * returns the negative of a vector
+     * @param v - the vector
+     * @return - the negative
+     */
+    public static Vector3f negative(Vector3f v) {
+        return new Vector3f(-v.x, -v.y, -v.z);
+    }
+
+    /**
      * adds values to each component of this vector
      * @param dx - the value to be added to the x component
      * @param dy - the value to be added to the y component

@@ -19,6 +19,9 @@ public class Cylinder extends RenderObject {
     // the scale of this cylinder
     private static Vector3f scale = new Vector3f(1);
 
+    // the smoothness of the cylinder
+    private static final int SMOOTHNESS = 120;
+
     /**
      * default constructor for specified values
      *
@@ -32,6 +35,14 @@ public class Cylinder extends RenderObject {
     }
 
     /**
+     * makes a default cylinder
+     * @return - a default cylinder
+     */
+    public static Cylinder makeCylinder() {
+        return makeCylinder(new Vector3f(0), new Vector3f(1), new Vector3f(0), 0.1f);
+    }
+
+    /**
      * makes a cylinder
      *
      * @param p1     - the focus of the first circle
@@ -42,13 +53,14 @@ public class Cylinder extends RenderObject {
      */
     public static Cylinder makeCylinder(Vector3f p1, Vector3f p2, Vector3f color, float radius) {
         Vector3f position = Vector3f.midpoint(p1, p2);
-        ArrayList<Triangle> triangles = generateTriangles(p1, p2, radius, 120);
+        ArrayList<Triangle> triangles = generateTriangles(p1, p2, radius, SMOOTHNESS);
 
         // the triangles in the spheres at the ends of the cylinder
         ArrayList<Triangle> sphere1 = Sphere.generateTriangles(p1, radius);
         ArrayList<Triangle> sphere2 = Sphere.generateTriangles(p2, radius);
 
-        Mesh mesh = generateMesh(triangles, color, sphere1, sphere2, p1, p2);
+        Mesh mesh = generateMesh(triangles, color, sphere1, sphere2, p1, p2); // rounded edges
+//        Mesh mesh = generateMesh(triangles, color); // flat, unrendered edges
         return new Cylinder(mesh, position, rotation, scale);
     }
 

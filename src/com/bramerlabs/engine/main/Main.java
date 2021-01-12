@@ -45,6 +45,9 @@ public class Main implements Runnable {
     // the camera
     public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input);
 
+    // the point the camera is looking at
+    public Vector3f lookingAt = new Vector3f(0);
+
     // the position of the light
     private Vector3f lightPosition = new Vector3f(0, 100, 0);
 
@@ -82,6 +85,9 @@ public class Main implements Runnable {
         //create the openJL window
         window = new Window(input);
         window.create();
+
+        // update the camera
+        camera.setLookingAt(lookingAt);
 
         // create molecules here
         molecules = new ArrayList<>();
@@ -146,8 +152,17 @@ public class Main implements Runnable {
         }
         lastFrameRightButtonDown = currentFrameRightButtonDown;
 
-        // update the camera
-        camera.update(new Vector3f(0));
+        // translates the camera
+        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && input.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT)) {
+            camera.translate();
+        }
+
+        // rotates the camera in one axis
+        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            camera.updateArcballDirectional();
+        }
+
+        camera.updateArcball();
         return shouldSwapBuffers;
     }
 
@@ -200,7 +215,6 @@ public class Main implements Runnable {
                 b.toggleSelected();
             }
         }
-
     }
 
     /**
@@ -246,12 +260,13 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
+//        Molecule m = new Benzaldehyde(new Vector3f(0, 0, 0));
         Molecule m = new Molecule(new Vector3f(0, 0, 0), new ArrayList<>(), new ArrayList<>());
         m.addAtom(new Carbon(new Vector3f(0, 0, 0)));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(0, 3.5f), 100), 1));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(1, 3.5f), 100), 1));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(2, 3.5f), 100), 1));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(3, 3.5f), 100), 1));
+        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(0, 3.5f), Atom.TITANIUM), 1));
+        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(1, 3.5f), Atom.TITANIUM), 1));
+        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(2, 3.5f), Atom.TITANIUM), 1));
+        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(3, 3.5f), Atom.TITANIUM), 1));
         molecules.add(m);
     }
 }

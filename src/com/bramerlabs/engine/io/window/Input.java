@@ -18,6 +18,9 @@ public class Input {
     private double mouseX;
     private double mouseY;
 
+    private double prevMouseX;
+    private double prevMouseY;
+
     private double scrollX;
     private double scrollY;
 
@@ -46,6 +49,8 @@ public class Input {
         cursorPosition = new GLFWCursorPosCallback() {
             @Override
             public void invoke(long window, double xpos, double ypos) {
+                prevMouseX = mouseX;
+                prevMouseY = mouseY;
                 mouseX = xpos;
                 mouseY = ypos;
             }
@@ -149,6 +154,14 @@ public class Input {
 
     public double getMouseY() {
         return mouseY;
+    }
+
+    public double getPrevMouseX() {
+        return prevMouseX;
+    }
+
+    public double getPrevMouseY() {
+        return prevMouseY;
     }
 
     public GLFWKeyCallback getKeyboardCallback() {
