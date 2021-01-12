@@ -59,13 +59,35 @@ public class Methane extends Molecule {
      */
     @Override
     public void update(int time) {
+        updateA1(time);
+//        updateA2(time);
+    }
 
-        float distance = (float) (CHBond + cRadius + hRadius + 0.5 * Math.sin((time/5f)));
+    private void updateA1(int time) {
+        float distance = (float) (CHBond + cRadius + hRadius + 0.5 * Math.sin(time/5f));
         Atom centralAtom = getAtoms().get(0);
         for (int i = 1; i <= 4; i++) {
             Atom a = getAtoms().get(i);
             Vector3f dir = Vector3f.subtract(a.getPosition(), centralAtom.getPosition());
             dir = Vector3f.normalize(dir, distance);
+            a.moveTo(Vector3f.add(centralAtom.getPosition(), dir));
+        }
+    }
+
+    private void updateA2(int time) {
+        float distance1 = (float) (CHBond + cRadius + hRadius + 0.5 * Math.sin(time/5f));
+        float distance2 = (float) (CHBond + cRadius + hRadius - 0.5 * Math.sin(time/5f));
+        Atom centralAtom = getAtoms().get(0);
+        for (int i = 1; i <= 2; i++) {
+            Atom a = getAtoms().get(i);
+            Vector3f dir = Vector3f.subtract(a.getPosition(), centralAtom.getPosition());
+            dir = Vector3f.normalize(dir, distance1);
+            a.moveTo(Vector3f.add(centralAtom.getPosition(), dir));
+        }
+        for (int i = 3; i <= 4; i++) {
+            Atom a = getAtoms().get(i);
+            Vector3f dir = Vector3f.subtract(a.getPosition(), centralAtom.getPosition());
+            dir = Vector3f.normalize(dir, distance2);
             a.moveTo(Vector3f.add(centralAtom.getPosition(), dir));
         }
     }

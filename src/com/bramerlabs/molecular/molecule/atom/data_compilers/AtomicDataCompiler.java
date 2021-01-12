@@ -77,7 +77,7 @@ public class AtomicDataCompiler {
         if (atomicNumber < 1 || atomicNumber > 118) {
             return 0;
         } else {
-            return VDWRadii.get(atomicNumber - 1);
+            return VDWRadii.get(atomicNumber - 1) == 0 ? 0.5f : VDWRadii.get(atomicNumber - 1); // if the VDW radius is 0, return 2.0f
         }
     }
 
