@@ -9,20 +9,20 @@ import java.util.ArrayList;
 
 public class Bond {
 
-    // the atoms that this bond connects
-    private Atom a1, a2;
+    // identity information
+    private Atom a1, a2; // the atoms that this bond connects
+    private int bondOrder = 1; // the bond order of this bond - default 1 (single bond)
 
-    // the cylinders used to render this bond
-    private ArrayList<Cylinder> cylinders = new ArrayList<>();
+    // rendering information
+    private ArrayList<Cylinder> cylinders = new ArrayList<>(); // the cylinders used to render this bond
+    private float radius = 0.2f; // the radius of this bond - default 0.1f
+    private Vector3f color = new Vector3f(0.3f); // the color of this bond - default gray
 
-    // the bond order of this bond - default 1 (single bond)
-    private int bondOrder = 1; // 2: double bond, 3: triple bond, etc
-
-    // the radius of this bond - default 0.1f
-    private float radius = 0.2f;
-
-    // the color of this bond - default gray
-    private Vector3f color = new Vector3f(0.3f);
+    // selection variables
+    private boolean isSelected = false; // if this bond is selected or not
+    private ArrayList<Cylinder> selectionCylinders = new ArrayList<>(); // the cylinders used to render the selection box
+    private Vector3f selectionColor = new Vector3f(0.5f, 0.5f, 0.f); // the color of the selection box - default yellow
+    private float selectionRadius = radius + 0.2f;
 
     /**
      * constructor for bond between two atoms
@@ -33,6 +33,7 @@ public class Bond {
         this.a1 = a1;
         this.a2 = a2;
         makeCylinders();
+        makeSelectionCylinders();
     }
 
     /**
@@ -46,6 +47,7 @@ public class Bond {
         this.a2 = a2;
         this.bondOrder = bondOrder;
         makeCylinders();
+        makeSelectionCylinders();
     }
 
     /**
@@ -61,6 +63,7 @@ public class Bond {
         this.bondOrder = bondOrder;
         this.radius = radius;
         makeCylinders();
+        makeSelectionCylinders();
     }
 
     /**
@@ -78,6 +81,7 @@ public class Bond {
         this.radius = radius;
         this.color = color;
         makeCylinders();
+        makeSelectionCylinders();
     }
 
     /**
@@ -140,11 +144,90 @@ public class Bond {
     }
 
     /**
+     * creates the render cylinders used for the selection box
+     */
+    private void makeSelectionCylinders() {
+
+        // make sure the bond order is less than 3 (for now)
+        if (bondOrder > 3) {
+            bondOrder = 1;
+        }
+
+        // if the bond order isn't 1, find a vector normal to the bond to create the parallel cylinders
+        Vector3f normal = new Vector3f(0);
+        if (bondOrder != 1) {
+            // find the direction of the bond
+            Vector3f bondDirection = Vector3f.subtract(a1.getPosition(), a2.getPosition());
+
+            // generate a vector normal to the bond direction
+            Vector3f v0 = new Vector3f(0, 1, 0);
+            if (Vector3f.cross(bondDirection, v0).equals(new Vector3f(0), 0.00001f)) {
+                v0 = new Vector3f(0, 0, 1);
+            }
+            normal = Vector3f.normalize(Vector3f.cross(bondDirection, v0), 0.8f);
+        }
+
+        // create the central bond if its a single or triple bond
+        if (bondOrder == 1 || bondOrder == 3) {
+            selectionCylinders.add(Cylinder.makeCylinder(a1.getPosition(), a2.getPosition(), selectionColor, selectionRadius));
+        }
+
+        // create the outside 2 bonds if its a triple bond
+        if (bondOrder == 3) {
+            selectionCylinders.add(Cylinder.makeCylinder(Vector3f.add(a1.getPosition(), normal), Vector3f.add(a2.getPosition(), normal), selectionColor, selectionRadius));
+            selectionCylinders.add(Cylinder.makeCylinder(Vector3f.subtract(a1.getPosition(), normal), Vector3f.subtract(a2.getPosition(), normal), selectionColor, selectionRadius));
+        }
+
+        // create the double bonds
+        if (bondOrder == 2) {
+            normal.scale(0.5f); // divide the normal vector in half
+            selectionCylinders.add(Cylinder.makeCylinder(Vector3f.add(a1.getPosition(), normal), Vector3f.add(a2.getPosition(), normal), selectionColor, selectionRadius));
+            selectionCylinders.add(Cylinder.makeCylinder(Vector3f.subtract(a1.getPosition(), normal), Vector3f.subtract(a2.getPosition(), normal), selectionColor, selectionRadius));
+        }
+
+        // create the meshes
+        for (Cylinder cylinder : selectionCylinders) {
+            cylinder.createMesh();
+        }
+    }
+
+    /**
      * getter method
      * @return - the cylinders that are used to render this bond
      */
     public ArrayList<Cylinder> getCylinders() {
         return this.cylinders;
+    }
+
+    /**
+     * getter method
+     * @return - the cylinders that are used to render the selection box of this bond
+     */
+    public ArrayList<Cylinder> getSelectionCylinders() {
+        return selectionCylinders;
+    }
+
+    /**
+     * toggles the selection
+     */
+    public void toggleSelected() {
+        this.isSelected = !isSelected;
+    }
+
+    /**
+     * sets if this atom is selected or not
+     * @param b - true or false
+     */
+    public void setSelected(boolean b) {
+        this.isSelected = b;
+    }
+
+    /**
+     * getter method
+     * @return - a boolean representing if this atom is selected or not
+     */
+    public boolean isSelected() {
+        return this.isSelected;
     }
 
     /**

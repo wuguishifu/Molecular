@@ -189,6 +189,17 @@ public class Main implements Runnable {
                 a.toggleSelected();
             }
         }
+        for (Molecule molecule : molecules) {
+            Bond b = molecule.getBond(data.get(0));
+            for (Bond bond : molecule.getBonds()) {
+                if (bond != b) {
+                    bond.setSelected(false);
+                }
+            }
+            if (b != null) {
+                b.toggleSelected();
+            }
+        }
 
     }
 
@@ -216,6 +227,13 @@ public class Main implements Runnable {
                     renderer.renderMesh(atom.getSelectionSphere(), camera, lightPosition, true);
                 }
             }
+            for (Bond bond : molecule.getBonds()) {
+                if (bond.isSelected()) {
+                    for (Cylinder cylinder : bond.getSelectionCylinders()) {
+                        renderer.renderMesh(cylinder, camera, lightPosition, true);
+                    }
+                }
+            }
         }
 
         // must be called at the end
@@ -230,10 +248,10 @@ public class Main implements Runnable {
     private void generateMolecules() {
         Molecule m = new Molecule(new Vector3f(0, 0, 0), new ArrayList<>(), new ArrayList<>());
         m.addAtom(new Carbon(new Vector3f(0, 0, 0)));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(0, 3.5f), 100)));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(1, 3.5f), 100)));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(2, 3.5f), 100)));
-        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(3, 3.5f), 100)));
+        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(0, 3.5f), 100), 1));
+        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(1, 3.5f), 100), 1));
+        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(2, 3.5f), 100), 1));
+        m.addBond(new Bond(m.getAtoms().get(0), new Atom(Tetrahedral.getAtomCoord(3, 3.5f), 100), 1));
         molecules.add(m);
     }
 }

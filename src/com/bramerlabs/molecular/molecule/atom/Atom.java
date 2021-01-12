@@ -1,6 +1,5 @@
 package com.bramerlabs.molecular.molecule.atom;
 
-import com.bramerlabs.engine.collision_detection.SphericalHitbox;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.shapes.Sphere;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
@@ -20,15 +19,14 @@ public class Atom {
     // rendering
     private Vector3f color; // the color of this atom
     private Sphere sphere; // the sphere used for rendering the atom
-    private SphericalHitbox hitbox; // the hitbox of this atom
 
     // selection variables
     private boolean isSelected = false; // if this atom is selected or not
     private Sphere selectionSphere; // the sphere used for rendering the selection box
     private Vector3f selectionColor = new Vector3f(0.5f, 0.5f, 0.f); // the color of the selection sphere - default yellow
 
-    // direction of the atom
-    private Vector3f direction;
+    // direction of the atom - default +y direction
+    private Vector3f direction = new Vector3f(0, 1, 0);
 
     /**
      * default constructor
@@ -44,7 +42,6 @@ public class Atom {
 
         makeSphere();
         makeSelectionSphere();
-        makeHitbox();
     }
 
     /**
@@ -65,7 +62,6 @@ public class Atom {
 
         makeSphere();
         makeSelectionSphere();
-        makeHitbox();
     }
 
     /**
@@ -165,13 +161,6 @@ public class Atom {
     }
 
     /**
-     * makes the hitbox for this atom
-     */
-    private void makeHitbox() {
-        hitbox = new SphericalHitbox(position, radius, this);
-    }
-
-    /**
      * makes the sphere used for rendering this atom
      */
     private void makeSphere() {
@@ -201,14 +190,6 @@ public class Atom {
      */
     public Sphere getSelectionSphere() {
         return this.selectionSphere;
-    }
-
-    /**
-     * getter method
-     * @return - the hitbox
-     */
-    public SphericalHitbox getHitbox() {
-        return this.hitbox;
     }
 
     /**
