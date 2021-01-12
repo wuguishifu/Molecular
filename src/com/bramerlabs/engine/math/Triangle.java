@@ -20,10 +20,35 @@ public class Triangle {
         this.v3 = v3;
     }
 
+    /**
+     * constructs a triangle with 3 vertices and a normal vector
+     * @param v1 - the first vertex
+     * @param v2 - the second vertex
+     * @param v3 - the third vertex
+     * @param normal - the normal vector
+     */
     public Triangle(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f normal) {
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
+        this.normal = normal;
+    }
+
+    /**
+     * moves each vector by a certain amount
+     * @param dP - the delta position
+     */
+    public void move(Vector3f dP) {
+        this.v1 = Vector3f.add(v1, dP);
+        this.v2 = Vector3f.add(v2, dP);
+        this.v3 = Vector3f.add(v3, dP);
+    }
+
+    /**
+     * sets the normal vector of this triangle
+     * @param normal - the new normal vector
+     */
+    public void setNormal(Vector3f normal) {
         this.normal = normal;
     }
 

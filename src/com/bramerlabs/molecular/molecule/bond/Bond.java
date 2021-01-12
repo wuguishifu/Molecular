@@ -22,7 +22,7 @@ public class Bond {
     private float radius = 0.2f;
 
     // the color of this bond - default gray
-    private Vector3f color = new Vector3f(0.5f);
+    private Vector3f color = new Vector3f(0.3f);
 
     /**
      * constructor for bond between two atoms

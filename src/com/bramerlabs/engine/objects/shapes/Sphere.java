@@ -48,6 +48,13 @@ public class Sphere extends RenderObject {
         return new Sphere(generateMesh(position, color, radius), position, new Vector3f(0), new Vector3f(1));
     }
 
+    /**
+     * generates a mesh
+     * @param position - the position of the sphere
+     * @param color - the color of the sphere
+     * @param radius - the radius of the sphere
+     * @return - the mesh of the sphere
+     */
     public static Mesh generateMesh(Vector3f position, Vector3f color, float radius) {
 
         // generate the triangles
@@ -69,6 +76,29 @@ public class Sphere extends RenderObject {
 
         // make a new mesh
         return new Mesh(vertices, indices);
+    }
+
+    /**
+     * generates a list of vertices;
+     * @param position - the position of the sphere
+     * @param color - the color of the sphere
+     * @param radius - the radius of the sphere
+     * @return - a vertex array
+     */
+    public static Vertex[] generateVertices(Vector3f position, Vector3f color, float radius) {
+        // generate the triangles
+        ArrayList<Triangle> triangles = generateTriangles(position, radius);
+
+        // create the vertex array
+        Vertex[] vertices = new Vertex[triangles.size() * 3];
+        for (int i = 0; i < triangles.size(); i++) {
+            Triangle t = triangles.get(i);
+            vertices[3 * i] = new Vertex(t.getV1(), color, Vector3f.subtract(t.getV1(), position));
+            vertices[3 * i + 1] = new Vertex(t.getV2(), color, Vector3f.subtract(t.getV2(), position));
+            vertices[3 * i + 2] = new Vertex(t.getV3(), color, Vector3f.subtract(t.getV3(), position));
+        }
+
+        return vertices;
     }
 
     /**

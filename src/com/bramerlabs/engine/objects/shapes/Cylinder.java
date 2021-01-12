@@ -44,7 +44,11 @@ public class Cylinder extends RenderObject {
         Vector3f position = Vector3f.midpoint(p1, p2);
         ArrayList<Triangle> triangles = generateTriangles(p1, p2, radius, 120);
 
-        Mesh mesh = generateMesh(triangles, color);
+        // the triangles in the spheres at the ends of the cylinder
+        ArrayList<Triangle> sphere1 = Sphere.generateTriangles(p1, radius);
+        ArrayList<Triangle> sphere2 = Sphere.generateTriangles(p2, radius);
+
+        Mesh mesh = generateMesh(triangles, color, sphere1, sphere2, p1, p2);
         return new Cylinder(mesh, position, rotation, scale);
     }
 
@@ -71,6 +75,45 @@ public class Cylinder extends RenderObject {
         }
 
         return new Mesh(vertices, indices);
+    }
+
+    /**
+     * generates a rounded mesh
+     * @param triangles - the triangles used in the cylindrical part of this mesh
+     * @param color - the color of this mesh
+     * @param sphere1 - the triangles in the spheres at the ends of the cylinder
+     * @param sphere2 - the triangles in the spheres at the ends of the cylinder
+     * @param p1 - the position of the first sphere
+     * @param p2 - the position of the second sphere
+     * @return - the new mesh
+     */
+    private static Mesh generateMesh(ArrayList<Triangle> triangles, Vector3f color, ArrayList<Triangle> sphere1, ArrayList<Triangle> sphere2, Vector3f p1, Vector3f p2) {
+
+        ArrayList<Vertex> vertices = new ArrayList<>();
+        // the triangles on the cylindrical face
+        for (Triangle t : triangles) {
+            vertices.add(new Vertex(t.getV1(), color, t.getNormal()));
+            vertices.add(new Vertex(t.getV2(), color, t.getNormal()));
+            vertices.add(new Vertex(t.getV3(), color, t.getNormal()));
+        }
+
+        // the triangles on sphere at point p1
+        for (Triangle t : sphere1) {
+            t.move(p1);
+            vertices.add(new Vertex(t.getV1(), color, Vector3f.subtract(t.getV1(), p1)));
+            vertices.add(new Vertex(t.getV2(), color, Vector3f.subtract(t.getV2(), p1)));
+            vertices.add(new Vertex(t.getV3(), color, Vector3f.subtract(t.getV3(), p1)));
+        }
+
+        // the triangles on the sphere at point p2
+        for (Triangle t : sphere2) {
+            t.move(p2);
+            vertices.add(new Vertex(t.getV1(), color, Vector3f.subtract(t.getV1(), p2)));
+            vertices.add(new Vertex(t.getV2(), color, Vector3f.subtract(t.getV2(), p2)));
+            vertices.add(new Vertex(t.getV3(), color, Vector3f.subtract(t.getV3(), p2)));
+        }
+
+        return new Mesh(vertices);
     }
 
     /**

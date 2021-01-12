@@ -8,7 +8,7 @@ import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 public class Atom {
 
     // identity data
-    private int atomicNumber = 1; // the atomic number of this atom - default Hydrogen
+    private int atomicNumber; // the atomic number of this atom - default Hydrogen
     private String atomicAbbrName = "H"; // the abbreviated name - default Hydrogen
     private int charge = 0; // the charge of the atom - default neutral
     private int numNeutrons = 0; // the amount of neutrons this atom has - default 0
@@ -27,20 +27,8 @@ public class Atom {
     private Sphere selectionSphere; // the sphere used for rendering the selection box
     private Vector3f selectionColor = new Vector3f(0.5f, 0.5f, 0.f); // the color of the selection sphere - default yellow
 
-    /**
-     * constructor for position, size, and color of the atom
-     * @param position - the position of the atom
-     * @param radius - the radius of the atom
-     * @param color - the color of the atom
-     */
-    public Atom(Vector3f position, float radius, Vector3f color) {
-        this.position = position;
-        this.radius = radius;
-        this.color = color;
-        makeSphere();
-        makeSelectionSphere();
-        makeHitbox();
-    }
+    // direction of the atom
+    private Vector3f direction;
 
     /**
      * default constructor
@@ -57,6 +45,35 @@ public class Atom {
         makeSphere();
         makeSelectionSphere();
         makeHitbox();
+    }
+
+    /**
+     * default constructor
+     * @param position - the position of this atom
+     * @param atomicNumber - the atomic number of this atom
+     * @param connectedAtom - the atom this atom is bonded to
+     */
+    public Atom(Vector3f position, int atomicNumber, Atom connectedAtom) {
+        this.position = position;
+        this.atomicNumber = atomicNumber;
+
+        // the direction of the atom
+        this.direction = Vector3f.subtract(position, connectedAtom.getPosition());
+
+        this.radius = AtomicDataCompiler.getVDWRadius(atomicNumber);
+        this.color = AtomicDataCompiler.getCPKColor(atomicNumber);
+
+        makeSphere();
+        makeSelectionSphere();
+        makeHitbox();
+    }
+
+    /**
+     * sets the direction of this atom
+     * @param dir - the direction
+     */
+    public void setDirection(Vector3f dir) {
+        this.direction = dir;
     }
 
     /**

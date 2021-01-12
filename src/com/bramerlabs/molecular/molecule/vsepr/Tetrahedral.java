@@ -15,6 +15,30 @@ public class Tetrahedral {
             new Vector3f(0, 0.5f, R2O3) // upper back
     };
 
+    /**
+     * gets a certain tetrahedral positional vector
+     * @param index - the index
+     * @return - the position or (0, 0, 0)
+     */
+    public static Vector3f getAtomCoord(int index) {
+        try {
+            return ATOM_COORDINATES[index];
+        } catch (IndexOutOfBoundsException e) {
+            return new Vector3f(0);
+        }
+    }
 
-
+    /**
+     * gets a certain tetrahedral positional vector
+     * @param index - the index
+     * @param magnitude - the magnitude to return it
+     * @return - the position or (0, 0, 0)
+     */
+    public static Vector3f getAtomCoord(int index, float magnitude) {
+        try {
+            return Vector3f.normalize(ATOM_COORDINATES[index], magnitude);
+        } catch (IndexOutOfBoundsException e) {
+            return new Vector3f(0);
+        }
+    }
 }
