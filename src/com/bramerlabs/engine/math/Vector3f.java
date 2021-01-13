@@ -52,6 +52,17 @@ public class Vector3f {
     }
 
     /**
+     * constructor from a vector2f and a z value
+     * @param v - the 2 vector
+     * @param z - the z value
+     */
+    public Vector3f(Vector2f v, float z) {
+        this.x = v.getX();
+        this.y = v.getY();
+        this.z = z;
+    }
+
+    /**
      * creates an identity vector in the e1 direction
      * @return - the identity vector
      */

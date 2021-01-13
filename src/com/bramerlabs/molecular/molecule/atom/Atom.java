@@ -8,7 +8,6 @@ public class Atom {
 
     // identity data
     private int atomicNumber; // the atomic number of this atom - default Hydrogen
-    private String atomicAbbrName = "H"; // the abbreviated name - default Hydrogen
     private int charge = 0; // the charge of the atom - default neutral
     private int numNeutrons = 0; // the amount of neutrons this atom has - default 0
 
@@ -120,7 +119,7 @@ public class Atom {
      * @return - the abbreviated name of this atom
      */
     public String getAtomicAbbrName() {
-        return this.atomicAbbrName;
+        return AtomicDataCompiler.getAtomAbbrName(atomicNumber);
     }
 
     /**
@@ -129,7 +128,6 @@ public class Atom {
      */
     public void setAtomicNumber(int atomicNumber) {
         this.atomicNumber = atomicNumber;
-        this.atomicAbbrName = AtomicDataCompiler.getAtomAbbrName(atomicNumber);
     }
 
     /**

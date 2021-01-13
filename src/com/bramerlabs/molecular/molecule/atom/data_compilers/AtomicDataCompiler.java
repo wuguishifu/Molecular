@@ -123,7 +123,7 @@ public class AtomicDataCompiler {
      */
     public static String getAtomAbbrName(int atomicNumber) {
         try {
-            return atomicAbbreviations[atomicNumber];
+            return atomicAbbreviations[atomicNumber - 1];
         } catch (IndexOutOfBoundsException e) {
             return "Null";
         }

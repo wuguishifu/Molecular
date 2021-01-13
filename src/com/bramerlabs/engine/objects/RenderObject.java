@@ -1,6 +1,5 @@
 package com.bramerlabs.engine.objects;
 
-import com.bramerlabs.engine.collision_detection.RectangularHitbox;
 import com.bramerlabs.engine.graphics.Mesh;
 import com.bramerlabs.engine.math.Vector3f;
 
@@ -18,9 +17,6 @@ public class RenderObject {
     // the mesh that this object is made of
     private Mesh mesh;
 
-    // the objects hitbox
-    private RectangularHitbox rectangularHitbox;
-
     /**
      * default constructor for specified values
      * @param mesh - the mesh that this object is made of
@@ -33,11 +29,6 @@ public class RenderObject {
         this.rotation = rotation;
         this.scale = scale;
         this.mesh = mesh;
-
-        // create a hitbox
-        Vector3f min = Vector3f.subtract(position, Vector3f.scale(scale, 0.5f));
-        Vector3f max = Vector3f.add(position, Vector3f.scale(scale, 0.5f));
-        rectangularHitbox = new RectangularHitbox(min.getX(), max.getX(), min.getY(), max.getY(), min.getZ(), max.getZ());
 
         generateID();
     }
@@ -70,11 +61,6 @@ public class RenderObject {
      */
     public void setPosition(Vector3f position) {
         this.position = position;
-
-        // set the hitbox positions
-        Vector3f min = Vector3f.subtract(position, Vector3f.scale(scale, 0.5f));
-        Vector3f max = Vector3f.add(position, Vector3f.scale(scale, 0.5f));
-        rectangularHitbox.setValues(min.getX(), max.getX(), min.getY(), max.getY(), min.getZ(), max.getZ());
     }
 
     /**
@@ -123,14 +109,6 @@ public class RenderObject {
      */
     public Mesh getMesh() {
         return mesh;
-    }
-
-    /**
-     * getter method
-     * @return - the hitbox of this game object
-     */
-    public RectangularHitbox getRectangularHitbox() {
-        return this.rectangularHitbox;
     }
 
     /**

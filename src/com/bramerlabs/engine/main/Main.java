@@ -2,6 +2,9 @@ package com.bramerlabs.engine.main;
 
 import com.bramerlabs.engine.graphics.Renderer;
 import com.bramerlabs.engine.graphics.Shader;
+import com.bramerlabs.engine.io.gui.Gui;
+import com.bramerlabs.engine.io.gui.gui_object.Button;
+import com.bramerlabs.engine.io.gui.gui_render.GuiRenderer;
 import com.bramerlabs.engine.io.picking.CPRenderer;
 import com.bramerlabs.engine.io.window.Input;
 import com.bramerlabs.engine.io.window.Window;
@@ -13,7 +16,7 @@ import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.*;
+import com.bramerlabs.molecular.molecule.default_molecules.Benzaldehyde;
 import com.bramerlabs.molecular.molecule.vsepr.Tetrahedral;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -29,13 +32,18 @@ public class Main implements Runnable {
     private Window window;
 
     // the shaders used to paint textures and for color picking
-    private Shader shader, cpShader;
+    private Shader shader, cpShader, guiShader;
 
     // used to render objects
     private Renderer renderer;
 
     // used for color picking
     private CPRenderer cpRenderer;
+
+    // GUI variables
+    private Gui gui; // the gui
+    private Button button; // the buttons
+    private GuiRenderer guiRenderer; // used for rendering the gui
 
     // used to handle inputs
     private Input input = new Input();
@@ -92,6 +100,9 @@ public class Main implements Runnable {
         // set the camera's arcball orbit focus
         camera.setLookingAt(LOOKING_AT);
 
+        // initialize the GUI
+        initializeGUI();
+
         // create molecules here
         molecules = new ArrayList<>();
         generateMolecules();
@@ -135,6 +146,26 @@ public class Main implements Runnable {
     }
 
     /**
+     * initialize the gui
+     */
+    private void initializeGUI() {
+
+        // initialize the GUI
+        gui = new Gui();
+        button = Button.getInstance(2*window.getWidth()-200, 2*window.getHeight()-200, 200, 200, window);
+        button.setID(Button.INFORMATION_BUTTON);
+        gui.addButton(button);
+
+        // create the gui renderer
+        guiShader = new Shader("/shaders/guiVertex.glsl", "/shaders/guiFragment.glsl");
+        guiRenderer = new GuiRenderer(guiShader);
+
+        // create the GUI shader
+        guiShader.create();
+
+    }
+
+    /**
      * update the window and game objects
      */
     private boolean update() {
@@ -161,7 +192,8 @@ public class Main implements Runnable {
         boolean shouldSwapBuffers = true;
         boolean currentFrameRightButtonDown = input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
         if (lastFrameRightButtonDown && !currentFrameRightButtonDown) {
-            getSelectedAtom();
+            int buttonPressed = getPressedButtons();
+            getSelectedAtom(buttonPressed == -1);
             shouldSwapBuffers = false;
         }
         lastFrameRightButtonDown = currentFrameRightButtonDown;
@@ -177,8 +209,9 @@ public class Main implements Runnable {
 
     /**
      * retrieves a selected atom on the molecule via raycasting
+     * @param unselect - if the atoms should be unselected
      */
-    private void getSelectedAtom() {
+    private void getSelectedAtom(boolean unselect) {
         // render the game objects
         for (Molecule molecule : molecules) {
             for (Bond bond : molecule.getBonds()) {
@@ -205,7 +238,7 @@ public class Main implements Runnable {
         for (Molecule molecule : molecules) {
             Atom a = molecule.getAtom(data.get(0));
             for (Atom atom : molecule.getAtoms()) {
-                if (atom != a) {
+                if (atom != a && unselect) {
                     atom.setSelected(false);
                 }
             }
@@ -216,7 +249,7 @@ public class Main implements Runnable {
         for (Molecule molecule : molecules) {
             Bond b = molecule.getBond(data.get(0));
             for (Bond bond : molecule.getBonds()) {
-                if (bond != b) {
+                if (bond != b && unselect) {
                     bond.setSelected(false);
                 }
             }
@@ -224,6 +257,39 @@ public class Main implements Runnable {
                 b.toggleSelected();
             }
         }
+    }
+
+    /**
+     * retrieves a selected button
+     */
+    private int getPressedButtons() {
+
+        // get the mouse coords
+        float mouseX = (float) input.getMouseX();
+        float mouseY = (float) input.getMouseY();
+        float width = window.getWidth();
+        float height = window.getHeight();
+
+        mouseX = 2 * mouseX / width - 1;
+        mouseY = 1 - 2 * mouseY / height;
+
+        int buttonID = -1;
+        for (Button button : gui.getButtons()) {
+            if (button.containsCoords(mouseX, mouseY)) {
+                buttonID = button.getID();
+                break;
+            }
+        }
+        if (buttonID == Button.INFORMATION_BUTTON) {
+            for (Molecule molecule : molecules) {
+                for (Atom atom : molecule.getAtoms()) {
+                    if (atom.isSelected()) {
+                        System.out.println(atom.getAtomicAbbrName() + ", " + atom.getAtomicNumber());
+                    }
+                }
+            }
+        }
+        return buttonID;
     }
 
     /**
@@ -259,6 +325,11 @@ public class Main implements Runnable {
                     }
                 }
             }
+        }
+
+        // render the GUI
+        for (Button button : gui.getButtons()) {
+            guiRenderer.renderMesh(button);
         }
 
         // must be called at the end
