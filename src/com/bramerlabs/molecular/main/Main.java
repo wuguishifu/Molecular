@@ -1,4 +1,4 @@
-package com.bramerlabs.engine.main;
+package com.bramerlabs.molecular.main;
 
 import com.bramerlabs.engine.graphics.Renderer;
 import com.bramerlabs.engine.graphics.Shader;
@@ -18,6 +18,7 @@ import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 import com.bramerlabs.molecular.molecule.default_molecules.Benzaldehyde;
 import com.bramerlabs.molecular.molecule.vsepr.Tetrahedral;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -28,42 +29,32 @@ import java.util.ArrayList;
 
 public class Main implements Runnable {
 
-    // the main window of the game
-    private Window window;
-
-    // the shaders used to paint textures and for color picking
-    private Shader shader, cpShader, guiShader;
-
-    // used to render objects
-    private Renderer renderer;
-
-    // used for color picking
-    private CPRenderer cpRenderer;
+    // main rendering variables
+    private Window window; // the main window of the game
+    private Shader shader; // the shaders used to paint textures
+    private Renderer renderer; // used to render objects
+    private static int time = 0; // the time of the window
 
     // GUI variables
     private Gui gui; // the gui
     private Button button; // the buttons
     private GuiRenderer guiRenderer; // used for rendering the gui
+    private Shader guiShader;
 
-    // used to handle inputs
-    private Input input = new Input();
+    // input handling variables
+    private Input input = new Input(); // used to handle inputs
+    private boolean lastFrameRightButtonDown = false; // if the last frame had the right mouse button down
+    private boolean displayUsingCPRenderer = false; // how the molecule should be displayed - used for testing
+    private CPRenderer cpRenderer; // used for color picking
+    private Shader cpShader;
+
+    // camera variables
+    public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input); // the camera
+    public static final Vector3f LOOKING_AT = new Vector3f(0); // the point at which the camera is looking
+    private Vector3f lightPosition = new Vector3f(0, 100, 0); // the position of the light
 
     // the molecules
     private ArrayList<Molecule> molecules;
-
-    // the camera
-    public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input);
-
-    // the point the camera is looking at
-    public static final Vector3f LOOKING_AT = new Vector3f(0);
-
-    // the position of the light
-    private Vector3f lightPosition = new Vector3f(0, 100, 0);
-
-    // if the last frame had the right mouse button down
-    private boolean lastFrameRightButtonDown = false;
-
-    private static int time = 0;
 
     /**
      * main method
@@ -152,9 +143,10 @@ public class Main implements Runnable {
 
         // initialize the GUI
         gui = new Gui();
-        button = Button.getInstance(2*window.getWidth()-200, 2*window.getHeight()-200, 200, 200, window);
-        button.setID(Button.INFORMATION_BUTTON);
-        gui.addButton(button);
+
+        for (int i = 1; i <= 4; i++) {
+            gui.addButton(Button.getInstance(2*window.getWidth()-200*i, 2*window.getHeight()-200, 200, 200, window));
+        }
 
         // create the gui renderer
         guiShader = new Shader("/shaders/guiVertex.glsl", "/shaders/guiFragment.glsl");
@@ -188,23 +180,59 @@ public class Main implements Runnable {
         GL46.glClearColor(Window.bgc.getX(), Window.bgc.getY(), Window.bgc.getZ(), 1);
         GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL46.GL_DEPTH_BUFFER_BIT);
 
+        boolean shouldSwapBuffers = handleInputs();
+
+        camera.updateArcball();
+        return shouldSwapBuffers;
+    }
+
+    /**
+     * handles inputs
+     * @return - if the buffers should be swapped
+     */
+    private boolean handleInputs() {
+
+        // handle pressing buttons
+        boolean unselectAtom = true;
+        getPressedButtons();
+
         // update the mouse picker
         boolean shouldSwapBuffers = true;
         boolean currentFrameRightButtonDown = input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
         if (lastFrameRightButtonDown && !currentFrameRightButtonDown) {
-            int buttonPressed = getPressedButtons();
-            getSelectedAtom(buttonPressed == -1);
+
+            // get the mouse coords
+            float mouseX = (float) input.getMouseX();
+            float mouseY = (float) input.getMouseY();
+            float width = window.getWidth();
+            float height = window.getHeight();
+
+            mouseX = 2 * mouseX / width - 1;
+            mouseY = 1 - 2 * mouseY / height;
+
+            for (Button button : gui.getButtons()) {
+                if (button.containsCoords(mouseX, mouseY)) {
+                    unselectAtom = false;
+                    break;
+                }
+            }
+
+            getSelectedAtom(unselectAtom);
             shouldSwapBuffers = false;
         }
         lastFrameRightButtonDown = currentFrameRightButtonDown;
 
-        // translates the camera
+        // check to see how the molecule should be rendered
+        displayUsingCPRenderer = input.isKeyDown(GLFW.GLFW_KEY_C);
+
+        // camera motion
+        // translation of the camera
         if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && input.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT)) camera.translate();
-        // resets the camera position, rotation, and distance
+        // reset the camera position, rotation, and distance
         if (input.isKeyDown(GLFW.GLFW_KEY_ENTER)) camera.resetPosition(LOOKING_AT);
 
-        camera.updateArcball();
         return shouldSwapBuffers;
+
     }
 
     /**
@@ -262,34 +290,39 @@ public class Main implements Runnable {
     /**
      * retrieves a selected button
      */
-    private int getPressedButtons() {
+    private void getPressedButtons() {
 
-        // get the mouse coords
-        float mouseX = (float) input.getMouseX();
-        float mouseY = (float) input.getMouseY();
-        float width = window.getWidth();
-        float height = window.getHeight();
+        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
+            // get the mouse coords
+            float mouseX = (float) input.getMouseX();
+            float mouseY = (float) input.getMouseY();
+            float width = window.getWidth();
+            float height = window.getHeight();
 
-        mouseX = 2 * mouseX / width - 1;
-        mouseY = 1 - 2 * mouseY / height;
+            mouseX = 2 * mouseX / width - 1;
+            mouseY = 1 - 2 * mouseY / height;
 
-        int buttonID = -1;
-        for (Button button : gui.getButtons()) {
-            if (button.containsCoords(mouseX, mouseY)) {
-                buttonID = button.getID();
-                break;
-            }
-        }
-        if (buttonID == Button.INFORMATION_BUTTON) {
-            for (Molecule molecule : molecules) {
-                for (Atom atom : molecule.getAtoms()) {
-                    if (atom.isSelected()) {
-                        System.out.println(atom.getAtomicAbbrName() + ", " + atom.getAtomicNumber());
-                    }
+            int buttonID = -1;
+            for (Button button : gui.getButtons()) {
+                if (button.containsCoords(mouseX, mouseY)) {
+                    buttonID = button.getID();
+                    button.setState(Button.STATE_PRESSED);
+                    break;
                 }
             }
+
+            for (Button button : gui.getButtons()) {
+                button.setState(Button.STATE_RELEASED);
+            }
+            if (gui.getButton(buttonID) != null) {
+                gui.getButton(buttonID).setState(Button.STATE_PRESSED);
+            }
+
+        } else {
+            for (Button button : gui.getButtons()) {
+                button.setState(Button.STATE_RELEASED);
+            }
         }
-        return buttonID;
     }
 
     /**
@@ -301,13 +334,19 @@ public class Main implements Runnable {
         for (Molecule molecule : molecules) {
             for (Bond bond : molecule.getBonds()) {
                 for (Cylinder cylinder : bond.getCylinders()) {
-                    renderer.renderMesh(cylinder, camera, lightPosition, false);
-//                    cpRenderer.renderMesh(cylinder, camera);
+                    if (displayUsingCPRenderer) {
+                        cpRenderer.renderMesh(cylinder, camera);
+                    } else {
+                        renderer.renderMesh(cylinder, camera, lightPosition, false);
+                    }
                 }
             }
             for (Atom atom : molecule.getAtoms()) {
-                renderer.renderMesh(atom.getSphere(), camera, lightPosition, false);
-//                cpRenderer.renderMesh(atom.getSphere(), camera);
+                if (displayUsingCPRenderer) {
+                    cpRenderer.renderMesh(atom.getSphere(), camera);
+                } else {
+                    renderer.renderMesh(atom.getSphere(), camera, lightPosition, false);
+                }
             }
         }
 
@@ -346,6 +385,9 @@ public class Main implements Runnable {
 //        generateTestEmptyMolecule();
     }
 
+    /**
+     * generates a test molecule
+     */
     private void generateTestEmptyMolecule() {
         molecules.add(new Molecule(
                 new Vector3f(0, 0, 0),

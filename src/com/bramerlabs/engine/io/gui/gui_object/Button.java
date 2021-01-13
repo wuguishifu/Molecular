@@ -11,23 +11,22 @@ public class Button extends GuiObject {
 
     public static final int INFORMATION_BUTTON = 1001;
 
-    // the state of the button
-    private int selectedState;
-    public static final int STATE_IDLE = 0;
-    public static final int STATE_SELECTED = 1;
-    public static final int STATE_CLICKED = 2;
+    public static final int STATE_PRESSED = 1;
+    public static final int STATE_RELEASED = 0;
 
     private static Vector3f color = new Vector3f(1.0f, 1.0f, 1.0f);
 
     /**
      * default constructor for specified position and size
+     * @param defaultMesh - the default unpressed button state
+     * @param stateMesh - the pressed button state
      * @param x - the x position
      * @param y - the y position
      * @param width - the width
      * @param height - the height
      */
-    public Button(float x, float y, float width, float height, GuiMesh mesh) {
-        super(mesh, new Vector2f(x, y), new Vector2f(width, height));
+    public Button(float x, float y, float width, float height, GuiMesh defaultMesh, GuiMesh stateMesh) {
+        super(defaultMesh, stateMesh, new Vector2f(x, y), new Vector2f(width, height));
         this.createMesh();
     }
 
@@ -54,8 +53,16 @@ public class Button extends GuiObject {
                 0, 1, 2,
                 0, 2, 3
         };
-        Material material = new Material("/textures/information_button.png");
-        return new Button(x, y, width, height, new GuiMesh(vertices, indices, material));
+
+        // makes the two meshes
+        Material defaultMaterial = new Material("/textures/button.png");
+        Material pressedMaterial = new Material("/textures/button_pressed.png");
+
+        // make the new button
+        return new Button(x, y, width, height,
+                new GuiMesh(vertices, indices, defaultMaterial),
+                new GuiMesh(vertices, indices, pressedMaterial)
+        );
     }
 
     /**

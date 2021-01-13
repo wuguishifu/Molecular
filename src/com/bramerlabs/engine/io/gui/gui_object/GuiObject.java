@@ -17,7 +17,11 @@ public class GuiObject {
     private Vector2f position, size;
 
     // the mesh that this object is made of
-    private GuiMesh mesh;
+    private GuiMesh defaultMesh;
+    private GuiMesh stateMesh;
+
+    // the state of the object
+    private int state = 0;
 
     /**
      * default constructor for specified values
@@ -26,23 +30,41 @@ public class GuiObject {
      * @param size - the width and height of this object
      */
     public GuiObject(GuiMesh mesh, Vector2f position, Vector2f size) {
-        this.mesh = mesh;
+        this.defaultMesh = mesh;
         this.position = position;
         this.size = size;
+        generateID();
+    }
+
+    /**
+     * default constructor for two mesh states
+     * @param defaultMesh - the default state
+     * @param stateMesh - the prime state
+     * @param position - the position of this object
+     * @param size - the width and height of this object
+     */
+    public GuiObject(GuiMesh defaultMesh, GuiMesh stateMesh, Vector2f position, Vector2f size) {
+        this.defaultMesh = defaultMesh;
+        this.stateMesh = stateMesh;
+        this.position = position;
+        this.size = size;
+        generateID();
     }
 
     /**
      * creates the mesh
      */
     public void createMesh() {
-        mesh.create();
+        defaultMesh.create();
+        stateMesh.create();
     }
 
     /**
      * releases the gui object
      */
     public void destroy() {
-        mesh.destroy();
+        defaultMesh.destroy();
+        stateMesh.destroy();
     }
 
     /**
@@ -65,8 +87,16 @@ public class GuiObject {
      * getter method
      * @return - the mesh that this object is made of
      */
-    public GuiMesh getMesh() {
-        return this.mesh;
+    public GuiMesh getDefaultMesh() {
+        return this.defaultMesh;
+    }
+
+    /**
+     * getter method
+     * @return - the state mesh that this object is made of
+     */
+    public GuiMesh getStateMesh() {
+        return this.stateMesh;
     }
 
     /**
@@ -110,5 +140,28 @@ public class GuiObject {
     public boolean containsCoords (float x, float y) {
         if (x > this.position.getX() + this.size.getX() || x < this.position.getX()) return false;
         return !(y > this.position.getY() + this.size.getY()) && !(y < this.position.getY());
+    }
+
+    /**
+     * getter method
+     * @return - the current state of the object
+     */
+    public int getState() {
+        return this.state;
+    }
+
+    /**
+     * sets the state
+     * @param state - the new state
+     */
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    /**
+     * resets the state
+     */
+    public void resetState() {
+        this.state = 0;
     }
 }

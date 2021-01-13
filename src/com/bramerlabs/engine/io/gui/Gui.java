@@ -42,11 +42,14 @@ public class Gui {
 
     /**
      * gets a specified button
-     * @param index - the index
+     * @param ID - the ID of the button
      * @return - the button at that index
      */
-    public Button getButton(int index) {
-        return this.buttons.get(index);
+    public Button getButton(int ID) {
+        for (Button button : buttons) {
+            if (button.getID() == ID) return button;
+        }
+        return null;
     }
 
     /**
