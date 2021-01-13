@@ -94,6 +94,20 @@ public class Camera {
      */
     public void updateArcball() {
 
+        // print the camera location
+        if (input.isKeyDown(GLFW.GLFW_KEY_P)) {
+            System.out.println(verticalAngle + ", " + horizontalAngle + ", " + distance + ", " + horizontalDistance + ", " + verticalDistance + ", " + lookingAt);
+        }
+        // used for taking nice pictures of benzene for the website
+        if (input.isKeyDown(GLFW.GLFW_KEY_L)) {
+            this.verticalDistance = -11.076831f;
+            this.horizontalDistance = 10.114534f;
+            this.distance = 15.0f;
+            this.verticalAngle = -47.6000006f;
+            this.horizontalAngle = -78.2f;
+            this.lookingAt = new Vector3f(1.1676779f, -1.4711119f, 0.15995185f);
+        }
+
         // reset constraint rotation if the left mouse button is released
         if (!input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) || !input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
             rotatingHorizontal = false;

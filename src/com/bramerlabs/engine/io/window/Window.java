@@ -68,6 +68,9 @@ public class Window {
         this.defaultWidth = displayMode.getWidth() / 2;
         this.defaultHeight = displayMode.getHeight() / 2;
 
+//        this.defaultWidth = displayMode.getWidth();
+//        this.defaultHeight = displayMode.getHeight();
+
         // set the current width, height to the default
         this.width = defaultWidth;
         this.height = defaultHeight;
@@ -124,6 +127,8 @@ public class Window {
             // store the centered position of the window
             this.windowX = vidMode.width() / 4;
             this.windowY = vidMode.height() / 4;
+//            this.windowX = 0;
+//            this.windowY = 0;
         }
 
         // set the GLFW context
@@ -180,6 +185,14 @@ public class Window {
 
         // poll GLFW for callbacks
         GLFW.glfwPollEvents();
+
+        if (input.isWindowResized()) {
+            this.windowX = input.getWindowX();
+            this.windowY = input.getWindowY();
+            this.width = input.getWindowWidth();
+            this.height = input.getWindowHeight();
+            projection = Matrix4f.projection(70.0f, (width/(float)height), 0.1f, 1000f);
+        }
 
         // calculate framerate
         frames++;

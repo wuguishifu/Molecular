@@ -59,7 +59,7 @@ public class Methane extends Molecule {
      */
     @Override
     public void update(int time) {
-        updateA1(time);
+//        updateA1(time);
 //        updateT2(time);
 //        updateDemo(time);
     }
