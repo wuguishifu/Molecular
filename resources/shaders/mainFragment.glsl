@@ -9,6 +9,9 @@ in vec3 passFragPos;
 uniform vec3 lightPos;
 uniform float lightLevel;
 
+// the light color
+uniform vec3 lightColor;
+
 // the position of the camera
 uniform vec3 viewPos;
 
@@ -22,7 +25,7 @@ out vec4 outColor;
 void main() {
 
     // the color of the light
-    vec3 lightColor = vec3(1.0, 1.0, 1.0);
+//    vec3 lightColor = vec3(1.0, 0.8, 1.0);
 
     // ambient lighting
     vec3 ambientLight = lightLevel * lightColor; // create the ambient light level

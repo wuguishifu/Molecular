@@ -63,6 +63,19 @@ public class Vector3f {
     }
 
     /**
+     * gets a random vector3f
+     * @param min - the min value for each component
+     * @param max - the max value for each component
+     * @return - a new vector3f with 3 random components each between min, max
+     */
+    public static Vector3f getRandom(float min, float max) {
+        float x = (float) (Math.random() * (max - min) + min);
+        float y = (float) (Math.random() * (max - min) + min);
+        float z = (float) (Math.random() * (max - min) + min);
+        return new Vector3f(x, y, z);
+    }
+
+    /**
      * creates an identity vector in the e1 direction
      * @return - the identity vector
      */

@@ -31,6 +31,16 @@ import java.util.ArrayList;
 
 public class Main implements Runnable {
 
+    // controlling RGB lights
+    int alpha = 0;
+    int timer = 0;
+    int[] rgbLights = new int[] {
+            0, 4, 8, 13, 17, 21, 25, 30, 34, 38, 42, 47, 51, 55, 59, 64, 68, 72, 76,
+            81, 85, 89, 93, 98, 102, 106, 110, 115, 119, 123, 127, 132, 136, 140, 144,
+            149, 153, 157, 161, 166, 170, 174, 178, 183, 187, 191, 195, 200, 204, 208,
+            212, 217, 221, 225, 229, 234, 238, 242, 246, 251, 255
+    };
+
     // main rendering variables
     private Window window; // the main window of the game
     private Shader shader; // the shaders used to paint textures
@@ -164,11 +174,7 @@ public class Main implements Runnable {
      */
     private boolean update() {
 
-        // update the global timer
-        time++;
-        if (time > 1800) { // reset timer every second
-            time %= 1800;
-        }
+//        updateRGB();
 
         // update the window
         window.update();
@@ -184,7 +190,9 @@ public class Main implements Runnable {
 
         boolean shouldSwapBuffers = handleInputs();
 
-        camera.updateArcball();
+        if (!getPressedButtons()) {
+            camera.updateArcball();
+        }
         return shouldSwapBuffers;
     }
 
@@ -196,7 +204,6 @@ public class Main implements Runnable {
 
         // handle pressing buttons
         boolean unselectAtom = true;
-        getPressedButtons();
 
         // update the mouse picker
         boolean shouldSwapBuffers = true;
@@ -292,8 +299,8 @@ public class Main implements Runnable {
     /**
      * retrieves a selected button
      */
-    private void getPressedButtons() {
-
+    private boolean getPressedButtons() {
+        boolean isOverButton = false;
         if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
             // get the mouse coords
             float mouseX = (float) input.getMouseX();
@@ -317,6 +324,7 @@ public class Main implements Runnable {
                 button.setState(Button.STATE_RELEASED);
             }
             if (gui.getButton(buttonID) != null) {
+                isOverButton = true;
                 gui.getButton(buttonID).setState(Button.STATE_PRESSED);
             }
 
@@ -325,6 +333,7 @@ public class Main implements Runnable {
                 button.setState(Button.STATE_RELEASED);
             }
         }
+        return isOverButton;
     }
 
     /**
@@ -403,5 +412,48 @@ public class Main implements Runnable {
                 }}
                 )
         );
+    }
+
+    /**
+     * secret feature???
+     * cycles the color through RGB
+     */
+    private void updateRGB() {
+        // update the global timer
+        float red;
+        float green;
+        float blue;
+        timer ++;
+        if (timer > 10) {
+            timer = 0;
+        }
+        alpha ++;
+        if (alpha > 360) alpha = 0;
+        if (alpha < 60) {
+            red = 1.0f;
+            green = rgbLights[alpha]/255.f;
+            blue = 0.0f;
+        } else if (alpha < 120) {
+            red = rgbLights[120 - alpha]/255.f;
+            green = 1.0f;
+            blue = 0.0f;
+        } else if (alpha < 180) {
+            red = 0.0f;
+            green = 1.0f;
+            blue = rgbLights[alpha - 120]/255.f;
+        } else if (alpha < 240) {
+            red = 0.0f;
+            green = rgbLights[240-alpha]/255.f;
+            blue = 1.0f;
+        } else if (alpha < 300) {
+            red = rgbLights[alpha-240]/255.f;
+            green = 0.0f;
+            blue = 1.0f;
+        } else {
+            red = 1.0f;
+            green = 0.0f;
+            blue = rgbLights[360-alpha]/255.f;
+        }
+        renderer.setLightColor(new Vector3f(red, green, blue));
     }
 }

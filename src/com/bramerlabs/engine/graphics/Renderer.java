@@ -16,6 +16,9 @@ public class Renderer {
     // the window to render to
     private Window window;
 
+    // the light color
+    private Vector3f lightColor = new Vector3f(1.0f, 1.0f, 1.0f);
+
     /**
      * default constructor
      * @param window - the specified window to render to
@@ -45,6 +48,7 @@ public class Renderer {
         shader.setUniform("lightLevel", 0.3f);
         shader.setUniform("viewPos", camera.getPosition());
         shader.setUniform("alpha", isSelected ? 0.5f : 1.0f);
+        shader.setUniform("lightColor", lightColor);
         GL11.glDrawElements(GL11.GL_TRIANGLES, object.getMesh().getIndices().length, GL11.GL_UNSIGNED_INT, 0);
         shader.unbind();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -52,5 +56,21 @@ public class Renderer {
         GL30.glDisableVertexAttribArray(1);
         GL30.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
+    }
+
+    /**
+     * sets the light color
+     * @param lightColor - the new color
+     */
+    public void setLightColor(Vector3f lightColor) {
+        this.lightColor = lightColor;
+    }
+
+    /**
+     * getter method
+     * @return - the light color
+     */
+    public Vector3f getLightColor() {
+        return this.lightColor;
     }
 }
