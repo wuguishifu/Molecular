@@ -1,7 +1,9 @@
-package com.bramerlabs.engine.io.gui.gui_object;
+package com.bramerlabs.engine.io.gui.gui_object.buttons;
 
 import com.bramerlabs.engine.graphics.Material;
+import com.bramerlabs.engine.graphics.Mesh;
 import com.bramerlabs.engine.graphics.Vertex;
+import com.bramerlabs.engine.io.gui.gui_object.GuiObject;
 import com.bramerlabs.engine.io.gui.gui_render.GuiMesh;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector2f;
@@ -9,12 +11,19 @@ import com.bramerlabs.engine.math.Vector3f;
 
 public class Button extends GuiObject {
 
-    public static final int INFORMATION_BUTTON = 1001;
-
+    // the states of the button
     public static final int STATE_PRESSED = 1;
     public static final int STATE_RELEASED = 0;
 
+    // the color of the button - unused
     private static Vector3f color = new Vector3f(1.0f, 1.0f, 1.0f);
+
+    // the meshes this button is made of
+    private Mesh defaultMesh; // the default mesh
+    private Mesh stateMesh; // the button pressed mesh
+    // the default paths
+    public static String DEFAULT_UNPRESSED_MESH = "textures/buttons/button_default.png";
+    public static String DEFAULT_PRESSED_MESH = "textures/buttons/button_default_pressed.png";
 
     /**
      * default constructor for specified position and size
@@ -38,7 +47,7 @@ public class Button extends GuiObject {
      * @param height - the viewport height
      * @return - a new button
      */
-    public static Button getInstance(float x, float y, float width, float height) {
+    public static Button getInstance(float x, float y, float width, float height, String pathToDefaultTexture, String pathToPressedTexture) {
         Vertex[] vertices = new Vertex[]{
 //                new Vertex(new Vector2f(-0.5f, -0.5f), new Vector2f(0, 1)),
 //                new Vertex(new Vector2f( 0.5f, -0.5f), new Vector2f(1, 1)),
@@ -55,8 +64,8 @@ public class Button extends GuiObject {
         };
 
         // makes the two meshes
-        Material defaultMaterial = new Material("/textures/button.png");
-        Material pressedMaterial = new Material("/textures/button_pressed.png");
+        Material defaultMaterial = new Material(pathToDefaultTexture);
+        Material pressedMaterial = new Material(pathToPressedTexture);
 
         // make the new button
         return new Button(x, y, width, height,
@@ -74,10 +83,10 @@ public class Button extends GuiObject {
      * @param window - the window
      * @return - the button
      */
-    public static Button getInstance(int x1, int y1, int width, int height, Window window) {
+    public static Button getInstance(int x1, int y1, int width, int height, Window window, String pathToDefaultTexture, String pathToPressedTexture) {
         float windowWidth = window.getWidth();
         float windowHeight = window.getHeight();
-        return getInstance(x1/windowWidth - 1f, y1/windowHeight - 1f, width/windowWidth, height/windowHeight);
+        return getInstance(x1/windowWidth - 1f, y1/windowHeight - 1f, width/windowWidth, height/windowHeight, pathToDefaultTexture, pathToPressedTexture);
     }
 
     /**
@@ -88,7 +97,7 @@ public class Button extends GuiObject {
      * @param y2 - the max y value
      * @return - a new button
      */
-    public static Button getInstanceFromMaxima(int x1, int y1, int x2, int y2) {
-        return getInstance(x1, y1, x2 - x1, y2 - y1);
+    public static Button getInstanceFromMaxima(int x1, int y1, int x2, int y2, String pathToDefaultTexture, String pathToPressedTexture) {
+        return getInstance(x1, y1, x2 - x1, y2 - y1, pathToDefaultTexture, pathToPressedTexture);
     }
 }

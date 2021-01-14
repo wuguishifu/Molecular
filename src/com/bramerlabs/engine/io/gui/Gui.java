@@ -1,6 +1,6 @@
 package com.bramerlabs.engine.io.gui;
 
-import com.bramerlabs.engine.io.gui.gui_object.Button;
+import com.bramerlabs.engine.io.gui.gui_object.buttons.Button;
 
 import java.util.ArrayList;
 

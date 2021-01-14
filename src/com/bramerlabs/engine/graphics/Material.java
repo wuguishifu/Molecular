@@ -1,13 +1,12 @@
 package com.bramerlabs.engine.graphics;
 
 import com.bramerlabs.engine.io.file_util.FileUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import java.io.IOException;
-
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
 
 public class Material {
 
@@ -39,7 +38,7 @@ public class Material {
      */
     public void create() {
         try {
-            texture = TextureLoader.getTexture(FORMAT, FileUtils.class.getModule().getResourceAsStream(pathToTexture), GL_NEAREST);
+            texture = TextureLoader.getTexture(FORMAT, FileUtils.class.getModule().getResourceAsStream(pathToTexture), GL11.GL_LINEAR);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error: could not load texture.");

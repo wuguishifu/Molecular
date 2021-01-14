@@ -3,7 +3,8 @@ package com.bramerlabs.molecular.main;
 import com.bramerlabs.engine.graphics.Renderer;
 import com.bramerlabs.engine.graphics.Shader;
 import com.bramerlabs.engine.io.gui.Gui;
-import com.bramerlabs.engine.io.gui.gui_object.Button;
+import com.bramerlabs.engine.io.gui.gui_object.buttons.Button;
+import com.bramerlabs.engine.io.gui.gui_object.buttons.InformationButton;
 import com.bramerlabs.engine.io.gui.gui_render.GuiRenderer;
 import com.bramerlabs.engine.io.picking.CPRenderer;
 import com.bramerlabs.engine.io.window.Input;
@@ -144,9 +145,11 @@ public class Main implements Runnable {
         // initialize the GUI
         gui = new Gui();
 
-        for (int i = 1; i <= 4; i++) {
-            gui.addButton(Button.getInstance(2*window.getWidth()-200*i, 2*window.getHeight()-200, 200, 200, window));
+        int size = 200;
+        for (int i = 2; i <= 4; i++) {
+            gui.addButton(Button.getInstance(2*window.getWidth()-size*i, 2*window.getHeight()-size, size, size, window, Button.DEFAULT_UNPRESSED_MESH, Button.DEFAULT_PRESSED_MESH));
         }
+        gui.addButton(InformationButton.getInstance(2*window.getWidth()-size, 2*window.getHeight()-size, size, size, window)); // add the information button
 
         // create the gui renderer
         guiShader = new Shader("/shaders/guiVertex.glsl", "/shaders/guiFragment.glsl");
