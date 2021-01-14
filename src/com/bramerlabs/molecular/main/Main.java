@@ -17,9 +17,8 @@ import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.Benzaldehyde;
+import com.bramerlabs.molecular.molecule.default_molecules.Benzene;
 import com.bramerlabs.molecular.molecule.vsepr.Tetrahedral;
-
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -384,8 +383,7 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        molecules.add(new Benzaldehyde(new Vector3f(0, 0, 0)));
-//        generateTestEmptyMolecule();
+        molecules.add(new Benzene(new Vector3f(0, 0, 0)));
     }
 
     /**

@@ -93,6 +93,30 @@ public class Molecule {
     }
 
     /**
+     * sets the list of atoms
+     * @param atoms - the list of atoms
+     */
+    public void setAtoms(ArrayList<Atom> atoms) {
+        this.atoms = atoms;
+    }
+
+    /**
+     * sets the list of bonds
+     * @param bonds - the list of bonds
+     */
+    public void setBonds(ArrayList<Bond> bonds) {
+        this.bonds = bonds;
+    }
+
+    /**
+     * sets the position of the molecule
+     * @param position - the position
+     */
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }
+
+    /**
      * getter method
      * @return - the position of the central atom in this molecule
      */
@@ -137,6 +161,34 @@ public class Molecule {
                 if (c.getID() == ID) {
                     return b;
                 }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * gets an atom with a specific ID
+     * @param ID - the ID
+     * @return - the atom
+     */
+    public Atom getAtomFromAtomID(int ID) {
+        for (Atom a : this.atoms) {
+            if (a.getID() == ID) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * gets a bond with a specifid ID
+     * @param ID - the ID
+     * @return - the bond
+     */
+    public Bond getBondFromBondID(int ID) {
+        for (Bond b : this.bonds) {
+            if (b.getID() == ID) {
+                return b;
             }
         }
         return null;

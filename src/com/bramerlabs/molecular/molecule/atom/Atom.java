@@ -6,6 +6,10 @@ import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 
 public class Atom {
 
+    // ID data
+    private static int curID = 0;
+    private int ID;
+
     // identity data
     private int atomicNumber; // the atomic number of this atom - default Hydrogen
     private int charge = 0; // the charge of the atom - default neutral
@@ -41,6 +45,28 @@ public class Atom {
 
         makeSphere();
         makeSelectionSphere();
+        generateID();
+    }
+
+    /**
+     * default constructor
+     * @param position - the position of this atom
+     * @param atomicNumber - the atomic number of this atom
+     * @param charge - the charge of this atom
+     * @param numNeutrons - the number of neutrons in this atom
+     */
+    public Atom(Vector3f position, int atomicNumber, int charge, int numNeutrons, int ID) {
+        this.position = position;
+        this.atomicNumber = atomicNumber;
+        this.charge = charge;
+        this.numNeutrons = numNeutrons;
+
+        this.radius = AtomicDataCompiler.getVDWRadius(atomicNumber);
+        this.color = AtomicDataCompiler.getCPKColor(atomicNumber);
+
+        makeSphere();
+        makeSelectionSphere();
+        this.ID = ID;
     }
 
     /**
@@ -61,6 +87,7 @@ public class Atom {
 
         makeSphere();
         makeSelectionSphere();
+        generateID();
     }
 
     /**
@@ -226,9 +253,36 @@ public class Atom {
     }
 
     /**
+     * getter method
+     * @return - the ID
+     */
+    public int getID() {
+        return this.ID;
+    }
+
+    /**
+     * sets the current ID
+     */
+    public void generateID() {
+        this.ID = curID;
+        curID ++;
+    }
+
+    @Override
+    public String toString() {
+        return "atom "
+                + this.ID + " "
+                + this.atomicNumber + " "
+                + this.charge + " "
+                + this.numNeutrons +" "
+                + this.position.getX() + " "
+                + this.position.getY() + " "
+                + this.position.getZ();
+    }
+
+    /**
      * atomic numbers
      */
-
     public static int HYDROGEN = 1;
     public static int HELIUM = 2;
     public static int LITHIUM = 3;

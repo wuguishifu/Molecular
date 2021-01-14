@@ -2,9 +2,9 @@ package com.bramerlabs.molecular.molecule.default_molecules;
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.atom.Atom;
-import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Hydrogen;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Oxygen;
+import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 
 public class Benzaldehyde extends Benzene {
@@ -17,8 +17,11 @@ public class Benzaldehyde extends Benzene {
         super(position);
 
         // add the constituent
-        Vector3f sub = this.getAtoms().get(3).getPosition();
-        this.getAtoms().remove(this.getAtoms().get(9));
+        // remove the extra hydrogen from the benzene
+        Atom subCarbon = this.getAtoms().get(3);
+        Vector3f sub = subCarbon.getPosition();
+        int atomID = this.getAtoms().get(9).getID();
+        this.removeAtom(this.getAtomFromAtomID(atomID));
 
         float COBond = Carbon.ATOMIC_RADIUS + Oxygen.ATOMIC_RADIUS + Bond.CO_DOUBLE_BOND;
         float CHBond = Carbon.ATOMIC_RADIUS + Hydrogen.ATOMIC_RADIUS + Bond.CH_BOND;
@@ -34,6 +37,7 @@ public class Benzaldehyde extends Benzene {
 
         this.addBond(new Bond(c1, o1, 2));
         this.addBond(new Bond(c1, h1, 1));
+        this.addBond(new Bond(subCarbon, c1, 1));
 
     }
 }

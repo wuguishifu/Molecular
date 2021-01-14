@@ -9,6 +9,10 @@ import java.util.ArrayList;
 
 public class Bond {
 
+    // id information
+    private static int curID = 0;
+    private int ID;
+
     // identity information
     private Atom a1, a2; // the atoms that this bond connects
     private int bondOrder = 1; // the bond order of this bond - default 1 (single bond)
@@ -34,6 +38,7 @@ public class Bond {
         this.a2 = a2;
         makeCylinders();
         makeSelectionCylinders();
+        generateID();
     }
 
     /**
@@ -48,22 +53,17 @@ public class Bond {
         this.bondOrder = bondOrder;
         makeCylinders();
         makeSelectionCylinders();
+        generateID();
     }
 
-    /**
-     * constructor for bond between two atoms
-     * @param a1 - atom 1
-     * @param a2 - atom 2
-     * @param bondOrder - the bond order of this bond
-     * @param radius - the radius of this bond
-     */
-    public Bond(Atom a1, Atom a2, int bondOrder, float radius) {
+    public Bond(Atom a1, Atom a2, int bondOrder, int ID) {
         this.a1 = a1;
         this.a2 = a2;
         this.bondOrder = bondOrder;
-        this.radius = radius;
+        this.ID = ID;
         makeCylinders();
         makeSelectionCylinders();
+        generateID();
     }
 
     /**
@@ -82,6 +82,7 @@ public class Bond {
         this.color = color;
         makeCylinders();
         makeSelectionCylinders();
+        generateID();
     }
 
     /**
@@ -237,6 +238,35 @@ public class Bond {
         for (Cylinder c : cylinders) {
             c.destroy();
         }
+    }
+
+    /**
+     * getter method
+     * @return - the bond order
+     */
+    public int getBondOrder() {
+        return this.bondOrder;
+    }
+
+    /**
+     * getter method
+     * @return - the ID of the bond
+     */
+    public int getID() {
+        return this.ID;
+    }
+
+    /**
+     * generates the ID for this bond
+     */
+    public void generateID() {
+        this.ID = curID;
+        curID++;
+    }
+
+    @Override
+    public String toString() {
+        return "bond " + this.ID + " " + this.a1.getID() + " " + this.a2.getID() + " " + this.bondOrder;
     }
 
     /**
