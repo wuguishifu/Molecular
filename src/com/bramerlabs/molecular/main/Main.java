@@ -5,6 +5,8 @@ import com.bramerlabs.engine.graphics.Shader;
 import com.bramerlabs.engine.io.gui.Gui;
 import com.bramerlabs.engine.io.gui.gui_object.buttons.Button;
 import com.bramerlabs.engine.io.gui.gui_object.buttons.InformationButton;
+import com.bramerlabs.engine.io.gui.gui_object.buttons.NewFileButton;
+import com.bramerlabs.engine.io.gui.gui_object.buttons.SaveButton;
 import com.bramerlabs.engine.io.gui.gui_render.GuiRenderer;
 import com.bramerlabs.engine.io.picking.CPRenderer;
 import com.bramerlabs.engine.io.window.Input;
@@ -17,7 +19,7 @@ import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.Benzene;
+import com.bramerlabs.molecular.molecule.default_molecules.Benzaldehyde;
 import com.bramerlabs.molecular.molecule.vsepr.Tetrahedral;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -37,7 +39,6 @@ public class Main implements Runnable {
 
     // GUI variables
     private Gui gui; // the gui
-    private Button button; // the buttons
     private GuiRenderer guiRenderer; // used for rendering the gui
     private Shader guiShader;
 
@@ -145,10 +146,9 @@ public class Main implements Runnable {
         gui = new Gui();
 
         int size = 200;
-        for (int i = 2; i <= 4; i++) {
-            gui.addButton(Button.getInstance(2*window.getWidth()-size*i, 2*window.getHeight()-size, size, size, window, Button.DEFAULT_UNPRESSED_MESH, Button.DEFAULT_PRESSED_MESH));
-        }
-        gui.addButton(InformationButton.getInstance(2*window.getWidth()-size, 2*window.getHeight()-size, size, size, window)); // add the information button
+        gui.addButton(InformationButton.getInstance(0, 2*window.getHeight()-size, size, size, window));
+        gui.addButton(SaveButton.getInstance(size, 2*window.getHeight()-size, size, size, window));
+        gui.addButton(NewFileButton.getInstance(2*size, 2*window.getHeight()-size, size, size, window));
 
         // create the gui renderer
         guiShader = new Shader("/shaders/guiVertex.glsl", "/shaders/guiFragment.glsl");
@@ -294,7 +294,7 @@ public class Main implements Runnable {
      */
     private void getPressedButtons() {
 
-        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
+        if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
             // get the mouse coords
             float mouseX = (float) input.getMouseX();
             float mouseY = (float) input.getMouseY();
@@ -383,7 +383,7 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        molecules.add(new Benzene(new Vector3f(0, 0, 0)));
+        molecules.add(new Benzaldehyde(new Vector3f(0, 0, 0)));
     }
 
     /**

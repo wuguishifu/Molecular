@@ -6,26 +6,25 @@ import com.bramerlabs.engine.io.gui.gui_render.GuiMesh;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector2f;
 
-public class InformationButton extends Button {
+public class NewFileButton extends Button {
 
-    // the ID of information buttons
-    public static final int ID = Button.BUTTON_INFORMATION;
+    // the ID of new file buttons
+    public static final int ID = Button.BUTTON_NEW_FILE;
 
     // the different textures
-    private static final String unpressedTexture = "/textures/buttons/button_information.png";
-    private static final String pressedTexture = "/textures/buttons/button_information_pressed.png";
+    private static final String unpressedTexture = "/textures/buttons/button_new_file.png";
+    private static final String pressedTexture = "/textures/buttons/button_new_file_pressed.png";
 
     /**
      * default constructor for specified position and size
-     *
-     * @param x           - the x position
-     * @param y           - the y position
-     * @param width       - the width
-     * @param height      - the height
+     * @param x - the x position
+     * @param y - the y position
+     * @param width - the width
+     * @param height - the height
      * @param defaultMesh - the default unpressed button state
-     * @param stateMesh   - the pressed button state
+     * @param stateMesh - the pressed button state
      */
-    public InformationButton(float x, float y, float width, float height, GuiMesh defaultMesh, GuiMesh stateMesh) {
+    public NewFileButton(float x, float y, float width, float height, GuiMesh defaultMesh, GuiMesh stateMesh) {
         super(x, y, width, height, defaultMesh, stateMesh, ID);
     }
 
@@ -35,7 +34,7 @@ public class InformationButton extends Button {
      * @param size - the size of the button [width, height]
      * @return - a new InformationButton
      */
-    public static InformationButton getInstance(Vector2f position, Vector2f size) {
+    public static NewFileButton getInstance(Vector2f position, Vector2f size) {
         float x = position.getX();
         float y = position.getY();
         float width = size.getX();
@@ -58,7 +57,7 @@ public class InformationButton extends Button {
         Material pressedMaterial = new Material(pressedTexture);
 
         // construct the new information button
-        return new InformationButton(position.getX(), position.getY(), size.getX(), size.getY(),
+        return new NewFileButton(position.getX(), position.getY(), size.getX(), size.getY(),
                 new GuiMesh(vertices, indices, unpressedMaterial),
                 new GuiMesh(vertices, indices, pressedMaterial)
         );
@@ -73,9 +72,9 @@ public class InformationButton extends Button {
      * @param window - the window
      * @return - the button
      */
-    public static InformationButton getInstance(int x1, int y1, int width, int height, Window window) {
+    public static NewFileButton getInstance(int x1, int y1, int width, int height, Window window) {
         float windowWidth = window.getWidth();
         float windowHeight = window.getHeight();
-        return InformationButton.getInstance(new Vector2f(x1 / windowWidth - 1f, y1 / windowHeight - 1f), new Vector2f(width / windowWidth, height / windowHeight));
+        return NewFileButton.getInstance(new Vector2f(x1 / windowWidth - 1f, y1 / windowHeight - 1f), new Vector2f(width / windowWidth, height / windowHeight));
     }
 }

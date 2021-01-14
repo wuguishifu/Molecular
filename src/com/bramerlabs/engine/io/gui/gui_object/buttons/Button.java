@@ -11,6 +11,11 @@ import com.bramerlabs.engine.math.Vector3f;
 
 public class Button extends GuiObject {
 
+    // different buttons
+    public static final int BUTTON_INFORMATION = 1000;
+    public static final int BUTTON_SAVE = 1001;
+    public static final int BUTTON_NEW_FILE = 1002;
+
     // the states of the button
     public static final int STATE_PRESSED = 1;
     public static final int STATE_RELEASED = 0;
@@ -36,6 +41,21 @@ public class Button extends GuiObject {
      */
     public Button(float x, float y, float width, float height, GuiMesh defaultMesh, GuiMesh stateMesh) {
         super(defaultMesh, stateMesh, new Vector2f(x, y), new Vector2f(width, height));
+        this.createMesh();
+    }
+
+    /**
+     * default constructor for specified position and size
+     * @param x - the x position
+     * @param y - the y position
+     * @param width - the width
+     * @param height - the height
+     * @param defaultMesh - the default unpressed button state
+     * @param stateMesh - the pressed button state
+     * @param ID - the ID of the button
+     */
+    public Button(float x, float y, float width, float height, GuiMesh defaultMesh, GuiMesh stateMesh, int ID) {
+        super(defaultMesh, stateMesh, new Vector2f(x, y), new Vector2f(width, height), ID);
         this.createMesh();
     }
 

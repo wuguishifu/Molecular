@@ -52,6 +52,22 @@ public class GuiObject {
     }
 
     /**
+     * default constructor for two mesh states and specified ID
+     * @param defaultMesh - the default state
+     * @param stateMesh - the prime state
+     * @param position - the position of this object
+     * @param size - the width and height of this object
+     * @param ID - the ID of this button
+     */
+    public GuiObject(GuiMesh defaultMesh, GuiMesh stateMesh, Vector2f position, Vector2f size, int ID) {
+        this.defaultMesh = defaultMesh;
+        this.stateMesh = stateMesh;
+        this.position = position;
+        this.size = size;
+        this.ID = ID;
+    }
+
+    /**
      * creates the mesh
      */
     public void createMesh() {
