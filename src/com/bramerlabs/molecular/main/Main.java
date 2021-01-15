@@ -6,6 +6,7 @@ import com.bramerlabs.engine.io.gui.Gui;
 import com.bramerlabs.engine.io.gui.gui_object.buttons.*;
 import com.bramerlabs.engine.io.gui.gui_render.GuiRenderer;
 import com.bramerlabs.engine.io.picking.CPRenderer;
+import com.bramerlabs.engine.io.screenshots.ScreenshotTaker;
 import com.bramerlabs.engine.io.text.font_mesh_creator.FontType;
 import com.bramerlabs.engine.io.text.font_mesh_creator.GUIText;
 import com.bramerlabs.engine.io.text.font_rendering.Loader;
@@ -20,7 +21,7 @@ import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.Benzaldehyde;
+import com.bramerlabs.molecular.molecule.default_molecules.BoronTrifluoride;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -47,6 +48,7 @@ public class Main implements Runnable {
     private Shader shader; // the shaders used to paint textures
     private Renderer renderer; // used to render objects
     private static int time = 0; // the time of the window
+    private boolean shouldRenderGUI = true;
 
     // GUI variables
     private Gui gui; // the gui
@@ -182,6 +184,7 @@ public class Main implements Runnable {
         gui.addButton(SaveButton.getInstance(size, 2*window.getHeight()-size, size, size, window));
         gui.addButton(NewFileButton.getInstance(2*size, 2*window.getHeight()-size, size, size, window));
         gui.addButton(ProtractorButton.getInstance(3*size, 2*window.getHeight()-size, size, size, window));
+        gui.addButton(ScreenshotButton.getInstance(4*size, 2*window.getHeight()-size, size, size, window));
 
         // create the gui renderer
         guiShader = new Shader("/shaders/guiVertex.glsl", "/shaders/guiFragment.glsl");
@@ -374,14 +377,16 @@ public class Main implements Runnable {
                 pressedButtonID = 0;
                 buttonTemp = false;
             }
+        } else if (pressedButtonID == Button.BUTTON_SCREENSHOT) {
+            ScreenshotTaker.takeScreenshot(window.getWidth(), window.getHeight());
+            pressedButtonID = 0;
         }
     }
 
     /**
-     * render the game objects
+     * renders the molecule
      */
-    private void render(boolean shouldSwapBuffers) {
-
+    private void renderMolecule() {
         // render the molecules
         for (Molecule molecule : molecules) {
             for (Bond bond : molecule.getBonds()) {
@@ -410,13 +415,23 @@ public class Main implements Runnable {
                 renderer.renderMesh(cylinder, camera, lightPosition, true);
             }
         }
+    }
 
-        // render the GUI
-        for (Button button : gui.getButtons()) {
-            guiRenderer.renderMesh(button);
+    /**
+     * render the game objects
+     */
+    private void render(boolean shouldSwapBuffers) {
+        renderMolecule();
+
+        if (shouldRenderGUI) {
+
+            // render the GUI
+            for (Button button : gui.getButtons()) {
+                guiRenderer.renderMesh(button);
+            }
+
+            TextMaster.render();
         }
-
-        TextMaster.render();
 
         // must be called at the end
         if (shouldSwapBuffers) {
@@ -428,7 +443,7 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        this.molecules.add(new Benzaldehyde(new Vector3f(0)));
+        this.molecules.add(new BoronTrifluoride(new Vector3f(0)));
     }
 
     /**

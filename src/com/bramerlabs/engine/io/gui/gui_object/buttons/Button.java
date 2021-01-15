@@ -16,6 +16,7 @@ public abstract class Button extends GuiObject {
     public static final int BUTTON_SAVE = 1001;
     public static final int BUTTON_NEW_FILE = 1002;
     public static final int BUTTON_PROTRACTOR = 1003;
+    public static final int BUTTON_SCREENSHOT = 1004;
 
     // the states of the button
     public static final int STATE_PRESSED = 1;
