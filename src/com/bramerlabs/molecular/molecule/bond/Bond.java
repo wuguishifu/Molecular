@@ -23,7 +23,6 @@ public class Bond {
     private Vector3f color = new Vector3f(0.3f); // the color of this bond - default gray
 
     // selection variables
-    private boolean isSelected = false; // if this bond is selected or not
     private ArrayList<Cylinder> selectionCylinders = new ArrayList<>(); // the cylinders used to render the selection box
     private Vector3f selectionColor = new Vector3f(0.5f, 0.5f, 0.f); // the color of the selection box - default yellow
     private float selectionRadius = radius + 0.2f;
@@ -206,29 +205,6 @@ public class Bond {
      */
     public ArrayList<Cylinder> getSelectionCylinders() {
         return selectionCylinders;
-    }
-
-    /**
-     * toggles the selection
-     */
-    public void toggleSelected() {
-        this.isSelected = !isSelected;
-    }
-
-    /**
-     * sets if this atom is selected or not
-     * @param b - true or false
-     */
-    public void setSelected(boolean b) {
-        this.isSelected = b;
-    }
-
-    /**
-     * getter method
-     * @return - a boolean representing if this atom is selected or not
-     */
-    public boolean isSelected() {
-        return this.isSelected;
     }
 
     /**

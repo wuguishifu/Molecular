@@ -5,18 +5,19 @@ import com.bramerlabs.engine.graphics.Vertex;
 import com.bramerlabs.engine.io.gui.gui_render.GuiMesh;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector2f;
+import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 
 import java.util.ArrayList;
 
-public class NewFileButton extends Button {
+public class ProtractorButton extends Button {
 
-    // the ID of new file buttons
-    public static final int ID = Button.BUTTON_NEW_FILE;
+    // the ID of protractor buttons
+    public static final int ID = Button.BUTTON_PROTRACTOR;
 
     // the different textures
-    private static final String unpressedTexture = "/textures/buttons/button_new_file.png";
-    private static final String pressedTexture = "/textures/buttons/button_new_file_pressed.png";
+    private static final String unpressedTexture = "/textures/buttons/button_protractor.png";
+    private static final String pressedTexture = "/textures/buttons/button_protractor_pressed.png";
 
     /**
      * default constructor for specified position and size
@@ -27,17 +28,17 @@ public class NewFileButton extends Button {
      * @param defaultMesh - the default unpressed button state
      * @param stateMesh - the pressed button state
      */
-    public NewFileButton(float x, float y, float width, float height, GuiMesh defaultMesh, GuiMesh stateMesh) {
+    public ProtractorButton(float x, float y, float width, float height, GuiMesh defaultMesh, GuiMesh stateMesh) {
         super(x, y, width, height, defaultMesh, stateMesh, ID);
     }
 
     /**
-     * creates an instance of an information button
+     * creates an instance of an protractor button
      * @param position - the position of the button [x, y]
      * @param size - the size of the button [width, height]
-     * @return - a new InformationButton
+     * @return - a new ProtractorButton
      */
-    public static NewFileButton getInstance(Vector2f position, Vector2f size) {
+    public static ProtractorButton getInstance(Vector2f position, Vector2f size) {
         float x = position.getX();
         float y = position.getY();
         float width = size.getX();
@@ -60,7 +61,7 @@ public class NewFileButton extends Button {
         Material pressedMaterial = new Material(pressedTexture);
 
         // construct the new information button
-        return new NewFileButton(position.getX(), position.getY(), size.getX(), size.getY(),
+        return new ProtractorButton(position.getX(), position.getY(), size.getX(), size.getY(),
                 new GuiMesh(vertices, indices, unpressedMaterial),
                 new GuiMesh(vertices, indices, pressedMaterial)
         );
@@ -75,14 +76,19 @@ public class NewFileButton extends Button {
      * @param window - the window
      * @return - the button
      */
-    public static NewFileButton getInstance(int x1, int y1, int width, int height, Window window) {
+    public static ProtractorButton getInstance(int x1, int y1, int width, int height, Window window) {
         float windowWidth = window.getWidth();
         float windowHeight = window.getHeight();
-        return NewFileButton.getInstance(new Vector2f(x1 / windowWidth - 1f, y1 / windowHeight - 1f), new Vector2f(width / windowWidth, height / windowHeight));
+        return ProtractorButton.getInstance(new Vector2f(x1 / windowWidth - 1f, y1 / windowHeight - 1f), new Vector2f(width / windowWidth, height / windowHeight));
     }
 
     @Override
     public void onClick(ArrayList<Atom> atoms) {
-
+        if (atoms.size() < 3) {
+            return;
+        }
+        Vector3f v1 = Vector3f.subtract(atoms.get(0).getPosition(), atoms.get(1).getPosition());
+        Vector3f v2 = Vector3f.subtract(atoms.get(2).getPosition(), atoms.get(1).getPosition());
+        System.out.println(Vector3f.angleBetween(v1, v2));
     }
 }

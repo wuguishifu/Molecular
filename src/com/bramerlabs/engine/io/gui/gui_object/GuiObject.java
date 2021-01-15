@@ -11,7 +11,7 @@ public class GuiObject {
     public static int curID = 0;
 
     // the ID of this object
-    public int ID;
+    private int ID;
 
     // object location and size data
     private Vector2f position, size;

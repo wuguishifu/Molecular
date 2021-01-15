@@ -3,10 +3,7 @@ package com.bramerlabs.molecular.main;
 import com.bramerlabs.engine.graphics.Renderer;
 import com.bramerlabs.engine.graphics.Shader;
 import com.bramerlabs.engine.io.gui.Gui;
-import com.bramerlabs.engine.io.gui.gui_object.buttons.Button;
-import com.bramerlabs.engine.io.gui.gui_object.buttons.InformationButton;
-import com.bramerlabs.engine.io.gui.gui_object.buttons.NewFileButton;
-import com.bramerlabs.engine.io.gui.gui_object.buttons.SaveButton;
+import com.bramerlabs.engine.io.gui.gui_object.buttons.*;
 import com.bramerlabs.engine.io.gui.gui_render.GuiRenderer;
 import com.bramerlabs.engine.io.picking.CPRenderer;
 import com.bramerlabs.engine.io.window.Input;
@@ -53,9 +50,18 @@ public class Main implements Runnable {
     // input handling variables
     private Input input = new Input(); // used to handle inputs
     private boolean lastFrameRightButtonDown = false; // if the last frame had the right mouse button down
-    private boolean displayUsingCPRenderer = false; // how the molecule should be displayed - used for testing
+    private boolean displayUsingCPRenderer = true; // how the molecule should be displayed - used for testing
     private CPRenderer cpRenderer; // used for color picking
     private Shader cpShader;
+    private int pressedButtonID = 0;
+    private boolean buttonTemp = false;
+
+    // selected atoms
+    private int numMaxSelectedItems = 1;
+    boolean canSelectAtoms = true;
+    boolean canSelectBonds = true;
+    private ArrayList<Atom> selectedAtoms = new ArrayList<>();
+    private ArrayList<Bond> selectedBonds = new ArrayList<>();
 
     // camera variables
     public Camera camera = new Camera(new Vector3f(0, 0, 2), new Vector3f(0, 0, 0), input); // the camera
@@ -157,6 +163,7 @@ public class Main implements Runnable {
         gui.addButton(InformationButton.getInstance(0, 2*window.getHeight()-size, size, size, window));
         gui.addButton(SaveButton.getInstance(size, 2*window.getHeight()-size, size, size, window));
         gui.addButton(NewFileButton.getInstance(2*size, 2*window.getHeight()-size, size, size, window));
+        gui.addButton(ProtractorButton.getInstance(3*size, 2*window.getHeight()-size, size, size, window));
 
         // create the gui renderer
         guiShader = new Shader("/shaders/guiVertex.glsl", "/shaders/guiFragment.glsl");
@@ -186,11 +193,13 @@ public class Main implements Runnable {
         GL46.glClearColor(Window.bgc.getX(), Window.bgc.getY(), Window.bgc.getZ(), 1);
         GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL46.GL_DEPTH_BUFFER_BIT);
 
+        // handle inputs and button presses
         boolean shouldSwapBuffers = handleInputs();
-
         if (!getPressedButtons()) {
             camera.updateArcball();
         }
+        handleButtonPress();
+
         return shouldSwapBuffers;
     }
 
@@ -200,31 +209,11 @@ public class Main implements Runnable {
      */
     private boolean handleInputs() {
 
-        // handle pressing buttons
-        boolean unselectAtom = true;
-
         // update the mouse picker
         boolean shouldSwapBuffers = true;
         boolean currentFrameRightButtonDown = input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
         if (lastFrameRightButtonDown && !currentFrameRightButtonDown) {
-
-            // get the mouse coords
-            float mouseX = (float) input.getMouseX();
-            float mouseY = (float) input.getMouseY();
-            float width = window.getWidth();
-            float height = window.getHeight();
-
-            mouseX = 2 * mouseX / width - 1;
-            mouseY = 1 - 2 * mouseY / height;
-
-            for (Button button : gui.getButtons()) {
-                if (button.containsCoords(mouseX, mouseY)) {
-                    unselectAtom = false;
-                    break;
-                }
-            }
-
-            getSelectedAtom(unselectAtom);
+            getSelectedAtom();
             shouldSwapBuffers = false;
         }
         lastFrameRightButtonDown = currentFrameRightButtonDown;
@@ -244,9 +233,8 @@ public class Main implements Runnable {
 
     /**
      * retrieves a selected atom on the molecule via raycasting
-     * @param unselect - if the atoms should be unselected
      */
-    private void getSelectedAtom(boolean unselect) {
+    private void getSelectedAtom() {
         // render the game objects
         for (Molecule molecule : molecules) {
             for (Bond bond : molecule.getBonds()) {
@@ -270,27 +258,25 @@ public class Main implements Runnable {
         ByteBuffer data = BufferUtils.createByteBuffer(3);
         GL11.glReadPixels((int)x, (int)y, 1, 1, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, data);
 
+        // select an atom or bond
+        boolean selectedMolecule = false;
         for (Molecule molecule : molecules) {
-            Atom a = molecule.getAtom(data.get(0));
-            for (Atom atom : molecule.getAtoms()) {
-                if (atom != a && unselect) {
-                    atom.setSelected(false);
+            for (Atom a : molecule.getAtoms()) {
+                if (a.getSphere().getID() == data.get(0)) {
+                    if (!selectedAtoms.contains(a)) {
+                        selectedAtoms.add(0, a);
+                    }
+                    while (selectedAtoms.size() > numMaxSelectedItems) {
+                        selectedAtoms.remove(selectedAtoms.size() - 1);
+                    }
+                    selectedMolecule = true;
+                    break;
                 }
-            }
-            if (a != null) {
-                a.toggleSelected();
             }
         }
-        for (Molecule molecule : molecules) {
-            Bond b = molecule.getBond(data.get(0));
-            for (Bond bond : molecule.getBonds()) {
-                if (bond != b && unselect) {
-                    bond.setSelected(false);
-                }
-            }
-            if (b != null) {
-                b.toggleSelected();
-            }
+
+        if (!selectedMolecule) {
+            selectedAtoms.clear(); // empty the array list
         }
     }
 
@@ -298,6 +284,9 @@ public class Main implements Runnable {
      * retrieves a selected button
      */
     private boolean getPressedButtons() {
+
+        int overCurrentButton = 0;
+
         boolean isOverButton = false;
         if (input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
             // get the mouse coords
@@ -309,10 +298,10 @@ public class Main implements Runnable {
             mouseX = 2 * mouseX / width - 1;
             mouseY = 1 - 2 * mouseY / height;
 
-            int buttonID = -1;
             for (Button button : gui.getButtons()) {
                 if (button.containsCoords(mouseX, mouseY)) {
-                    buttonID = button.getID();
+                    pressedButtonID = button.getID();
+                    overCurrentButton = button.getID();
                     button.setState(Button.STATE_PRESSED);
                     break;
                 }
@@ -321,9 +310,9 @@ public class Main implements Runnable {
             for (Button button : gui.getButtons()) {
                 button.setState(Button.STATE_RELEASED);
             }
-            if (gui.getButton(buttonID) != null) {
+            if (overCurrentButton != 0) {
                 isOverButton = true;
-                gui.getButton(buttonID).setState(Button.STATE_PRESSED);
+                gui.getButton(pressedButtonID).setState(Button.STATE_PRESSED);
             }
 
         } else {
@@ -331,7 +320,37 @@ public class Main implements Runnable {
                 button.setState(Button.STATE_RELEASED);
             }
         }
+
         return isOverButton;
+    }
+
+    /**
+     * handles button presses
+     */
+    private void handleButtonPress() {
+        if (pressedButtonID == 0) {
+            return;
+        }
+
+        // handle the protractor button
+        if (pressedButtonID == Button.BUTTON_PROTRACTOR) {
+            if (!buttonTemp) {
+                buttonTemp = true;
+                selectedAtoms.clear();
+                numMaxSelectedItems = 3; // set the max number of selected atoms
+            }
+            if (selectedAtoms.size() == 3) {
+                Vector3f v1 = Vector3f.subtract(selectedAtoms.get(0).getPosition(), selectedAtoms.get(1).getPosition());
+                Vector3f v2 = Vector3f.subtract(selectedAtoms.get(2).getPosition(), selectedAtoms.get(1).getPosition());
+                System.out.println(Math.toDegrees(Vector3f.angleBetween(v1, v2)));
+
+                // clear the selection params
+//                selectedAtoms.clear();
+                numMaxSelectedItems = 1;
+                pressedButtonID = 0;
+                buttonTemp = false;
+            }
+        }
     }
 
     /**
@@ -359,19 +378,12 @@ public class Main implements Runnable {
             }
         }
 
-        // render selection molecules
-        for (Molecule molecule : molecules) {
-            for (Atom atom : molecule.getAtoms()) {
-                if (atom.isSelected()) {
-                    renderer.renderMesh(atom.getSelectionSphere(), camera, lightPosition, true);
-                }
-            }
-            for (Bond bond : molecule.getBonds()) {
-                if (bond.isSelected()) {
-                    for (Cylinder cylinder : bond.getSelectionCylinders()) {
-                        renderer.renderMesh(cylinder, camera, lightPosition, true);
-                    }
-                }
+        for (Atom atom : selectedAtoms) {
+            renderer.renderMesh(atom.getSelectionSphere(), camera, lightPosition, true);
+        }
+        for (Bond bond : selectedBonds) {
+            for (Cylinder cylinder : bond.getSelectionCylinders()) {
+                renderer.renderMesh(cylinder, camera, lightPosition, true);
             }
         }
 
@@ -390,7 +402,7 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        molecules.add(new Benzaldehyde(new Vector3f(0, 0, 0)));
+        this.molecules.add(new Benzaldehyde(new Vector3f(0)));
     }
 
     /**

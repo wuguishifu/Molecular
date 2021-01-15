@@ -24,7 +24,6 @@ public class Atom {
     private Sphere sphere; // the sphere used for rendering the atom
 
     // selection variables
-    private boolean isSelected = false; // if this atom is selected or not
     private Sphere selectionSphere; // the sphere used for rendering the selection box
     private Vector3f selectionColor = new Vector3f(0.5f, 0.5f, 0.f); // the color of the selection sphere - default yellow
 
@@ -171,29 +170,6 @@ public class Atom {
      */
     public void setNumNeutrons(int neutrons) {
         this.numNeutrons = neutrons;
-    }
-
-    /**
-     * toggles the selection
-     */
-    public void toggleSelected() {
-        this.isSelected = !isSelected;
-    }
-
-    /**
-     * sets if this atom is selected or not
-     * @param b - true or false
-     */
-    public void setSelected(boolean b) {
-        this.isSelected = b;
-    }
-
-    /**
-     * getter method
-     * @return - a boolean representing if this atom is selected or not
-     */
-    public boolean isSelected() {
-        return this.isSelected;
     }
 
     /**

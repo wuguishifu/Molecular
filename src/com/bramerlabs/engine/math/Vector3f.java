@@ -301,7 +301,7 @@ public class Vector3f {
      * @return - the angle between
      */
     public static float angleBetween(Vector3f v, Vector3f u) {
-        return Vector3f.dot(v, u) * quickInverseSqrt(v) * quickInverseSqrt(u);
+        return (float) Math.acos(Vector3f.dot(v, u) * quickInverseSqrt(v) * quickInverseSqrt(u));
     }
 
     /**

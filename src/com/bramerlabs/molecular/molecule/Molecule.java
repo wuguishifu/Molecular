@@ -125,6 +125,36 @@ public class Molecule {
     }
 
     /**
+     * adds a bunch of atoms
+     * @param atoms - the list of atoms
+     */
+    public void addAtoms(ArrayList<Atom> atoms) {
+        this.atoms.addAll(atoms);
+    }
+
+    /**
+     * adds a bunch of bonds
+     * @param bonds - the list of bonds
+     */
+    public void addBonds(ArrayList<Bond> bonds) {
+        this.bonds.addAll(bonds);
+    }
+
+    /**
+     * determines if this molecule contains an atom with a certain ID
+     * @param ID - the ID
+     * @return - true if the molecule contains an atom with the ID provided
+     */
+    public boolean hasAtomWithID(int ID) {
+        for (Atom atom : this.atoms) {
+            if (atom.getID() == ID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * destroys the molecule
      */
     public void destroy() {

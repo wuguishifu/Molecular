@@ -5,6 +5,9 @@ import com.bramerlabs.engine.graphics.Vertex;
 import com.bramerlabs.engine.io.gui.gui_render.GuiMesh;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector2f;
+import com.bramerlabs.molecular.molecule.atom.Atom;
+
+import java.util.ArrayList;
 
 public class InformationButton extends Button {
 
@@ -77,5 +80,10 @@ public class InformationButton extends Button {
         float windowWidth = window.getWidth();
         float windowHeight = window.getHeight();
         return InformationButton.getInstance(new Vector2f(x1 / windowWidth - 1f, y1 / windowHeight - 1f), new Vector2f(width / windowWidth, height / windowHeight));
+    }
+
+    @Override
+    public void onClick(ArrayList<Atom> atoms) {
+
     }
 }
