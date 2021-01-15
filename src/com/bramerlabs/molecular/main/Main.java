@@ -6,8 +6,13 @@ import com.bramerlabs.engine.io.gui.Gui;
 import com.bramerlabs.engine.io.gui.gui_object.buttons.*;
 import com.bramerlabs.engine.io.gui.gui_render.GuiRenderer;
 import com.bramerlabs.engine.io.picking.CPRenderer;
+import com.bramerlabs.engine.io.text.font_mesh_creator.FontType;
+import com.bramerlabs.engine.io.text.font_mesh_creator.GUIText;
+import com.bramerlabs.engine.io.text.font_rendering.Loader;
+import com.bramerlabs.engine.io.text.font_rendering.TextMaster;
 import com.bramerlabs.engine.io.window.Input;
 import com.bramerlabs.engine.io.window.Window;
+import com.bramerlabs.engine.math.Vector2f;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.Camera;
 import com.bramerlabs.engine.objects.shapes.Cylinder;
@@ -21,6 +26,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
 import org.lwjglx.BufferUtils;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
@@ -71,6 +77,11 @@ public class Main implements Runnable {
     // the molecules
     private ArrayList<Molecule> molecules;
 
+    // for displaying text
+    FontType font;
+    String renderText = "";
+    GUIText displayGUIText;
+
     /**
      * main method
      * @param args - args
@@ -95,7 +106,6 @@ public class Main implements Runnable {
      * initialize the program
      */
     private void init() {
-
         // initialize the data compilers
         AtomicDataCompiler.init();
 
@@ -121,6 +131,12 @@ public class Main implements Runnable {
         cpShader = new Shader("/shaders/colorPickerVertex.glsl", "/shaders/colorPickerFragment.glsl");
         cpRenderer = new CPRenderer(window, cpShader);
 
+        // initialize the text
+        Loader loader = new Loader();
+        TextMaster.init(loader);
+        font = new FontType(loader.loadTexture("arial"), new File("resources/fonts/arial.fnt"));
+        displayGUIText = new GUIText(renderText, 1f, font, new Vector2f(0, 0.02f), 1f, true);
+
         // initialize the shader
         shader.create();
         cpShader.create();
@@ -141,6 +157,8 @@ public class Main implements Runnable {
         // release the shaders
         shader.destroy();
         cpShader.destroy();
+
+        TextMaster.cleanUp();
     }
 
     /**
@@ -199,6 +217,10 @@ public class Main implements Runnable {
             camera.updateArcball();
         }
         handleButtonPress();
+
+        // update the text object
+        displayGUIText.setTextString(renderText);
+        displayGUIText.loadText();
 
         return shouldSwapBuffers;
     }
@@ -265,6 +287,7 @@ public class Main implements Runnable {
                 if (a.getSphere().getID() == data.get(0)) {
                     if (!selectedAtoms.contains(a)) {
                         selectedAtoms.add(0, a);
+                        renderText = "Atom: " + a.getAtomicAbbrName() + ", charge: " + a.getCharge();
                     }
                     while (selectedAtoms.size() > numMaxSelectedItems) {
                         selectedAtoms.remove(selectedAtoms.size() - 1);
@@ -277,6 +300,7 @@ public class Main implements Runnable {
 
         if (!selectedMolecule) {
             selectedAtoms.clear(); // empty the array list
+            renderText = "";
         }
     }
 
@@ -342,10 +366,10 @@ public class Main implements Runnable {
             if (selectedAtoms.size() == 3) {
                 Vector3f v1 = Vector3f.subtract(selectedAtoms.get(0).getPosition(), selectedAtoms.get(1).getPosition());
                 Vector3f v2 = Vector3f.subtract(selectedAtoms.get(2).getPosition(), selectedAtoms.get(1).getPosition());
-                System.out.println(Math.toDegrees(Vector3f.angleBetween(v1, v2)));
-
-                // clear the selection params
-//                selectedAtoms.clear();
+                float angle = (float)Math.toDegrees(Vector3f.angleBetween(v1, v2));
+                int angleInt = (int) (angle * 100);
+                angle = angleInt / 100.f;
+                renderText = "Angle: " + angle + " degrees";
                 numMaxSelectedItems = 1;
                 pressedButtonID = 0;
                 buttonTemp = false;
@@ -391,6 +415,8 @@ public class Main implements Runnable {
         for (Button button : gui.getButtons()) {
             guiRenderer.renderMesh(button);
         }
+
+        TextMaster.render();
 
         // must be called at the end
         if (shouldSwapBuffers) {
