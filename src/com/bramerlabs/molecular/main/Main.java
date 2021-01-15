@@ -17,10 +17,8 @@ import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
-import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 import com.bramerlabs.molecular.molecule.default_molecules.Benzaldehyde;
-import com.bramerlabs.molecular.molecule.vsepr.Tetrahedral;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -393,25 +391,6 @@ public class Main implements Runnable {
      */
     private void generateMolecules() {
         molecules.add(new Benzaldehyde(new Vector3f(0, 0, 0)));
-    }
-
-    /**
-     * generates a test molecule
-     */
-    private void generateTestEmptyMolecule() {
-        molecules.add(new Molecule(
-                new Vector3f(0, 0, 0),
-                new ArrayList<>() {{
-                    add(new Carbon(new Vector3f(0)));
-                }},
-                new ArrayList<>() {{
-                    add(new Bond(new Carbon(new Vector3f(0)), new Atom(Tetrahedral.getAtomCoord(0, 3.5f), Atom.TITANIUM), 1));
-                    add(new Bond(new Carbon(new Vector3f(0)), new Atom(Tetrahedral.getAtomCoord(1, 3.5f), Atom.TITANIUM), 1));
-                    add(new Bond(new Carbon(new Vector3f(0)), new Atom(Tetrahedral.getAtomCoord(2, 3.5f), Atom.TITANIUM), 1));
-                    add(new Bond(new Carbon(new Vector3f(0)), new Atom(Tetrahedral.getAtomCoord(3, 3.5f), Atom.TITANIUM), 1));
-                }}
-                )
-        );
     }
 
     /**
