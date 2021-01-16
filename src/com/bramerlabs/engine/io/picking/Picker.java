@@ -3,7 +3,7 @@ package com.bramerlabs.engine.io.picking;
 import com.bramerlabs.engine.io.window.Input;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Matrix4f;
-import com.bramerlabs.engine.objects.Camera;
+import com.bramerlabs.engine.graphics.Camera;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 
 public class Picker {

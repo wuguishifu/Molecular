@@ -1,5 +1,6 @@
 package com.bramerlabs.engine.math;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
 
 public class Vector3f {
@@ -457,6 +458,10 @@ public class Vector3f {
 
     @Override
     public String toString() {
-        return "(" + this.x + ", " + this.y + ", " + this.z + ")";
+        DecimalFormat df2 = new DecimalFormat("#,###,###,#00.00");
+        String xS = df2.format(this.x);
+        String yS = df2.format(this.y);
+        String zS = df2.format(this.z);
+        return "(" + xS + ", " + yS + ", " + zS + ")";
     }
 }

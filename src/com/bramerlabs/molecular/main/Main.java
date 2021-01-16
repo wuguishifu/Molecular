@@ -1,5 +1,6 @@
 package com.bramerlabs.molecular.main;
 
+import com.bramerlabs.engine.graphics.Camera;
 import com.bramerlabs.engine.graphics.Renderer;
 import com.bramerlabs.engine.graphics.Shader;
 import com.bramerlabs.engine.io.gui.Gui;
@@ -15,13 +16,12 @@ import com.bramerlabs.engine.io.window.Input;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector2f;
 import com.bramerlabs.engine.math.Vector3f;
-import com.bramerlabs.engine.objects.Camera;
 import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.Benzene;
+import com.bramerlabs.molecular.molecule.default_molecules.Benzaldehyde;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -68,7 +68,7 @@ public class Main implements Runnable {
     // selected atoms
     private int numMaxSelectedItems = 1;
     boolean canSelectAtoms = true;
-    boolean canSelectBonds = true;
+    boolean canSelectBonds = false;
     private ArrayList<Atom> selectedAtoms = new ArrayList<>();
     private ArrayList<Bond> selectedBonds = new ArrayList<>();
 
@@ -117,7 +117,8 @@ public class Main implements Runnable {
         window.create();
 
         // set the camera's arcball orbit focus
-        camera.setLookingAt(LOOKING_AT);
+//        camera.setLookingAt(LOOKING_AT);
+        camera.setIdealPosition();
 
         // initialize the GUI
         initializeGUI();
@@ -201,7 +202,11 @@ public class Main implements Runnable {
      */
     private boolean update() {
 
+        // random things lmao
+        // update the RGB
 //        updateRGB();
+//        camera.incHorizontalAngle(100);
+//        renderText = camera.getLookingAt().toString();
 
         // update the window
         window.update();
@@ -303,8 +308,7 @@ public class Main implements Runnable {
         }
 
         if (!selectedMolecule) {
-            pressedButtonID = 0;
-            buttonStaysPressed = false;
+            setDefaults();
             selectedAtoms.clear(); // empty the array list
             renderText = "";
         }
@@ -451,7 +455,17 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        this.molecules.add(new Benzene(new Vector3f(0)));
+        this.molecules.add(new Benzaldehyde(new Vector3f(0)));
+    }
+
+    /**
+     * resets the buttons
+     */
+    private void setDefaults() {
+        pressedButtonID = 0;
+        buttonTemp = false;
+        buttonStaysPressed = false;
+        numMaxSelectedItems = 1;
     }
 
     /**

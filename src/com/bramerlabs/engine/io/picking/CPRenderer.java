@@ -4,7 +4,7 @@ import com.bramerlabs.engine.graphics.Shader;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Matrix4f;
 import com.bramerlabs.engine.math.Vector3f;
-import com.bramerlabs.engine.objects.Camera;
+import com.bramerlabs.engine.graphics.Camera;
 import com.bramerlabs.engine.objects.RenderObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;

@@ -1,4 +1,4 @@
-package com.bramerlabs.engine.objects;
+package com.bramerlabs.engine.graphics;
 
 import com.bramerlabs.engine.io.window.Input;
 import com.bramerlabs.engine.math.Vector3f;
@@ -19,7 +19,7 @@ public class Camera {
     // arcball camera variables
     private Vector3f lookingAt; // the position the camera is looking at
 
-    private static final float DEFAULT_DISTANCE = 10.0f;
+    private static final float DEFAULT_DISTANCE = 15.0f;
     private float distance = DEFAULT_DISTANCE; // the magnitude distance to the looking position
 
     private static final float DEFAULT_HORIZONTAL_DISTANCE = 0, DEFAULT_VERTICAL_DISTANCE = 0; // default distance from looking position
@@ -47,6 +47,19 @@ public class Camera {
         this.position = position;
         this.rotation = rotation;
         this.input = input;
+        setIdealPosition();
+    }
+
+    /**
+     * sets the ideal position for taking screenshots of benzaldehyde - used for the website
+     */
+    public void setIdealPosition() {
+        this.verticalDistance = -11.076831f;
+        this.horizontalDistance = 10.114534f;
+        this.distance = 15.0f;
+        this.verticalAngle = -47.6000006f;
+        this.horizontalAngle = -78.2f;
+        this.lookingAt = new Vector3f(1.1676779f, -1.4711119f, 0.15995185f);
     }
 
     /**
@@ -267,6 +280,14 @@ public class Camera {
         this.verticalDistance = DEFAULT_VERTICAL_DISTANCE;
         this.horizontalDistance = DEFAULT_HORIZONTAL_ANGLE;
         this.distance = DEFAULT_DISTANCE;
+    }
+
+    /**
+     * rotates the camera but some angle
+     * @param dTheta - the change in the angle
+     */
+    public void incHorizontalAngle(float dTheta) {
+        this.horizontalAngle += Math.toRadians(dTheta);
     }
 
     /**
