@@ -303,6 +303,8 @@ public class Main implements Runnable {
         }
 
         if (!selectedMolecule) {
+            pressedButtonID = 0;
+            buttonStaysPressed = false;
             selectedAtoms.clear(); // empty the array list
             renderText = "";
         }
