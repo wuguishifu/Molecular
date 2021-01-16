@@ -21,7 +21,7 @@ import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.BoronTrifluoride;
+import com.bramerlabs.molecular.molecule.default_molecules.Benzene;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -63,6 +63,7 @@ public class Main implements Runnable {
     private Shader cpShader;
     private int pressedButtonID = 0;
     private boolean buttonTemp = false;
+    private boolean buttonStaysPressed = false;
 
     // selected atoms
     private int numMaxSelectedItems = 1;
@@ -327,6 +328,9 @@ public class Main implements Runnable {
 
             for (Button button : gui.getButtons()) {
                 if (button.containsCoords(mouseX, mouseY)) {
+                    if (button.getID() == Button.BUTTON_PROTRACTOR) {
+                        buttonStaysPressed = true;
+                    }
                     pressedButtonID = button.getID();
                     overCurrentButton = button.getID();
                     button.setState(Button.STATE_PRESSED);
@@ -341,10 +345,11 @@ public class Main implements Runnable {
                 isOverButton = true;
                 gui.getButton(pressedButtonID).setState(Button.STATE_PRESSED);
             }
-
         } else {
             for (Button button : gui.getButtons()) {
-                button.setState(Button.STATE_RELEASED);
+                if (!buttonStaysPressed) {
+                    button.setState(Button.STATE_RELEASED);
+                }
             }
         }
 
@@ -376,6 +381,7 @@ public class Main implements Runnable {
                 numMaxSelectedItems = 1;
                 pressedButtonID = 0;
                 buttonTemp = false;
+                buttonStaysPressed = false;
             }
         } else if (pressedButtonID == Button.BUTTON_SCREENSHOT) {
             ScreenshotTaker.takeScreenshot(window.getWidth(), window.getHeight());
@@ -443,7 +449,7 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        this.molecules.add(new BoronTrifluoride(new Vector3f(0)));
+        this.molecules.add(new Benzene(new Vector3f(0)));
     }
 
     /**
