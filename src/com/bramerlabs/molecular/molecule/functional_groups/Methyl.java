@@ -8,11 +8,13 @@ import com.bramerlabs.molecular.molecule.atom.data_compilers.BondDataCompiler;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.Hydrogen;
 import com.bramerlabs.molecular.molecule.atom.organics_atoms.carbon.Carbon;
 import com.bramerlabs.molecular.molecule.bond.Bond;
+import com.bramerlabs.molecular.molecule.vsepr.Tetrahedral;
 
 import java.util.ArrayList;
 
 public class Methyl extends Molecule {
 
+    private Tetrahedral t;
 
     /**
      * constructor for specified atoms and bonds
@@ -48,6 +50,5 @@ public class Methyl extends Molecule {
         this.addAtom(methylCarbon);
         this.addAtom(H1);
         this.addBond(new Bond(methylCarbon, H1));
-
     }
 }
