@@ -51,4 +51,11 @@ public class Methyl extends Molecule {
         this.addAtom(H1);
         this.addBond(new Bond(methylCarbon, H1));
     }
+
+    /**
+     * gets a methyl bond
+     */
+    public void getMethylBond() {
+
+    }
 }
