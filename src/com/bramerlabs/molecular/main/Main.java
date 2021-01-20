@@ -68,7 +68,6 @@ public class Main implements Runnable {
     // selected atoms
     private int numMaxSelectedItems = 1;
     boolean canSelectAtoms = true;
-    boolean canSelectBonds = false;
     private ArrayList<Atom> selectedAtoms = new ArrayList<>();
     private ArrayList<Bond> selectedBonds = new ArrayList<>();
 
