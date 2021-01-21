@@ -5,6 +5,7 @@ import com.bramerlabs.engine.graphics.Vertex;
 import com.bramerlabs.engine.io.gui.gui_render.GuiMesh;
 import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector2f;
+import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 
 import java.util.ArrayList;
@@ -84,6 +85,14 @@ public class InformationButton extends Button {
 
     @Override
     public void onClick(ArrayList<Atom> atoms) {
+
+    }
+
+    /**
+     * handles click
+     * @param molecule - the molecule on the screen
+     */
+    public void onClick(Molecule molecule) {
 
     }
 }
