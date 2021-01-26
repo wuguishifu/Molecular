@@ -391,6 +391,9 @@ public class Main implements Runnable {
         } else if (pressedButtonID == Button.BUTTON_SCREENSHOT) {
             ScreenshotTaker.takeScreenshot(window.getWidth(), window.getHeight());
             pressedButtonID = 0;
+        } else if (pressedButtonID == Button.BUTTON_INFORMATION) {
+            InformationButton.onClick(this.molecules.get(0));
+            pressedButtonID = 0;
         }
     }
 

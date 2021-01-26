@@ -7,6 +7,7 @@ import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector2f;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
+import com.bramerlabs.molecular.molecule.bond.Bond;
 
 import java.util.ArrayList;
 
@@ -92,7 +93,14 @@ public class InformationButton extends Button {
      * handles click
      * @param molecule - the molecule on the screen
      */
-    public void onClick(Molecule molecule) {
-
+    public static void onClick(Molecule molecule) {
+        System.out.println("Atoms:");
+        for (Atom a : molecule.getAtoms()) {
+            System.out.println(a);
+        }
+        System.out.println("Bonds:");
+        for (Bond b : molecule.getBonds()) {
+            System.out.println(b);
+        }
     }
 }
