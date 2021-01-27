@@ -60,4 +60,8 @@ public class Gui {
         return this.buttons;
     }
 
+    public String getButtonsAsStrings() {
+        return null;
+    }
+
 }
