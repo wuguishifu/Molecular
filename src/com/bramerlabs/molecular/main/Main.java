@@ -4,6 +4,7 @@ import com.bramerlabs.engine.graphics.Camera;
 import com.bramerlabs.engine.graphics.Renderer;
 import com.bramerlabs.engine.graphics.Shader;
 import com.bramerlabs.engine.io.gui.Gui;
+import com.bramerlabs.engine.io.gui.gui_object.buttons.Button;
 import com.bramerlabs.engine.io.gui.gui_object.buttons.*;
 import com.bramerlabs.engine.io.gui.gui_render.GuiRenderer;
 import com.bramerlabs.engine.io.picking.CPRenderer;
@@ -17,16 +18,20 @@ import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector2f;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.shapes.Cylinder;
+import com.bramerlabs.molecular.file_io.MoleculeIO;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.Benzaldehyde;
+import com.bramerlabs.molecular.molecule.default_molecules.Benzene;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
 import org.lwjglx.BufferUtils;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -79,6 +84,10 @@ public class Main implements Runnable {
     // the molecules
     private ArrayList<Molecule> molecules;
 
+    // the file used for loading the molecule
+    private static String pathToLoadFile;
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Molecular Files", "mol");
+
     // for displaying text
     FontType font;
     String renderText = "";
@@ -116,8 +125,8 @@ public class Main implements Runnable {
         window.create();
 
         // set the camera's arcball orbit focus
-//        camera.setLookingAt(LOOKING_AT);
-        camera.setIdealPosition();
+        camera.setLookingAt(LOOKING_AT);
+//        camera.setIdealPosition();
 
         // initialize the GUI
         initializeGUI();
@@ -183,9 +192,10 @@ public class Main implements Runnable {
         int size = 200;
         gui.addButton(InformationButton.getInstance(0, 2*window.getHeight()-size, size, size, window));
         gui.addButton(SaveButton.getInstance(size, 2*window.getHeight()-size, size, size, window));
-        gui.addButton(NewFileButton.getInstance(2*size, 2*window.getHeight()-size, size, size, window));
-        gui.addButton(ProtractorButton.getInstance(3*size, 2*window.getHeight()-size, size, size, window));
-        gui.addButton(ScreenshotButton.getInstance(4*size, 2*window.getHeight()-size, size, size, window));
+        gui.addButton(LoadButton.getInstance(2*size, 2*window.getHeight()-size, size, size, window));
+        gui.addButton(NewFileButton.getInstance(3*size, 2*window.getHeight()-size, size, size, window));
+        gui.addButton(ProtractorButton.getInstance(4*size, 2*window.getHeight()-size, size, size, window));
+        gui.addButton(ScreenshotButton.getInstance(5*size, 2*window.getHeight()-size, size, size, window));
 
         // create the gui renderer
         guiShader = new Shader("/shaders/guiVertex.glsl", "/shaders/guiFragment.glsl");
@@ -394,6 +404,13 @@ public class Main implements Runnable {
         } else if (pressedButtonID == Button.BUTTON_INFORMATION) {
             InformationButton.onClick(this.molecules.get(0));
             pressedButtonID = 0;
+        } else if (pressedButtonID == Button.BUTTON_SAVE) {
+            String name = System.currentTimeMillis() + ".mol";
+            MoleculeIO.saveMolecule(name, this.molecules.get(0));
+            pressedButtonID = 0;
+        } else if (pressedButtonID == Button.BUTTON_LOAD) {
+            loadMoleculeFromFile();
+            pressedButtonID = 0;
         }
     }
 
@@ -432,6 +449,33 @@ public class Main implements Runnable {
     }
 
     /**
+     * loads a molecule from a specific file
+     */
+    private void loadMoleculeFromFile() {
+        JFileChooser chooser = new JFileChooser() {
+            @Override
+            protected JDialog createDialog(Component parent)
+                    throws HeadlessException {
+                JDialog dialog = super.createDialog(parent);
+                // config here as needed - just to see a difference
+                dialog.setLocationByPlatform(true);
+                // might help - can't know because I can't reproduce the problem
+                dialog.setAlwaysOnTop(true);
+                return dialog;
+            }
+        };
+
+        chooser.setFileFilter(filter);
+        chooser.setFocusable(true);
+        chooser.requestFocus();
+        int returnVal = chooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            molecules.clear();
+            molecules.add(MoleculeIO.loadMolecule(chooser.getSelectedFile()));
+        }
+    }
+
+    /**
      * render the game objects
      */
     private void render(boolean shouldSwapBuffers) {
@@ -457,7 +501,7 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        this.molecules.add(new Benzaldehyde(new Vector3f(0)));
+        this.molecules.add(new Benzene(new Vector3f(0)));
     }
 
     /**

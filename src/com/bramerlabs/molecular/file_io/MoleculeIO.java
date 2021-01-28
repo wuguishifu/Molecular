@@ -4,6 +4,7 @@ import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
 import com.bramerlabs.molecular.molecule.bond.Bond;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.File;
@@ -90,6 +91,68 @@ public class MoleculeIO {
     }
 
     /**
+     * loads a molecule from a file
+     * @param file - the file
+     * @return - the molecule
+     */
+    @NotNull
+    public static Molecule loadMolecule(File file) {
+        // create a pointer towards a temp empty molecule
+        Molecule molecule = new Molecule(new Vector3f(0), new ArrayList<>(), new ArrayList<>());
+
+        // create the atoms
+        try {
+            Scanner input = new Scanner(file);
+            while (input.hasNextLine()) {
+                String data = input.nextLine();
+                String[] pieces = data.split("\\s+");
+                if (pieces[0].equals("pos")) {
+                    float x = Float.parseFloat(pieces[MOLECULE_X]);
+                    float y = Float.parseFloat(pieces[MOLECULE_Y]);
+                    float z = Float.parseFloat(pieces[MOLECULE_Z]);
+                    molecule.setPosition(new Vector3f(x, y, z));
+                }
+                if (pieces[0].equals("atom")) {
+                    // get the atom data
+                    float x = Float.parseFloat(pieces[ATOM_X]);
+                    float y = Float.parseFloat(pieces[ATOM_Y]);
+                    float z = Float.parseFloat(pieces[ATOM_Z]);
+                    int atomID = Integer.parseInt(pieces[ATOM_ID]);
+                    int atomicNumber = Integer.parseInt(pieces[ATOM_ATOMIC_NUMBER]);
+                    int charge = Integer.parseInt(pieces[ATOM_CHARGE]);
+                    int numNeutrons = Integer.parseInt(pieces[ATOM_NUM_NEUTRONS]);
+                    // add the atom
+                    Atom atom = new Atom(new Vector3f(x, y, z), atomicNumber, charge, numNeutrons, atomID);
+                    molecule.addAtom(atom);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // create the bonds
+        try {
+            Scanner input = new Scanner(file);
+            while (input.hasNextLine()) {
+                String data = input.nextLine();
+                String[] pieces = data.split("\\s+");
+                if (pieces[0].equals("bond")) {
+                    // get the bond data
+                    int bondID = Integer.parseInt(pieces[BOND_ID]);
+                    Atom a1 = molecule.getAtomFromAtomID(Integer.parseInt(pieces[BOND_ATOM_1_ID]));
+                    Atom a2 = molecule.getAtomFromAtomID(Integer.parseInt(pieces[BOND_ATOM_2_ID]));
+                    int bondOrder = Integer.parseInt(pieces[BOND_ORDER]);
+                    molecule.addBond(new Bond(a1, a2, bondOrder, bondID));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return molecule;
+    }
+
+    /**
      * loads a molecule from a text file
      * @return - the molecule
      */
@@ -127,8 +190,6 @@ public class MoleculeIO {
             e.printStackTrace();
         }
 
-        System.out.println("\n\n\n\n");
-
         try {
             Scanner input = new Scanner(new File(pathToFile));
             while (input.hasNextLine()) {
@@ -148,6 +209,5 @@ public class MoleculeIO {
         }
 
         return molecule;
-
     }
 }

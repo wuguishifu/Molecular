@@ -47,7 +47,7 @@ public class Camera {
         this.position = position;
         this.rotation = rotation;
         this.input = input;
-        setIdealPosition();
+//        setIdealPosition();
     }
 
     /**

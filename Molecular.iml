@@ -13,5 +13,14 @@
     <orderEntry type="library" name="joml-1.9.25" level="project" />
     <orderEntry type="library" name="OpenGL Shapes" level="project" />
     <orderEntry type="library" name="Molecule Structure" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/18.0.0/annotations-18.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
