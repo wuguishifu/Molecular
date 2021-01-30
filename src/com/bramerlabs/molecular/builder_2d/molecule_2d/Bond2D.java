@@ -133,6 +133,16 @@ public class Bond2D {
     }
 
     /**
+     * increments the bond order. Modular to 3
+     */
+    public void incOrder() {
+        this.order ++;
+        if (order > 3) {
+            this.order = 1;
+        }
+    }
+
+    /**
      * paints the atom using java.awt
      * @param g - the graphics component handed down by panel.repaint()
      */
@@ -162,12 +172,15 @@ public class Bond2D {
         if (this == o) return true;
         if (!(o instanceof Bond2D)) return false;
         Bond2D bond2D = (Bond2D) o;
-        return x1 == bond2D.x1 &&
+        return (x1 == bond2D.x1 &&
                 y1 == bond2D.y1 &&
                 x2 == bond2D.x2 &&
-                y2 == bond2D.y2 &&
-                order == bond2D.order &&
-                Objects.equals(color, bond2D.color);
+                y2 == bond2D.y2)
+                ||
+                (x1 == bond2D.x2 &&
+                y1 == bond2D.y2 &&
+                x2 == bond2D.x1 &&
+                y2 == bond2D.y1);
     }
 
     @Override

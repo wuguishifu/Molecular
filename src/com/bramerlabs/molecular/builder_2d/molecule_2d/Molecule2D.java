@@ -29,10 +29,23 @@ public class Molecule2D {
 
     /**
      * adds a bond to this molecule
-     * @param b - the bond to be added
+     * @param bond - the bond to be added
      */
-    public void addBond(Bond2D b) {
-        this.bonds.add(b);
+    public void addBond(Bond2D bond) {
+        boolean exists = false;
+        Bond2D existentBond = null;
+        for (Bond2D b : bonds) {
+            if (b.equals(bond)) {
+                exists = true;
+                existentBond = b;
+                break;
+            }
+        }
+        if (exists) {
+            existentBond.incOrder();
+        } else {
+            this.bonds.add(bond);
+        }
     }
 
     /**
@@ -85,11 +98,11 @@ public class Molecule2D {
      * @param g - the graphics component handed down by panel.repaint()
      */
     public void paint(Graphics g) {
-        for (Atom2D a : atoms) {
-            a.paint(g);
-        }
         for (Bond2D b : bonds) {
             b.paint(g);
+        }
+        for (Atom2D a : atoms) {
+            a.paint(g);
         }
     }
 }

@@ -2,10 +2,12 @@ package com.bramerlabs.molecular.builder_2d.io;
 
 import com.bramerlabs.molecular.builder_2d.io.ptabel.PTable;
 import com.bramerlabs.molecular.builder_2d.molecule_2d.Atom2D;
+import com.bramerlabs.molecular.builder_2d.molecule_2d.Bond2D;
 import com.bramerlabs.molecular.builder_2d.molecule_2d.Molecule2D;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class Frame extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
 
@@ -21,11 +23,14 @@ public class Frame extends JFrame implements KeyListener, MouseListener, MouseMo
     // modes
     private static final int MODE_DRAW = 0;
     private static final int MODE_SELECTION = 1;
+    private static final int MODE_DRAW_BONDS = 2;
     private static final int MODE_FIRST = 0;
-    private static final int MODE_LAST = 1;
+    private static final int MODE_LAST = 2;
     private static final int DEFAULT_MODE = 0;
     private int mode = MODE_DRAW;
-    private static final String[] MODE_LABELS = new String[]{"Draw Mode", "Select Mode"};
+    private static final String[] MODE_LABELS = new String[]{"Atom Draw Mode", "Select Mode", "Bond Draw"};
+
+    private static ArrayList<Atom2D> selectedAtoms = new ArrayList<>();
 
     // the title
     private static String title = "Builder 2D - Molecular";
@@ -50,8 +55,15 @@ public class Frame extends JFrame implements KeyListener, MouseListener, MouseMo
 
     // cycles the mode
     private void cycleMode() {
-        this.mode = this.mode >= MODE_LAST ? MODE_FIRST : this.mode + 1;
+        this.mode++;
+        if (this.mode > MODE_LAST) {
+            this.mode = MODE_FIRST;
+        }
         this.setTitle(title + " - " + MODE_LABELS[mode]);
+        for (Atom2D a : selectedAtoms) {
+            a.toggleHighlight();
+        }
+        selectedAtoms.clear();
     }
 
     @Override
@@ -81,14 +93,21 @@ public class Frame extends JFrame implements KeyListener, MouseListener, MouseMo
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) { // left click event
             Atom2D atom = molecule.findAtomAtPosition(mouseEvent.getX(), mouseEvent.getY());
             switch (mode) {
-                case MODE_DRAW: molecule.addAtom(new Atom2D(mouseEvent.getX(), mouseEvent.getY(), 20, PTable.selectedAtom));
+                case MODE_DRAW: molecule.addAtom(new Atom2D(mouseEvent.getX(), mouseEvent.getY(), 20, PTable.selectedAtom)); break;
                 case MODE_SELECTION:
                     if (atom != null) {
                         atom.toggleHighlight();
+                        selectedAtoms.add(atom);
                     }
+                    break;
+                case MODE_DRAW_BONDS: createBond(atom); break;
             }
         } else if (mouseEvent.getButton() == MouseEvent.BUTTON3) { // right click event
             Atom2D a = molecule.findAtomAtPosition(mouseEvent.getX(), mouseEvent.getY());
@@ -100,9 +119,29 @@ public class Frame extends JFrame implements KeyListener, MouseListener, MouseMo
         }
     }
 
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) {
-
+    /**
+     * creates a bond
+     * @param atom - the atom that was selected
+     */
+    private void createBond(Atom2D atom) {
+        if (atom != null && selectedAtoms.size() < 2) {
+            atom.toggleHighlight();
+            selectedAtoms.add(atom);
+        }
+        if (atom == null) {
+            for (Atom2D a : selectedAtoms) {
+                a.toggleHighlight();
+            }
+            selectedAtoms.clear();
+        }
+        if (selectedAtoms.size() == 2) {
+            Bond2D bond = new Bond2D(selectedAtoms.get(0), selectedAtoms.get(1), 1);
+            molecule.addBond(bond);
+            for (Atom2D a : selectedAtoms) {
+                a.toggleHighlight();
+            }
+            selectedAtoms.clear();
+        }
     }
 
     @Override
