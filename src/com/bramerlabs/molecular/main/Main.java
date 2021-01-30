@@ -21,7 +21,7 @@ import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.file_io.MoleculeIO;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
-import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
+import com.bramerlabs.molecular.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.bond.Bond;
 import com.bramerlabs.molecular.molecule.default_molecules.Benzene;
 import org.lwjgl.glfw.GLFW;

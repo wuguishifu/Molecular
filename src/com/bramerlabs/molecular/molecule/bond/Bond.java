@@ -3,7 +3,7 @@ package com.bramerlabs.molecular.molecule.bond;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.shapes.Cylinder;
 import com.bramerlabs.molecular.molecule.atom.Atom;
-import com.bramerlabs.molecular.molecule.atom.data_compilers.BondDataCompiler;
+import com.bramerlabs.molecular.data_compilers.BondDataCompiler;
 
 import java.util.ArrayList;
 

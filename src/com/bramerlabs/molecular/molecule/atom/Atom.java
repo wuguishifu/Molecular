@@ -2,7 +2,7 @@ package com.bramerlabs.molecular.molecule.atom;
 
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.shapes.Sphere;
-import com.bramerlabs.molecular.molecule.atom.data_compilers.AtomicDataCompiler;
+import com.bramerlabs.molecular.data_compilers.AtomicDataCompiler;
 
 public class Atom {
 

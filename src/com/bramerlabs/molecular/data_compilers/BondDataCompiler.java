@@ -1,4 +1,4 @@
-package com.bramerlabs.molecular.molecule.atom.data_compilers;
+package com.bramerlabs.molecular.data_compilers;
 
 public class BondDataCompiler {
 
