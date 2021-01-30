@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Builder2D {
 
-    private final static int width = 800, height = 600;
+    public final static int width = 800, height = 600;
 
     /**
      * main runnable

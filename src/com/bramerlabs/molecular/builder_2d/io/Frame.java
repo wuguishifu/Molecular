@@ -74,10 +74,11 @@ public class Frame extends JFrame implements KeyListener, MouseListener, MouseMo
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getKeyCode()) {
-            case KeyEvent.VK_ESCAPE: this.shouldClose = true;
-            case KeyEvent.VK_BACK_SPACE: this.molecule.clear();
-            case KeyEvent.VK_ENTER: PTable.selectAtom();
-            case KeyEvent.VK_SPACE: cycleMode();
+            case KeyEvent.VK_ESCAPE: this.shouldClose = true; break;
+            case KeyEvent.VK_BACK_SPACE: this.molecule.clear(); break;
+            case KeyEvent.VK_ENTER: PTable.selectAtom(); break;
+            case KeyEvent.VK_SPACE: cycleMode(); break;
+            case KeyEvent.VK_P: molecule.print(); break;
         }
     }
 

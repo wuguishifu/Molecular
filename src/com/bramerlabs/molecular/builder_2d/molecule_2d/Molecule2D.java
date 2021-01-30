@@ -105,4 +105,17 @@ public class Molecule2D {
             a.paint(g);
         }
     }
+
+    /**
+     * prints out the molecule
+     */
+    public void print() {
+        System.out.println("pos 0.0 0.0 0.0");
+        for (Atom2D a : atoms) {
+            a.print();
+        }
+        for (Bond2D b : bonds) {
+            b.print();
+        }
+    }
 }

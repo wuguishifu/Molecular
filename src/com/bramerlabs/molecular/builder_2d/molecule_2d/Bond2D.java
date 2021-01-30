@@ -13,6 +13,13 @@ public class Bond2D {
     private int order = 1;
     private final static int bondSep = 5;
 
+    // the ID of the atom
+    private int ID;
+    private static int curID = 0;
+
+    // the atoms this bond is connected to
+    private Atom2D a1, a2;
+
     // the color of this bond - default gray
     private Color color = new Color(40, 40, 40);
 
@@ -28,6 +35,7 @@ public class Bond2D {
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
+        this.setID();
     }
 
     /**
@@ -44,6 +52,7 @@ public class Bond2D {
         this.x2 = x2;
         this.y2 = y2;
         this.order = order;
+        this.setID();
     }
 
     /**
@@ -53,11 +62,14 @@ public class Bond2D {
      * @param order - the bond order
      */
     public Bond2D(Atom2D a1, Atom2D a2, int order) {
+        this.a1 = a1;
+        this.a2 = a2;
         this.x1 = a1.getX();
         this.y1 = a1.getY();
         this.x2 = a2.getX();
         this.y2 = a2.getY();
         this.order = order;
+        this.setID();
     }
 
     /**
@@ -66,10 +78,13 @@ public class Bond2D {
      * @param a2 - the second connected atom
      */
     public Bond2D(Atom2D a1, Atom2D a2) {
+        this.a1 = a1;
+        this.a2 = a2;
         this.x1 = a1.getX();
         this.y1 = a1.getY();
         this.x2 = a2.getX();
         this.y2 = a2.getY();
+        this.setID();
     }
 
     /**
@@ -83,6 +98,7 @@ public class Bond2D {
         this.y1 = a1.getY();
         this.x2 = x2;
         this.y2 = y2;
+        this.setID();
     }
 
     /**
@@ -98,6 +114,15 @@ public class Bond2D {
         this.x2 = x2;
         this.y2 = y2;
         this.order = order;
+        this.setID();
+    }
+
+    /**
+     * sets the ID
+     */
+    private void setID() {
+        this.ID = curID;
+        curID++;
     }
 
     /**
@@ -133,6 +158,14 @@ public class Bond2D {
     }
 
     /**
+     * getter method
+     * @return - the ID of this bond
+     */
+    public int getID() {
+        return this.ID;
+    }
+
+    /**
      * increments the bond order. Modular to 3
      */
     public void incOrder() {
@@ -165,6 +198,13 @@ public class Bond2D {
             y2p = (int) (y2 - bondSep * (x1 - x2) * L);
             g.drawLine(x1p, y1p, x2p, y2p);
         }
+    }
+
+    /**
+     * prints out the bond
+     */
+    public void print() {
+        System.out.println("bond " + this.ID + " " + this.a1.getID() + " " + this.a2.getID() + " " + order);
     }
 
     @Override

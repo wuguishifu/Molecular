@@ -1,6 +1,7 @@
 package com.bramerlabs.molecular.builder_2d.molecule_2d;
 
 import com.bramerlabs.molecular.builder_2d.io.ptabel.PTable;
+import com.bramerlabs.molecular.builder_2d.runner.Builder2D;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +24,10 @@ public class Atom2D {
     private static final Color DEFAULT_COLOR = Color.BLACK;
     private static final Color HIGHLIGHT_COLOR = new Color(19, 173, 0);
 
+    // the ID of the atom
+    private int ID;
+    private static int curID = 0;
+
     // if the atom is highlighted
     private boolean isHighlighted = false;
 
@@ -37,6 +42,7 @@ public class Atom2D {
         this.y = y;
         this.r = r;
         this.atomicNumber = atomicNumber;
+        setID();
     }
 
     /**
@@ -80,6 +86,22 @@ public class Atom2D {
     }
 
     /**
+     * getter method
+     * @return - the ID of this atom
+     */
+    public int getID() {
+        return this.ID;
+    }
+
+    /**
+     * sets the ID
+     */
+    private void setID() {
+        this.ID = curID;
+        curID++;
+    }
+
+    /**
      * paints the atom using java.awt
      * @param g - the graphics component handed down by panel.repaint()
      */
@@ -107,6 +129,13 @@ public class Atom2D {
         int x = minX + ((maxX - minX) - (int) r.getWidth()) / 2;
         int y = minY + ((maxY - minY) - (int) r.getHeight()) / 2 + fm.getAscent();
         g.drawString(string, x, y);
+    }
+
+    /**
+     * prints out the atom
+     */
+    public void print() {
+        System.out.println("atom " + this.ID + " " + (this.atomicNumber + 1) + " 0 0 " + (this.x - Builder2D.width/2f)/50f + " 0 " + (this.y - Builder2D.height/2f)/50f);
     }
 
     @Override
