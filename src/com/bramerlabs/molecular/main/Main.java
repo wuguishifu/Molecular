@@ -62,7 +62,8 @@ public class Main implements Runnable {
 
     // input handling variables
     private Input input = new Input(); // used to handle inputs
-    private boolean lastFrameRightButtonDown = false; // if the last frame had the right mouse button down
+    private boolean lastFrameRightButtonDown = false; // if the right button was down in the previous frame
+    private boolean lastFrameLeftButtonDown = false; // if the left button was down in the previous frame
     private boolean displayUsingCPRenderer = true; // how the molecule should be displayed - used for testing
     private CPRenderer cpRenderer; // used for color picking
     private Shader cpShader;
@@ -234,11 +235,15 @@ public class Main implements Runnable {
         if (!getPressedButtons()) {
             camera.updateArcball();
         }
-        handleButtonPress();
+        if (!input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && lastFrameLeftButtonDown) {
+            handleButtonPress();
+        }
 
         // update the text object
         displayGUIText.setTextString(renderText);
         displayGUIText.loadText();
+
+        lastFrameLeftButtonDown = input.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT);
 
         return shouldSwapBuffers;
     }
@@ -359,6 +364,8 @@ public class Main implements Runnable {
             if (overCurrentButton != 0) {
                 isOverButton = true;
                 gui.getButton(pressedButtonID).setState(Button.STATE_PRESSED);
+            } else {
+                pressedButtonID = 0;
             }
         } else {
             for (Button button : gui.getButtons()) {
