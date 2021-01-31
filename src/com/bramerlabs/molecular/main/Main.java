@@ -18,12 +18,12 @@ import com.bramerlabs.engine.io.window.Window;
 import com.bramerlabs.engine.math.Vector2f;
 import com.bramerlabs.engine.math.Vector3f;
 import com.bramerlabs.engine.objects.shapes.Cylinder;
+import com.bramerlabs.molecular.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.file_io.MoleculeIO;
 import com.bramerlabs.molecular.molecule.Molecule;
 import com.bramerlabs.molecular.molecule.atom.Atom;
-import com.bramerlabs.molecular.data_compilers.AtomicDataCompiler;
 import com.bramerlabs.molecular.molecule.bond.Bond;
-import com.bramerlabs.molecular.molecule.default_molecules.Benzene;
+import com.bramerlabs.molecular.molecule.default_molecules.Benzaldehyde;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
@@ -508,7 +508,7 @@ public class Main implements Runnable {
      * generates a molecule
      */
     private void generateMolecules() {
-        this.molecules.add(new Benzene(new Vector3f(0)));
+        this.molecules.add(new Benzaldehyde(new Vector3f(0)));
     }
 
     /**
@@ -519,6 +519,10 @@ public class Main implements Runnable {
         buttonTemp = false;
         buttonStaysPressed = false;
         numMaxSelectedItems = 1;
+    }
+
+    private void pinkMode() {
+        renderer.setLightColor(Vector3f.divide(new Vector3f(Color.PINK), new Vector3f(255)));
     }
 
     /**

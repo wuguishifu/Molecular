@@ -30,6 +30,7 @@ public class Window {
 
     // background color
     private static final Color backgroundColorAsColor = new Color(204, 232, 220);
+//    private static final Color backgroundColorAsColor = Color.PINK;
 //    private static final Color backgroundColorAsColor = new Color(255, 255, 255);
     public static final Vector3f bgc = Vector3f.divide(new Vector3f(
             backgroundColorAsColor.getRed(),

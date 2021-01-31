@@ -1,5 +1,6 @@
 package com.bramerlabs.engine.math;
 
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Objects;
 
@@ -18,6 +19,16 @@ public class Vector3f {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    /**
+     * constructor for a vector from a color object
+     * @param c - the color object
+     */
+    public Vector3f(Color c) {
+        this.x = c.getRed();
+        this.y = c.getGreen();
+        this.z = c.getBlue();
     }
 
     /**
