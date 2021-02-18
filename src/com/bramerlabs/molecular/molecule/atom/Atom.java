@@ -54,6 +54,20 @@ public class Atom {
      * @param charge - the charge of this atom
      * @param numNeutrons - the number of neutrons in this atom
      */
+    public Atom(Vector3f position, int atomicNumber, int charge, int numNeutrons) {
+        this.position = position;
+        this.atomicNumber = atomicNumber;
+        this.charge = charge;
+        this.numNeutrons = numNeutrons;
+
+        this.radius = AtomicDataCompiler.getVDWRadius(atomicNumber);
+        this.color = AtomicDataCompiler.getCPKColor(atomicNumber);
+
+        makeSphere();
+        makeSelectionSphere();
+        generateID();
+    }
+
     public Atom(Vector3f position, int atomicNumber, int charge, int numNeutrons, int ID) {
         this.position = position;
         this.atomicNumber = atomicNumber;
