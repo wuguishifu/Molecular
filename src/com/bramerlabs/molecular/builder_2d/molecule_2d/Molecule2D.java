@@ -107,6 +107,14 @@ public class Molecule2D {
     }
 
     /**
+     * getter method
+     * @return - the list of atoms in this array
+     */
+    public ArrayList<Atom2D> getAtoms() {
+        return this.atoms;
+    }
+
+    /**
      * prints out the molecule
      */
     public void print() {
