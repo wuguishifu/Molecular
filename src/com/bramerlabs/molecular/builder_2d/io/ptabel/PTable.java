@@ -42,8 +42,8 @@ public class PTable {
 
         // determine the coordinates of the center of the screen
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) (dim.getWidth()/2 - width/2);
-        int y = (int) (dim.getHeight()/2 - height/2);
+        int x = (int) (dim.getWidth() / 2 - width / 2);
+        int y = (int) (dim.getHeight() / 2 - height / 2);
         frame.setLocation(x, y);
 
         // initialize the panel
@@ -76,22 +76,15 @@ public class PTable {
         panel.repaint();
     }
 
-    /**
-     * shows the periodic table to select an atom
-     */
-    public static void selectAtom() {
-        frame.setVisible(true);
-    }
-
-    /**
-     * draws centered text
-     * @param g - the graphics object handed down by panel.repaint()
-     * @param minX - the min x value to draw in
-     * @param minY - the min y value to draw in
-     * @param maxX - the max x value to draw in
-     * @param maxY - the max y value to draw in
-     * @param string - the string to draw
-     */
+            /**
+             * draws centered text
+             * @param g - the graphics object handed down by panel.repaint()
+             * @param minX - the min x value to draw in
+             * @param minY - the min y value to draw in
+             * @param maxX - the max x value to draw in
+             * @param maxY - the max y value to draw in
+             * @param string - the string to draw
+             */
     private static void drawCenteredText(Graphics g, int minX, int minY, int maxX, int maxY, String string) {
         Graphics2D g2d = (Graphics2D) g;
         FontMetrics fm = g2d.getFontMetrics();
@@ -99,6 +92,13 @@ public class PTable {
         int x = minX + ((maxX - minX) - (int) r.getWidth()) / 2;
         int y = minY + ((maxY - minY) - (int) r.getHeight()) / 2 + fm.getAscent();
         g.drawString(string, x, y);
+    }
+
+    /**
+     * shows the periodic table to select an atom
+     */
+    public static void selectAtom() {
+        frame.setVisible(true);
     }
 
     /**

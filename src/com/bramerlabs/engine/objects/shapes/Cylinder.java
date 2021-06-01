@@ -80,12 +80,10 @@ public class Cylinder extends RenderObject {
             vertices[3 * i + 1] = new Vertex(t.getV2(), color, t.getNormal());
             vertices[3 * i + 2] = new Vertex(t.getV3(), color, t.getNormal());
         }
-
         int[] indices = new int[triangles.size() * 3];
         for (int i = 0; i < triangles.size() * 3; i++) {
             indices[i] = i;
         }
-
         return new Mesh(vertices, indices);
     }
 

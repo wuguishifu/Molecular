@@ -212,7 +212,7 @@ public class Shader {
      * unbinds the gl program
      */
     public void unbind() {
-        GL20.glUseProgram(programID);
+        GL20.glUseProgram(0);
     }
 
     /**
