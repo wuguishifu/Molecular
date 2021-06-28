@@ -98,6 +98,7 @@ public class Window {
         GLFW.glfwDefaultWindowHints(); // default window hints
         GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_TRUE); // if the window is maximized
         GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_TRUE); // if the window is decorated
+        GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 4);
 
         // create the window
         // used for GLFW variables
